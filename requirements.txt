@@ -1,0 +1,5 @@
+dictshield==0.4.4
+gevent==0.13.8
+greenlet==0.4.0
+schematics==0.5
+ujson==1.23
