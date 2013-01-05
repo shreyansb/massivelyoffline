@@ -1,20 +1,27 @@
-import os
+import logging
+import ujson as json
+from flask import Flask, render_template
+from US import zipcodes
+from pymongo import MongoClient
 
-from brubeck.request_handling import Brubeck, WebMessageHandler
-from brubeck.connections import WSGIConnection
+app = Flask(__name__)
+c = MongoClient()
+db = c.sole_db.sole_coll
 
-class DemoHandler(WebMessageHandler):
-    def get(self):
-        self.set_body("Hello, from Brubeck!")
-        return self.render()
+@app.route("/zip/<zipcode>", methods=["GET"])
+def get_zip(zipcode):
+    info = zipcodes.get(zipcode)
+    return json.dumps(info)
 
-config = {
-    'msg_conn': WSGIConnection(int(os.environ.get('PORT', 6767))),
-    'handler_tuples': [
-        (r'^/', DemoHandler)
-    ]
-}
+@app.route("/", methods=["GET"])
+def get_home():
+    return render_template("home.html")
 
-if __name__ == '__main__':
-    app = Brubeck(**config)
+@app.route("/sole", methods=["GET"])
+def get_sole():
+    all = db.find()
+    results = [o for o in all]
+    return json.dumps(results)
+
+if __name__ == "__main__":
     app.run()

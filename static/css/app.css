@@ -1,0 +1,151 @@
+body {
+    padding: 0px;
+    margin: 0px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+
+h1 {
+    color: white;
+    font-size: 48px;
+    line-height: 1.2;
+    text-shadow: 0 0 15px rgba(0, 0, 0, 0.8), 0 -1px 1px rgba(0, 0, 0, 0.6);
+    margin: 0 0 00 0;
+}
+
+h2 {
+    color: white;
+    font-size: 36px;
+    line-height: 1.2;
+    text-shadow: 0 0 15px rgba(0, 0, 0, 0.8), 0 -1px 1px rgba(0, 0, 0, 0.6);
+    margin: 0 0 0 0;
+}
+
+#sidebar h1, #sidebar h2 {
+    padding-left: 5px;
+}
+
+#map {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    z-index: 0;
+}
+
+#sidebar {
+    position: absolute;
+    right: 10%;
+    top: 25%;
+}
+
+#what form {
+    margin-top: 1em;
+    padding: 4px;
+    background: rgba(57, 60, 61, 0.8);
+    border: 1px solid rgba(0, 0, 0, 0.8);
+    border-radius: 3px;
+    -webkit-box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    line-height: 1.2;
+}
+
+form input {
+    font-size: 16px;
+    padding: 8px; 12px;
+    -webkit-box-shadow: inset 1px 1px 5px rgba(0, 0, 0, 0.4);
+    box-shadow: inset 1px 1px 5px rgba(0, 0, 0, 0.4);
+    border: 1px solid black;
+    border-radius: 3px;
+}
+
+form input:focus {
+    border: 1px solid #00B7EB;
+    outline: 0;
+}
+
+#what form input {
+    width: 100%;
+}
+
+#actions {
+    margin-top: 20px;
+    color: white;
+    font-size: 32px;
+    line-height: 1.2;
+    text-shadow: 0 0 15px rgba(0, 0, 0, 0.6),0 -1px 1px rgba(0, 0, 0, 0.6);
+}
+
+#create {
+    position: absolute;
+    right: 0;
+    height: 100%;
+    width: 70%;
+    background-image: url('../images/debut_light.png');
+    display: none;
+    border-left: 1px solid black;
+    box-shadow: rgba(0, 0, 0, 0.5) -1px 1px 2px 0px;
+}
+
+#create_cancel {
+    font-size: 32px;
+    color: gray;
+    background-image: url('../images/debut_light.png');
+    position: absolute;
+    width: 30px;
+    left: -31px;
+    text-align: center;
+    border-left: 1px solid black;
+    border-bottom: 1px solid black;
+    box-shadow: rgba(0, 0, 0, 0.5) -1px 1px 2px 0px;
+}
+
+#create_form {
+    padding-left: 10%;
+    padding-top: 5%;
+    font-size: 16px;
+}
+
+#create_form input {
+    margin-left: 0;
+    margin-right: 0;
+    border-radius: 0 3 3 0;
+}
+
+#create_form div.create_label {
+    display: inline-block;
+    padding: 8px; 12px;
+    border: 1px solid black;
+    border-radius: 3 0 0 3;
+    position: relative;
+    right: -5;
+    margin-left: 0;
+    margin-right: 0;
+    width: 82px;
+
+}
+
+#create_verb {
+    margin-left: 0;
+    margin-right: 0;
+    position: relative;
+    font-size: 16px;
+    top: -1;
+    right: -4;
+    width: 100px;
+    height: 36px;
+    border:1px solid black;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    border-radius: 3 0 0 3;
+}
+
+#create_submit {
+    width: 282px;
+    height: 36px;
+    font-size: 16px;
+    position: relative;
+    right: -5px;
+    top: 2px;
+    text-align: left;
+}

@@ -1,0 +1,53 @@
+<html>
+    <head>
+        <link href="../static/css/app.css" rel="stylesheet"/>
+        <link href="../static/css/select2.css" rel="stylesheet"/>
+        <link href="../static/css/mapbox.css" rel="stylesheet"/>
+        <script type="text/javascript" src="../static/js/jquery-1.8.3.min.js"></script> 
+        <script type="text/javascript" src="../static/js/jquery.hotkeys.js"></script> 
+        <script type="text/javascript" src="../static/js/select2.js"></script> 
+        <script type="text/javascript" src="../static/js/mapbox.js"></script> 
+        <script type="text/javascript" src="../static/js/app.js"></script> 
+    </head>
+    <body>
+        <div id="map"></div>
+        <div id="sidebar">
+            <div id="what">
+                <h1>Do more together</h1>
+                <h2>Make. Practice. Study. Learn.</h2>
+                <form id="what_form">
+                    <input type="text" id="what_input" 
+                    placeholder="What do you want to do?"></input>
+                </form>
+            </div>
+        </div>
+        <div id="create">
+            <div id="create_cancel">&#215
+            </div>
+            <form id="create_form">
+                <div>
+                    <select id="create_verb">
+                        <option value="study">Study</option>
+                        <option value="make">Make</option>
+                        <option value="practice">Practice</option>
+                        <option value="learn">Learn</option>
+                        <option value="explore">Explore</option>
+                    </select>
+                    <input id="create_title" type="text"></input>
+                </div>
+                <div>
+                    <div class="create_label">near</div>
+                    <input id="create_zipcode" type="text" placeholder="zipcode"></input>
+                </div>
+                <div>
+                    <div class="create_label">with up to</div>
+                    <input type="text" placeholder="this many people"></input>
+                </div>
+                <div>
+                    <button id="create_submit">Let's do this</button>
+                </div>
+            </form>
+        </div>
+    </body>
+</html>
+
