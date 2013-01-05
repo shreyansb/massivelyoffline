@@ -2,7 +2,7 @@ from pymongo import MongoClient
 from bs4 import BeautifulSoup
 
 # the data
-file_path = "data/etc/coursera_courses.html"
+file_path = "coursera_raw.html"
 soup = BeautifulSoup(open(file_path))
 
 # the database
