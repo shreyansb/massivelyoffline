@@ -13,11 +13,11 @@
         <div id="map"></div>
         <div id="sidebar">
             <div id="what">
-                <h1>Do more together</h1>
-                <h2>Make. Practice. Study. Learn.</h2>
+                <h1>Learn better with others.</h1>
+                <h2>Study with people around you.</h2>
                 <form id="what_form">
-                    <input type="text" id="what_input" 
-                    placeholder="What do you want to do?"></input>
+                    <input id="what_input" type="text" 
+                    placeholder="What class are you taking?"></input>
                 </form>
             </div>
         </div>
@@ -25,15 +25,10 @@
             <div id="create_cancel">&#215
             </div>
             <form id="create_form">
+                <div id="class_name"></div>
                 <div>
-                    <select id="create_verb">
-                        <option value="study">Study</option>
-                        <option value="make">Make</option>
-                        <option value="practice">Practice</option>
-                        <option value="learn">Learn</option>
-                        <option value="explore">Explore</option>
-                    </select>
-                    <input id="create_title" type="text"></input>
+                    <div class="create_label">Discuss</div>
+                    <input id="create_subject" type="text" placeholder=""></input>
                 </div>
                 <div>
                     <div class="create_label">near</div>
@@ -41,7 +36,7 @@
                 </div>
                 <div>
                     <div class="create_label">with up to</div>
-                    <input type="text" placeholder="this many people"></input>
+                    <input id="create_ppl" type="text" placeholder="this many people"></input>
                 </div>
                 <div>
                     <button id="create_submit">Let's do this</button>

@@ -6,17 +6,21 @@ body {
 
 h1 {
     color: white;
+    -webkit-text-fill-color: lightgreen;
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: green;
     font-size: 48px;
     line-height: 1.2;
-    text-shadow: 0 0 15px rgba(0, 0, 0, 0.8), 0 -1px 1px rgba(0, 0, 0, 0.6);
     margin: 0 0 00 0;
 }
 
 h2 {
     color: white;
+    -webkit-text-fill-color: lightgreen;
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: green;
     font-size: 36px;
     line-height: 1.2;
-    text-shadow: 0 0 15px rgba(0, 0, 0, 0.8), 0 -1px 1px rgba(0, 0, 0, 0.6);
     margin: 0 0 0 0;
 }
 

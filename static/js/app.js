@@ -1,23 +1,27 @@
 var sole = sole || {};
+
+sole.course = sole.course || {};
 sole.create = sole.create || {};
-sole.what = sole.what || {};
 sole.map = sole.map || {};
+sole.what = sole.what || {};
 
 sole.create.visible = false;
-sole.verbs = ["make", "learn", "practice", "study", "explore"];
+sole.course.list = [];
 
 sole.init = function() {
     sole.map.init();
+    sole.course.get_courses();
     sole.setup_events();
-    sole.focus_on_what();
+    $('#what_input').focus();
+    $('#what_input').on('change', sole.what.submit);
 };
 
 sole.map.init = function() {
     mapbox.load('shreyansb.map-d6wn3q7b', function(o) {
         var map = mapbox.map('map');
         map.centerzoom({ 
-            lat: 40.732578012757486, 
-            lon: -73.95431335449219}, 
+            lat: 40.73413893902268,
+            lon: -73.92942245483398}, 
         13);
         map.addLayer(o.layer);
         sole.map.map = map;
@@ -25,18 +29,7 @@ sole.map.init = function() {
 }
 
 sole.setup_events = function() {
-    $('#create_button').on('click', function(event) {
-        sole.create.show();
-    });
-
-    $('#create_cancel').on('click', function(event) {
-        sole.create.hide();
-    });
-
-    $('#what_form').submit(function(event) {
-        sole.what.submit(event);
-        return false;
-    });
+    $('#create_cancel').on('click', sole.create.hide);
 
     $('#create_form').submit(function(event) {
         sole.create.submit(event);
@@ -50,53 +43,47 @@ sole.setup_events = function() {
     });
 };
 
-sole.focus_on_what = function() {
-    $('#what_input').focus();
-};
-
 sole.what.submit = function(event) {
-    var what_text = $('#what_input').val();
-    var parsed = sole.what.parse(what_text);
-    sole.create.show(parsed[0], parsed[1]);
+    sole.create.show($('#what_input').val());
+    return false;
 };
 
-sole.what.parse = function(what) {
-    var verb, new_what;
-    $.each(sole.verbs, function(index, value) {
-        if (what.toLowerCase().indexOf(value) === 0) {
-            verb = value;
-            new_what = what.replace(/^[\w]+\s/, "");
-            return false;
-        }
+// get a list of courses from the server
+// populate the search bar with these results
+// format them for later use
+sole.course.get_courses = function() {
+    $.get('/courses', function(data) {
+        sole.course.list = $.parseJSON(data);
+        console.log(sole.course.list);
+        $('#what_input').select2({
+            width: "600px",
+            placeholder: "What class are you taking?",
+            data: sole.course.list
+        });
+        sole.course.dict = sole.course.format(sole.course.list);
     });
-    if (typeof(new_what) === "undefined") {
-        new_what = what;
+};
+
+// converts a list as expected by select2, so to a dictionary that
+// allows for course lookup by id
+sole.course.format = function(c) {
+    var dict = {};
+    for (var i=0; i < c.length; i++) {
+        var o = c[i];
+        dict[o['id']] = o;
     }
-    return [verb, new_what];
+    return dict;
 };
 
 // Show the form to create a new activity
 // Pre-fill the form if possible
-sole.create.show = function(verb, what) {
-    $('#create').show();
+sole.create.show = function(class_id) {
     sole.create.visible = true;
-
-    // verb
-    if (typeof(verb) === "string") {
-        $('#create_verb').val(verb);
-    } else {
-        console.log("focus on verb");
-        $('#create_verb').focus();
-    }
-
-    if (typeof(what) === "string") {
-        $('#create_title').val(what);
-    }
-
-    if (typeof(what) === "string" && typeof(verb) === "string") {
-        console.log("focus on zipcode");
-        $('#create_zipcode').focus();
-    }
+    sole.create.id = class_id;
+    $('#create').show();
+    var c = sole.course.dict[class_id];
+    $('#class_name').text(c.name);
+    $('#create_subject').focus();
 };
 
 // Hide the form to create a new activity
@@ -104,24 +91,37 @@ sole.create.show = function(verb, what) {
 sole.create.hide = function() {
     $('#create').hide();
     $('#create_form').find("input[type=text], select").val("");
-    $('#what_input').val("").focus();
     sole.create.visible = false;
+    sole.create.id = undefined;
 };
 
 sole.create.submit = function(event) {
-    console.log(event);
-
-    sole.create.add_marker();
-
+    var c = sole.course.dict[sole.create.id];
+    var name = c.name;
+    var d = $('#create_subject').val();
+    var zip = $('#create_zipcode').val();
+    var ppl = $('#create_ppl').val();
+    var o = {
+        'id': sole.create.id,
+        'description': d,
+        'zip': zip,
+        'ppl': ppl
+    };
+    $.ajax({
+        type: 'POST',
+        url: '/courses',
+        data: o,
+        success: function(data) {
+            console.log("added sole");
+            console.log(data);
+            sole.create.add_marker(zip, name, d);
+        }
+    });
     sole.create.hide();
     $('#what').hide();
 };
 
-sole.create.add_marker = function() {
-    var title = $('#create_verb').val();
-    var description = $('#create_title').val();
-    var zip = $('#create_zipcode').val();
-
+sole.create.add_marker = function(zip, title, description) {
     $.get('zip/' + zip, function(data) {
         var loc = $.parseJSON(data);
         if (loc) {
