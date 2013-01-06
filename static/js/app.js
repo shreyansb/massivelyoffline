@@ -2,7 +2,6 @@ var sole = sole || {};
 
 sole.course = sole.course || {};
 sole.create = sole.create || {};
-sole.map = sole.map || {};
 sole.what = sole.what || {};
 
 sole.create.visible = false;
@@ -15,18 +14,6 @@ sole.init = function() {
     $('#what_input').focus();
     $('#what_input').on('change', sole.what.submit);
 };
-
-sole.map.init = function() {
-    mapbox.load('shreyansb.map-d6wn3q7b', function(o) {
-        var map = mapbox.map('map');
-        map.centerzoom({ 
-            lat: 40.73413893902268,
-            lon: -73.92942245483398}, 
-        13);
-        map.addLayer(o.layer);
-        sole.map.map = map;
-    });
-}
 
 sole.setup_events = function() {
     $('#create_cancel').on('click', sole.create.hide);
@@ -107,9 +94,10 @@ sole.create.submit = function(event) {
         'zip': zip,
         'ppl': ppl
     };
+    console.log(o);
     $.ajax({
         type: 'POST',
-        url: '/courses',
+        url: '/sole',
         data: o,
         success: function(data) {
             console.log("added sole");
@@ -128,27 +116,6 @@ sole.create.add_marker = function(zip, title, description) {
             sole.map.add_marker(loc[0], loc[1], title, description);
         }
     });
-};
-
-// Add a marker to the map
-sole.map.add_marker = function(lat, lon, title, description) {
-    if (typeof(sole.map.markers) === "undefined") {
-        var markerLayer = mapbox.markers.layer();
-        sole.map.map.addLayer(markerLayer);
-        sole.map.markers = markerLayer;
-    }
-    sole.map.markers.add_feature({
-        'geometry': {
-            'coordinates': [lon, lat]
-        },
-        'properties': {
-            'marker-color': '#000',
-            'marker-symbol': 'star-stroked',
-            'title': title,
-            'description': description
-        }
-    });
-    sole.map.map.centerzoom({ lat: lat, lon: lon }, 14);
 };
 
 // Start the app
