@@ -25,6 +25,7 @@ sole.map.load_recent = function() {
 // Add a marker to the map
 sole.map.add_marker = function(lat, lon, title, description, center) {
     if (typeof(sole.map.markers) === "undefined") {
+        console.log("creating new marker layer");
         var markerLayer = mapbox.markers.layer();
         sole.map.map.addLayer(markerLayer);
         sole.map.markers = markerLayer;
@@ -45,5 +46,24 @@ sole.map.add_marker = function(lat, lon, title, description, center) {
     });
     if (center) {
         sole.map.map.center({ lat: lat, lon: lon });
+    }
+};
+
+sole.map.add_marker_from_zip = function(zip, title, description) {
+    $.get('zip/' + zip, function(data) {
+        var loc = $.parseJSON(data);
+        if (loc) {
+            sole.map.add_marker(loc[0], loc[1], title, description);
+        }
+    });
+};
+
+// clear the map of all markers
+sole.map.reset_markers = function() {
+    console.log("reset_markers");
+    if (typeof(sole.map.markers) != "undefined") {
+        console.log("reseting");
+        sole.map.map.removeLayer(sole.map.markers.name);
+        sole.map.markers = undefined;
     }
 };

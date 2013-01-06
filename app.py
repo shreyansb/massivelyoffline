@@ -45,8 +45,16 @@ def post_sole():
 
 @app.route("/sole", methods=["GET"])
 def get_sole():
-    logging.warning("get sole")
     soles = sole_db.sole.find().limit(10)
+    r = []
+    for s in soles:
+        s['id'] = str(s.pop('_id'))
+        r.append(s)
+    return json.dumps(r)
+
+@app.route("/sole/<class_id>", methods=["GET"])
+def get_soles_for_class_id(class_id):
+    soles = sole_db.sole.find({'course': class_id}).limit(10)
     r = []
     for s in soles:
         s['id'] = str(s.pop('_id'))

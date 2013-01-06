@@ -39,11 +39,11 @@ h2 {
 
 #sidebar {
     position: absolute;
-    right: 10%;
+    right: 7%;
     top: 25%;
 }
 
-#what form {
+#cls form, #results {
     margin-top: 1em;
     padding: 4px;
     background: rgba(57, 60, 61, 0.8);
@@ -52,6 +52,10 @@ h2 {
     -webkit-box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
     line-height: 1.2;
+}
+
+#results {
+    display: none;
 }
 
 form input {
@@ -68,7 +72,7 @@ form input:focus {
     outline: 0;
 }
 
-#what form input {
+#cls form input {
     width: 100%;
 }
 

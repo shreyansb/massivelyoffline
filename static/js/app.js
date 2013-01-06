@@ -2,8 +2,9 @@ var sole = sole || {};
 
 sole.course = sole.course || {};
 sole.create = sole.create || {};
-sole.what = sole.what || {};
+sole.cls = sole.cls || {};
 
+sole.cls.moved = false;
 sole.create.visible = false;
 sole.course.list = [];
 
@@ -11,8 +12,8 @@ sole.init = function() {
     sole.map.init();
     sole.course.get_courses();
     sole.setup_events();
-    $('#what_input').focus();
-    $('#what_input').on('change', sole.what.submit);
+    $('#cls_input').focus();
+    $('#cls_input').on('change', sole.cls.submit);
 };
 
 sole.setup_events = function() {
@@ -30,10 +31,37 @@ sole.setup_events = function() {
     });
 };
 
-sole.what.submit = function(event) {
-    sole.create.show($('#what_input').val());
+sole.cls.submit = function(event) {
+    sole.map.reset_markers();
+
+    // if this is the first submit, we move the elements around
+    if (sole.cls.moved === false) {
+        $('#cls').find('h1').fadeOut(150);
+        $('#cls').find('h2').fadeOut(150);
+        $('#sidebar').animate({ top: "10%" }, 200); 
+        setTimeout(function() {
+            $('#results').fadeIn(150);
+        }, 150);
+        sole.cls.moved = true;
+    }
+
+    // on every submit, get new results
+
+    var class_id = sole.cls.get_class_id();
+    $.get('/sole/' + class_id, function(data) {
+        var results = $.parseJSON(data);
+        for (var i=0; i<results.length; i++) {
+            var r = results[i];
+            sole.map.add_marker(r.loc[0], r.loc[1], "result", i, false);
+            //sole.results.add(r);
+        }
+    });
     return false;
 };
+
+sole.cls.get_class_id = function() {
+    return $('#cls_input').val();
+}
 
 // get a list of courses from the server
 // populate the search bar with these results
@@ -41,8 +69,7 @@ sole.what.submit = function(event) {
 sole.course.get_courses = function() {
     $.get('/courses', function(data) {
         sole.course.list = $.parseJSON(data);
-        console.log(sole.course.list);
-        $('#what_input').select2({
+        $('#cls_input').select2({
             width: "600px",
             placeholder: "What class are you taking?",
             data: sole.course.list
@@ -62,6 +89,7 @@ sole.course.format = function(c) {
     return dict;
 };
 
+/*
 // Show the form to create a new activity
 // Pre-fill the form if possible
 sole.create.show = function(class_id) {
@@ -107,17 +135,9 @@ sole.create.submit = function(event) {
         }
     });
     sole.create.hide();
-    $('#what').hide();
+    $('#cls').hide();
 };
-
-sole.create.add_marker = function(zip, title, description) {
-    $.get('zip/' + zip, function(data) {
-        var loc = $.parseJSON(data);
-        if (loc) {
-            sole.map.add_marker(loc[0], loc[1], title, description);
-        }
-    });
-};
+*/
 
 // Start the app
 $(document).ready(sole.init);
