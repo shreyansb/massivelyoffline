@@ -43,7 +43,7 @@ h2 {
     top: 25%;
 }
 
-#cls form, #results {
+#cls form, #results, #create {
     margin-top: 1em;
     padding: 4px;
     background: rgba(57, 60, 61, 0.8);
@@ -85,87 +85,51 @@ form input:focus {
 }
 
 #create {
-    position: absolute;
-    right: 0;
-    height: 100%;
-    width: 70%;
-    background-image: url('../images/linedpaper.png');
     display: none;
-    border-left: 1px solid black;
-    box-shadow: rgba(0, 0, 0, 0.5) -1px 1px 2px 0px;
+    text-align: right;
+}
+
+#create_call_to_action {
+    display: inline-block;
+    color: white;
+    padding: 4px 12px;
+}
+
+.create_button {
+    font-size: 16px;
+    color: white;
+    border-radius: 3px;
+    border: 0px;
+    height: 35px;
+    width: 130px;
 }
 
 #create_cancel {
-    font-size: 32px;
-    color: gray;
-    background-image: url('../images/linedpaper.png');
-    position: absolute;
-    width: 30px;
-    left: -31px;
-    text-align: center;
-    border-left: 1px solid black;
-    border-bottom: 1px solid black;
-    box-shadow: rgba(0, 0, 0, 0.5) -1px 1px 2px 0px;
-}
-
-#create_form {
-    padding-left: 10%;
-    padding-top: 5%;
-    font-size: 16px;
-}
-
-#create_form input {
-    margin-left: 0;
-    margin-right: 0;
-    border-radius: 0 3 3 0;
-    height: 50px;
-    width: 500px;
-}
-
-#create_form div.create_label {
-    display: inline-block;
-    padding: 8px; 12px;
-    border: 1px solid black;
-    border-radius: 3 0 0 3;
-    position: relative;
-    right: -5;
-    margin-left: 0;
-    margin-right: 0;
-    width: 82px;
-    height: 32px;
-    vertical-align: top;
-}
-
-#create_verb {
-    margin-left: 0;
-    margin-right: 0;
-    position: relative;
-    font-size: 16px;
-    top: -1;
-    right: -4;
-    width: 100px;
-    height: 36px;
-    border:1px solid black;
-    box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    -webkit-box-sizing: border-box;
-    border-radius: 3 0 0 3;
+    float: left;
+    background-color: red;
+    display: none;
 }
 
 #create_submit {
-    width: 602px;
-    height: 36px;
-    font-size: 16px;
-    position: relative;
-    right: -5px;
-    top: 2px;
-    text-align: left;
+    background-color: lightgreen;
+    display: none;
 }
 
-.create_row {
-    margin-top: 10px;
+#create_start {
+    background-color: lightgreen;
 }
 
-#class_header {
-    margin-bottom: 10px;
+.result {
+    background-color: white; 
+    padding: 8px 12px;
+    border-bottom: 1px solid gray;
+}
+
+.result:first-child {
+    border-radius: 3 3 0 0;
+}
+
+.result:last-child {
+    border-radius: 0 0 3 3;
+    border-bottom: 0px;
 }

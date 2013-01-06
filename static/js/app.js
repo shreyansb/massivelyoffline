@@ -4,7 +4,7 @@ sole.course = sole.course || {};
 sole.create = sole.create || {};
 sole.cls = sole.cls || {};
 
-sole.cls.moved = false;
+sole.cls.once = false;
 sole.create.visible = false;
 sole.course.list = [];
 
@@ -17,8 +17,8 @@ sole.init = function() {
 };
 
 sole.setup_events = function() {
+    $('#create_start').on('click', sole.create.show);
     $('#create_cancel').on('click', sole.create.hide);
-
     $('#create_form').submit(function(event) {
         sole.create.submit(event);
         return false;
@@ -33,30 +33,70 @@ sole.setup_events = function() {
 
 sole.cls.submit = function(event) {
     sole.map.reset_markers();
+    sole.cls.reset_results();
 
     // if this is the first submit, we move the elements around
-    if (sole.cls.moved === false) {
-        $('#cls').find('h1').fadeOut(150);
-        $('#cls').find('h2').fadeOut(150);
-        $('#sidebar').animate({ top: "10%" }, 200); 
-        setTimeout(function() {
-            $('#results').fadeIn(150);
-        }, 150);
-        sole.cls.moved = true;
+    if (sole.cls.once === false) {
+        sole.cls.animate_up();
+        sole.cls.once = true;
     }
 
     // on every submit, get new results
-
     var class_id = sole.cls.get_class_id();
     $.get('/sole/' + class_id, function(data) {
         var results = $.parseJSON(data);
-        for (var i=0; i<results.length; i++) {
-            var r = results[i];
-            sole.map.add_marker(r.loc[0], r.loc[1], "result", i, false);
-            //sole.results.add(r);
+        if (results.length > 0) {
+            sole.cls.show_results();
+            for (var i=0; i<results.length; i++) {
+                var r = results[i];
+                sole.map.add_marker(r.loc[0], r.loc[1], "result", i, false);
+                sole.cls.add_result(r);
+            }
+        } else {
+            sole.cls.no_results();
         }
     });
+
     return false;
+};
+
+sole.cls.no_results = function() {
+    $('<div/>', {
+        "class": "result",
+        text: "no results",
+        display: "none"
+    }).appendTo('#results').fadeIn(150);
+};
+
+sole.cls.reset_results = function() {
+    $('#results').find('div').remove();
+};
+
+sole.cls.hide_results = function() {
+    $('#results').hide();
+};
+
+sole.cls.show_results = function() {
+    $('#results').show();
+};
+
+sole.cls.add_result = function(r) {
+    $('<div/>', {
+        id: r.id,
+        "class": "result",
+        text: r.id,
+        display: "none"
+    }).appendTo('#results').fadeIn(150);
+};
+
+sole.cls.animate_up = function() {
+    $('#cls').find('h1').fadeOut(150);
+    $('#cls').find('h2').fadeOut(150);
+    $('#sidebar').animate({ top: "10%" }, 200); 
+    setTimeout(function() {
+        $('#results').fadeIn(150);
+        $('#create').fadeIn(150);
+    }, 150);
 };
 
 sole.cls.get_class_id = function() {
@@ -89,28 +129,23 @@ sole.course.format = function(c) {
     return dict;
 };
 
-/*
-// Show the form to create a new activity
-// Pre-fill the form if possible
-sole.create.show = function(class_id) {
-    sole.create.visible = true;
-    sole.create.id = class_id;
-    $('#create').show();
-    var c = sole.course.dict[class_id];
-    $('#class_name').text(c.name);
-    $('#prof_name').text(c.prof);
-    $('#create_subject').focus();
+sole.create.show = function() {
+    $('#create_cancel').show();
+    $('#create_submit').show();
+    $('#create_start').hide();
+    $('#create_call_to_action').hide();
+    sole.cls.hide_results();
 };
 
-// Hide the form to create a new activity
-// Reset elements within this form, and on the homepage
 sole.create.hide = function() {
-    $('#create').hide();
-    $('#create_form').find("input[type=text], select").val("");
-    sole.create.visible = false;
-    sole.create.id = undefined;
+    $('#create_cancel').hide();
+    $('#create_submit').hide();
+    $('#create_start').show();
+    $('#create_call_to_action').show();
+    sole.cls.show_results();
 };
 
+/*
 sole.create.submit = function(event) {
     var c = sole.course.dict[sole.create.id];
     var name = c.name;
