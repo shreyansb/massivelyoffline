@@ -12,6 +12,7 @@ h1 {
     font-size: 48px;
     line-height: 1.2;
     margin: 0 0 00 0;
+    text-shadow: 10 10 35 white;
 }
 
 h2 {
@@ -84,7 +85,7 @@ form input:focus {
     right: 0;
     height: 100%;
     width: 70%;
-    background-image: url('../images/debut_light.png');
+    background-image: url('../images/linedpaper.png');
     display: none;
     border-left: 1px solid black;
     box-shadow: rgba(0, 0, 0, 0.5) -1px 1px 2px 0px;
@@ -93,7 +94,7 @@ form input:focus {
 #create_cancel {
     font-size: 32px;
     color: gray;
-    background-image: url('../images/debut_light.png');
+    background-image: url('../images/linedpaper.png');
     position: absolute;
     width: 30px;
     left: -31px;
@@ -113,6 +114,8 @@ form input:focus {
     margin-left: 0;
     margin-right: 0;
     border-radius: 0 3 3 0;
+    height: 50px;
+    width: 500px;
 }
 
 #create_form div.create_label {
@@ -125,7 +128,8 @@ form input:focus {
     margin-left: 0;
     margin-right: 0;
     width: 82px;
-
+    height: 32px;
+    vertical-align: top;
 }
 
 #create_verb {
@@ -145,11 +149,19 @@ form input:focus {
 }
 
 #create_submit {
-    width: 282px;
+    width: 602px;
     height: 36px;
     font-size: 16px;
     position: relative;
     right: -5px;
     top: 2px;
     text-align: left;
+}
+
+.create_row {
+    margin-top: 10px;
+}
+
+#class_header {
+    margin-bottom: 10px;
 }

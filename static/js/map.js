@@ -1,12 +1,11 @@
 sole.map = sole.map || {};
+sole.map.default_lat = 40.73413893902268;
+sole.map.default_lon = -73.92942245483398;
 
 sole.map.init = function() {
     mapbox.load('shreyansb.map-d6wn3q7b', function(o) {
         var map = mapbox.map('map');
-        map.centerzoom({ 
-            lat: 40.73413893902268,
-            lon: -73.92942245483398}, 
-        13);
+        map.centerzoom({lat: sole.map.default_lat, lon: sole.map.default_lon}, 13);
         map.addLayer(o.layer);
         sole.map.map = map;
         setTimeout(sole.map.load_recent, 1000);
@@ -29,6 +28,9 @@ sole.map.add_marker = function(lat, lon, title, description, center) {
         var markerLayer = mapbox.markers.layer();
         sole.map.map.addLayer(markerLayer);
         sole.map.markers = markerLayer;
+        var interaction = mapbox.markers.interaction(markerLayer);
+        interaction.showOnHover(true);
+        sole.map.interaction = interaction;
     }
     sole.map.markers.add_feature({
         'geometry': {

@@ -70,6 +70,7 @@ sole.create.show = function(class_id) {
     $('#create').show();
     var c = sole.course.dict[class_id];
     $('#class_name').text(c.name);
+    $('#prof_name').text(c.prof);
     $('#create_subject').focus();
 };
 
