@@ -120,6 +120,7 @@ form input:focus {
     background-color: white; 
     padding: 8px 12px;
     border-bottom: 1px solid gray;
+    min-height: 50px;
 }
 
 .result:first-child, #create_form:first_child {
@@ -129,4 +130,20 @@ form input:focus {
 .result:last-child, #create_form:last-child {
     border-radius: 0 0 3 3;
     border-bottom: 0px;
+}
+
+.sole_people {
+    float: right;
+}
+
+.join_sole {
+    display: inline-block;
+    min-height: 46px;
+    min-width: 46px;
+    border: 2px dashed green;
+}
+
+.sole_timing {
+    display: inline-block;
+    font-size: 20px;
 }

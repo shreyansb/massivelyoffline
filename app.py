@@ -1,4 +1,6 @@
 import logging
+import sole
+import sample_responses
 import ujson as json
 from flask import Flask, render_template, request
 from data.US import zipcodes
@@ -6,24 +8,23 @@ from pymongo import MongoClient
 
 app = Flask(__name__)
 db = MongoClient()
-sole_db = db.sole
-course_db = db.courses
+
+@app.route("/", methods=["GET"])
+def get_home():
+    return render_template("home.html")
 
 @app.route("/zip/<zipcode>", methods=["GET"])
 def get_zip(zipcode):
     info = zipcodes.get(zipcode)
     return json.dumps(info)
 
-@app.route("/", methods=["GET"])
-def get_home():
-    return render_template("home.html")
-
 @app.route("/courses", methods=["GET"])
 def get_courses():
-    all = course_db.coursera.find()
+    all = db.courses.coursera.find()
     r = []
     for o in all:
         o['id'] = str(o.pop('_id'))
+        # TODO create this on write
         o['text'] = ", ".join([o.get('name', ''), o.get('prof', ''), o.get('uni', '')])
         r.append(o)
     return json.dumps(r)
@@ -32,34 +33,27 @@ def get_courses():
 def post_sole():
     zipcode = request.values.get('zip')
     loc = zipcodes.get(zipcode)
-    sole = {
+    # TODO modify sole data to match sample_responses.sole
+    s = {
         'course': request.values.get('id'),
         'zip': zipcode,
         'desc': request.values.get('description'),
         'ppl': request.values.get('ppl'),
         'loc': loc,
     }
-    logging.warning(sole)
-    sole_db.sole.insert(sole)
+    sole.insert(db, s)
     return json.dumps({'status':'ok'})
 
 @app.route("/sole", methods=["GET"])
 def get_sole():
-    soles = sole_db.sole.find().limit(10)
-    r = []
-    for s in soles:
-        s['id'] = str(s.pop('_id'))
-        r.append(s)
+    r = sole.get(db, limit=10)
     return json.dumps(r)
 
 @app.route("/sole/<class_id>", methods=["GET"])
 def get_soles_for_class_id(class_id):
-    soles = sole_db.sole.find({'course': class_id}).limit(10)
-    r = []
-    for s in soles:
-        s['id'] = str(s.pop('_id'))
-        r.append(s)
-    logging.warning(r)
+    #r = sole.get_by_class_id(db, class_id)
+    # TODO real response
+    r = sample_responses.soles
     return json.dumps(r)
 
 if __name__ == "__main__":

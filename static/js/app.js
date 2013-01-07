@@ -50,12 +50,10 @@ sole.cls.submit = function(event) {
         var results = $.parseJSON(data);
         if (results.length > 0) {
             sole.cls.show_results();
+            var template = sole.templates.results_row;
             for (var i=0; i<results.length; i++) {
-                var r = results[i];
-                sole.cls.add_result(r);
-                if (sole.show_map) {
-                    sole.map.add_marker(r.loc[0], r.loc[1], "result", i, false);
-                }
+                results[i]['counter'] = i+1;
+                sole.cls.add_result(template, results[i]);
             }
         } else {
             sole.cls.no_results();
@@ -85,13 +83,20 @@ sole.cls.show_results = function() {
     $('#results').show();
 };
 
-sole.cls.add_result = function(r) {
+sole.cls.add_result = function(t, r) {
+    // render results row from template
+    var output = Mustache.render(t, r);
     $('<div/>', {
         id: r.id,
         "class": "result",
-        text: r.id,
+        html: output,
         display: "none"
     }).appendTo('#results').fadeIn(150);
+
+    // add marker to map
+    if (sole.show_map) {
+        sole.map.add_marker(r.loc.lat, r.loc.lon, "result", i, false);
+    }
 };
 
 sole.cls.animate_up = function() {
