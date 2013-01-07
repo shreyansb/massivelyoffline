@@ -50,7 +50,7 @@ sole.cls.submit = function(event) {
         var results = $.parseJSON(data);
         if (results.length > 0) {
             sole.cls.show_results();
-            var template = sole.templates.results_row;
+            var template = $('template#results_row').html();
             for (var i=0; i<results.length; i++) {
                 results[i]['counter'] = i+1;
                 sole.cls.add_result(template, results[i]);

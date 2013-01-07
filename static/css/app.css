@@ -5,6 +5,10 @@ body {
     font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
 }
 
+template {
+    display: none;
+}
+
 h1 {
     color: white;
     -webkit-text-fill-color: lightgreen;
