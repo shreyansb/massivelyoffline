@@ -1,5 +1,6 @@
 import logging
 import sole
+import course
 import sample_responses
 import ujson as json
 from flask import Flask, render_template, request
@@ -18,19 +19,41 @@ def get_zip(zipcode):
     info = zipcodes.get(zipcode)
     return json.dumps(info)
 
-@app.route("/courses", methods=["GET"])
+###
+### Course routes
+###
+
+@app.route("/course", methods=["GET"])
 def get_courses():
-    all = db.courses.coursera.find()
-    r = []
-    for o in all:
-        o['id'] = str(o.pop('_id'))
-        # TODO create this on write
-        o['text'] = ", ".join([o.get('name', ''), o.get('prof', ''), o.get('uni', '')])
-        r.append(o)
+    r = course.get_courses(db)
+    return json.dumps(r)
+
+@app.route("/course/<course_id>", methods=["GET"])
+def get_course_by_id(course_id):
+    r = course.get_course_by_id(course_id)
+    return json.dumps(r)
+
+@app.route("/course/<course_id>/sole", methods=["GET"])
+def get_soles_for_course():
+    # TODO real response
+    r = sample_responses.soles
+    return json.dumps(r)
+
+###
+### Sole routes
+###
+
+@app.route("/sole", methods=["GET"])
+def get_soles():
+    """Get a bunch of recent soles"""
+    r = sole.get(db, limit=10)
     return json.dumps(r)
 
 @app.route("/sole", methods=["POST"])
 def post_sole():
+    """Create a new sole.
+    Expects a course_id, location, date, and time
+    """
     zipcode = request.values.get('zip')
     loc = zipcodes.get(zipcode)
     # TODO modify sole data to match sample_responses.sole
@@ -44,17 +67,16 @@ def post_sole():
     sole.insert(db, s)
     return json.dumps({'status':'ok'})
 
-@app.route("/sole", methods=["GET"])
-def get_sole():
-    r = sole.get(db, limit=10)
-    return json.dumps(r)
+@app.route("/sole/<sole_id>", methods=["GET"])
+def get_sole_by_id(sole_id):
+    """Returns details of a specific sole"""
+    return []
 
-@app.route("/sole/<class_id>", methods=["GET"])
-def get_soles_for_class_id(class_id):
-    #r = sole.get_by_class_id(db, class_id)
-    # TODO real response
-    r = sample_responses.soles
-    return json.dumps(r)
+@app.route("/sole/<sole_id>", methods=["PUT"])
+def update_sole_by_id(sole_id):
+    """Update the details of a sole.
+    Usually used to add or remove a student"""
+    return []
 
 if __name__ == "__main__":
     app.run()

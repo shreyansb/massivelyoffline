@@ -1,7 +1,3 @@
-#
-#
-#
-
 def get(db, limit=20):
     soles = db.sole.sole.find().limit(limit)
     r = []
