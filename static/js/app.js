@@ -57,7 +57,7 @@ sole.cls.submit = function(event) {
 
     // on every submit, get new results
     var class_id = sole.cls.get_class_id();
-    $.get('/sole/' + class_id, function(data) {
+    $.get('/course/' + class_id + '/sole', function(data) {
         var results = $.parseJSON(data);
         if (results.length > 0) {
             sole.cls.show_results();
@@ -129,7 +129,7 @@ sole.cls.get_class_id = function() {
 // populate the search bar with these results
 // format them for later use
 sole.course.get_courses = function() {
-    $.get('/courses', function(data) {
+    $.get('/course', function(data) {
         sole.course.list = $.parseJSON(data);
         $('#cls_input').select2({
             width: "600px",
@@ -168,35 +168,6 @@ sole.create.hide = function() {
     $('#create_call_to_action').show();
     sole.cls.show_results();
 };
-
-/*
-sole.create.submit = function(event) {
-    var c = sole.course.dict[sole.create.id];
-    var name = c.name;
-    var d = $('#create_subject').val();
-    var zip = $('#create_zipcode').val();
-    var ppl = $('#create_ppl').val();
-    var o = {
-        'id': sole.create.id,
-        'description': d,
-        'zip': zip,
-        'ppl': ppl
-    };
-    console.log(o);
-    $.ajax({
-        type: 'POST',
-        url: '/sole',
-        data: o,
-        success: function(data) {
-            console.log("added sole");
-            console.log(data);
-            sole.create.add_marker(zip, name, d);
-        }
-    });
-    sole.create.hide();
-    $('#cls').hide();
-};
-*/
 
 // Start the app
 $(document).ready(sole.init);
