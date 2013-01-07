@@ -7,9 +7,12 @@ sole.cls = sole.cls || {};
 sole.cls.once = false;
 sole.create.visible = false;
 sole.course.list = [];
+sole.show_map = false;
 
 sole.init = function() {
-    sole.map.init();
+    if (sole.show_map) {
+        sole.map.init();
+    }
     sole.course.get_courses();
     sole.setup_events();
     $('#cls_input').focus();
@@ -49,8 +52,10 @@ sole.cls.submit = function(event) {
             sole.cls.show_results();
             for (var i=0; i<results.length; i++) {
                 var r = results[i];
-                sole.map.add_marker(r.loc[0], r.loc[1], "result", i, false);
                 sole.cls.add_result(r);
+                if (sole.show_map) {
+                    sole.map.add_marker(r.loc[0], r.loc[1], "result", i, false);
+                }
             }
         } else {
             sole.cls.no_results();
@@ -95,7 +100,7 @@ sole.cls.animate_up = function() {
     $('#sidebar').animate({ top: "10%" }, 200); 
     setTimeout(function() {
         $('#results').fadeIn(150);
-        $('#create').fadeIn(150);
+        $('#create_actions').fadeIn(150);
     }, 150);
 };
 
@@ -130,6 +135,7 @@ sole.course.format = function(c) {
 };
 
 sole.create.show = function() {
+    $('#create').show();
     $('#create_cancel').show();
     $('#create_submit').show();
     $('#create_start').hide();
@@ -138,6 +144,7 @@ sole.create.show = function() {
 };
 
 sole.create.hide = function() {
+    $('#create').hide();
     $('#create_cancel').hide();
     $('#create_submit').hide();
     $('#create_start').show();

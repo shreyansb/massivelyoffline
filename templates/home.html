@@ -16,16 +16,22 @@
             <div id="cls">
                 <h1>Learn better with others.</h1>
                 <h2>Study with people around you.</h2>
-                <form id="cls_form">
+                <form id="cls_form" class="gray_outline">
                     <input id="cls_input" type="text" 
                     placeholder="What class are you taking?"></input>
                 </form>
             </div>
-            <div id="results"></div>
-            <div id="create">
-                <button id="create_cancel" class="create_button">
+            <div id="results" class="gray_outline"></div>
+            <div id="create" class="gray_outline">
+                <form id="create_form">
+                    <input type="text" placeholder="time you're available"/>
+                    <input type="text" placeholder="your zipcode"/>
+                </form>
+            </div>
+            <div id="create_actions" class="gray_outline">
+                <span id="create_cancel">
                     cancel
-                </button>
+                </span>
                 <button id="create_submit" class="create_button">
                     submit
                 </button>
