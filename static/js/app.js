@@ -17,6 +17,17 @@ sole.init = function() {
     sole.setup_events();
     $('#cls_input').focus();
     $('#cls_input').on('change', sole.cls.submit);
+    sole.load_deferred_images();
+};
+
+sole.load_deferred_images = function() {
+    var imgs = $('img[data-src]');
+    $.each(imgs, function(i, v) {
+        var e = $(v);
+        if ((e.attr('data-src')).indexOf("{{{") != 0) {
+            e.attr('src', e.attr('data-src'));  
+        }
+    });
 };
 
 sole.setup_events = function() {
@@ -55,6 +66,7 @@ sole.cls.submit = function(event) {
                 results[i]['counter'] = i+1;
                 sole.cls.add_result(template, results[i]);
             }
+            sole.load_deferred_images();
         } else {
             sole.cls.no_results();
         }
