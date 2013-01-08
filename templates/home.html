@@ -5,30 +5,48 @@
         <link href="../static/css/external/mapbox.css" rel="stylesheet"/>
         <script type="text/javascript" src="../static/js/external/jquery-1.8.3.min.js"></script> 
         <script type="text/javascript" src="../static/js/external/jquery.hotkeys.js"></script> 
-        <script type="text/javascript" src="../static/js/external/select2.js"></script> 
         <script type="text/javascript" src="../static/js/external/mapbox.js"></script> 
+        <script type="text/javascript" src="../static/js/external/moment.min.js"></script> 
         <script type="text/javascript" src="../static/js/external/mustache.js"></script> 
+        <script type="text/javascript" src="../static/js/external/select2.min.js"></script> 
         <script type="text/javascript" src="../static/js/app.js"></script> 
         <script type="text/javascript" src="../static/js/map.js"></script> 
+        <script type="text/javascript" src="../static/js/data.js"></script> 
+        <script type="text/javascript" src="../static/js/loc.js"></script> 
     </head>
     <body>
         <div id="map"></div>
         <div id="sidebar">
-            <div id="cls">
+            <div id="course">
                 <h1>Learn better with others.</h1>
                 <h2>Real world study groups for online classes.</h2>
-                <form id="cls_form" class="gray_outline">
-                    <input id="cls_input" type="text" 
+                <form id="course_form" class="gray_outline">
+                    <input id="course_input" type="text" 
                     placeholder="What class are you taking?"></input>
                 </form>
             </div>
+
             <div id="results" class="gray_outline"></div>
+
             <div id="create" class="gray_outline">
                 <form id="create_form">
-                    <input type="text" placeholder="time you're available"/>
-                    <input type="text" placeholder="your zipcode"/>
+                    <div id="create_form_heading">Start a study session.
+                        <span id="create_form_message"></span>
+                    </div>
+
+                    <div class="create_form_row"> 
+                        <input id="create_day" type="hidden" />
+                        <input id="create_time" type="hidden" />
+                    </div>
+
+                    <div class="create_form_row">  
+                        Near <input id="create_enter_location" type="text"
+                        placeholder="postal code, country">    
+                        <button id="create_find_location">or find me</button>
+                    </div>
                 </form>
             </div>
+
             <div id="create_actions" class="gray_outline">
                 <span id="create_cancel">
                     cancel
@@ -44,13 +62,12 @@
                 </button>
             </div>
         </div>
+
         {% raw %}
             <template id="results_row">
                 <div class="sole_timing">
-                    {{#timing}}
-                        {{date}}<br/>
-                        {{time}}
-                    {{/timing}}
+                    {{day}}<br/>
+                    {{time}}
                 </div>
 
                 <div class="sole_people">
@@ -61,6 +78,7 @@
                 </div>
             </template>
         {% endraw %}
+
     </body>
 </html>
 

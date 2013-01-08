@@ -4,7 +4,7 @@ def get_courses(db):
     for o in c:
         o['id'] = str(o.pop('_id'))
         # TODO create this on write
-        o['text'] = ", ".join([o.get('name', ''), o.get('prof', ''), o.get('uni', '')])
+        o['text'] = ", ".join([o.get('name', ''), o.get('uni', ''), o.get('prof', '')])
         r.append(o)
     return r
 

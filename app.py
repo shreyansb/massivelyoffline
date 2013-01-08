@@ -1,8 +1,10 @@
-import logging
+import random
+import ujson as json
+
 import sole
 import course
-import sample_responses
-import ujson as json
+import sample_data
+
 from flask import Flask, render_template, request
 from data.US import zipcodes
 from pymongo import MongoClient
@@ -28,15 +30,23 @@ def get_courses():
     r = course.get_courses(db)
     return json.dumps(r)
 
+@app.route("/course/<course_id>/sole", methods=["GET"])
+def get_soles_for_course(course_id):
+    #r = sample_data.soles
+    r = sole.get_by_course_id(db, course_id)
+    nr = []
+    for i in r:
+        i['students'] = []
+        sids = i.get('student_ids', [i.get('user_id')])
+        for sid in sids:
+            i['students'].append(sample_data.users.get(sid))
+        nr.append(i)
+    app.logger.info(nr)
+    return json.dumps(nr)
+
 @app.route("/course/<course_id>", methods=["GET"])
 def get_course_by_id(course_id):
     r = course.get_course_by_id(course_id)
-    return json.dumps(r)
-
-@app.route("/course/<course_id>/sole", methods=["GET"])
-def get_soles_for_course():
-    # TODO real response
-    r = sample_responses.soles
     return json.dumps(r)
 
 ###
@@ -54,18 +64,20 @@ def post_sole():
     """Create a new sole.
     Expects a course_id, location, date, and time
     """
-    zipcode = request.values.get('zip')
-    loc = zipcodes.get(zipcode)
-    # TODO modify sole data to match sample_responses.sole
     s = {
-        'course': request.values.get('id'),
-        'zip': zipcode,
-        'desc': request.values.get('description'),
-        'ppl': request.values.get('ppl'),
-        'loc': loc,
+        'day': request.form.get('day'),
+        'time': request.form.get('time'),
+        'lon': request.form.get('lon'),
+        'lat': request.form.get('lat'),
+        'course_id': request.form.get('course_id'),
+        'user_id': random.choice(sample_data.users.keys())
     }
-    sole.insert(db, s)
-    return json.dumps({'status':'ok'})
+    for k, v in s.iteritems():
+        if not v:
+            return json.dumps({'error':'missing attribute'}), 400
+    
+    r = sole.create_new_sole(db, s)
+    return json.dumps({'id': str(r)})
 
 @app.route("/sole/<sole_id>", methods=["GET"])
 def get_sole_by_id(sole_id):
@@ -79,5 +91,4 @@ def update_sole_by_id(sole_id):
     return []
 
 if __name__ == "__main__":
-    app.run()
-    logging.info("app started")
+    app.run(debug=True)

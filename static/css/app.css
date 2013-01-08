@@ -44,6 +44,17 @@ form input:focus {
     outline: 0;
 }
 
+.gray_outline {
+    margin-top: 1em;
+    padding: 4px;
+    background: rgba(57, 60, 61, 0.8);
+    border: 1px solid rgba(0, 0, 0, 0.8);
+    border-radius: 3px;
+    -webkit-box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    line-height: 1.2;
+}
+
 #sidebar h1, #sidebar h2 {
     padding-left: 5px;
 }
@@ -62,27 +73,31 @@ form input:focus {
     top: 25%;
 }
 
-.gray_outline {
-    margin-top: 1em;
-    padding: 4px;
-    background: rgba(57, 60, 61, 0.8);
-    border: 1px solid rgba(0, 0, 0, 0.8);
-    border-radius: 3px;
-    -webkit-box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
-    line-height: 1.2;
-}
-
-#cls form input {
+#course form input {
     width: 100%;
 }
 
-#results {
-    display: none;
-}
+/*
+ * create a new sole
+ */
 
 #create {
     display: none;
+}
+
+.create_form_row {
+    margin-left: 5px;
+    margin-top: 5px;
+}
+
+.create_form_error {
+    box-shadow: 0px 0px 5px red;
+}
+
+#create_form_heading {
+    font-size: 24px;
+    color: white;
+    margin: 5px;
 }
 
 #create_actions {
@@ -120,6 +135,14 @@ form input:focus {
     background-color: lightgreen;
 }
 
+/*
+ * the results container
+ */
+
+#results {
+    display: none;
+}
+
 .result {
     background-color: white; 
     padding: 8px 12px;
@@ -135,6 +158,10 @@ form input:focus {
     border-radius: 0 0 3 3;
     border-bottom: 0px;
 }
+
+/*
+ * individual sole rows
+ */
 
 .sole_people {
     float: right;

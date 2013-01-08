@@ -6,13 +6,14 @@ def get(db, limit=20):
         r.append(s)
     return r
 
-def get_by_class_id(db, class_id):
-    soles = db.sole.sole.find({'course': class_id}).limit(10)
+def get_by_course_id(db, course_id):
+    soles = db.sole.sole.find({'course_id': course_id}).limit(10)
     r = []
     for s in soles:
         s['id'] = str(s.pop('_id'))
         r.append(s)
     return r
 
-def insert(db, doc):
+def create_new_sole(db, doc):
+    doc['student_ids'] = [doc.get('user_id')]
     return db.sole.sole.insert(doc)

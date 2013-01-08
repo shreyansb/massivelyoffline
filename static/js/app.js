@@ -2,9 +2,8 @@ var sole = sole || {};
 
 sole.course = sole.course || {};
 sole.create = sole.create || {};
-sole.cls = sole.cls || {};
 
-sole.cls.once = false;
+sole.course.once = false;
 sole.create.visible = false;
 sole.course.list = [];
 sole.show_map = false;
@@ -15,8 +14,8 @@ sole.init = function() {
     }
     sole.course.get_courses();
     sole.setup_events();
-    $('#cls_input').focus();
-    $('#cls_input').on('change', sole.cls.submit);
+    $('#course_input').on('change', sole.course.submit);
+    sole.create.setup_form();
     sole.load_deferred_images();
 };
 
@@ -33,49 +32,52 @@ sole.load_deferred_images = function() {
 sole.setup_events = function() {
     $('#create_start').on('click', sole.create.show);
     $('#create_cancel').on('click', sole.create.hide);
-    $('#create_form').submit(function(event) {
+    $('#create_submit').submit(function(event) {
         sole.create.submit(event);
         return false;
     });
+    $('#create_submit').on('click', sole.create.submit);
 
     $(document).bind('keydown', 'esc', function(event) {
         if (sole.create.visible === true) {
             sole.create.hide();
         }
     });
+
+    $('#create_find_location').on('click', sole.loc.request);
 };
 
-sole.cls.submit = function(event) {
+sole.course.submit = function(event) {
     sole.map.reset_markers();
-    sole.cls.reset_results();
+    sole.create.hide();
+    sole.course.reset_results();
 
     // if this is the first submit, we move the elements around
-    if (sole.cls.once === false) {
-        sole.cls.animate_up();
-        sole.cls.once = true;
+    if (sole.course.once === false) {
+        sole.course.animate_up();
+        sole.course.once = true;
     }
 
     // on every submit, get new results
-    var class_id = sole.cls.get_class_id();
-    $.get('/course/' + class_id + '/sole', function(data) {
+    $.get('/course/' + sole.course.get_id() + '/sole', function(data) {
         var results = $.parseJSON(data);
         if (results.length > 0) {
-            sole.cls.show_results();
+            sole.course.show_results();
             var template = $('template#results_row').html();
             for (var i=0; i<results.length; i++) {
                 results[i]['counter'] = i+1;
-                sole.cls.add_result(template, results[i]);
+                sole.course.add_result(template, results[i]);
             }
             sole.load_deferred_images();
         } else {
-            sole.cls.no_results();
+            sole.course.no_results();
         }
     });
 
     return false;
 };
 
-sole.cls.no_results = function() {
+sole.course.no_results = function() {
     $('<div/>', {
         "class": "result",
         text: "no results",
@@ -83,19 +85,19 @@ sole.cls.no_results = function() {
     }).appendTo('#results').fadeIn(150);
 };
 
-sole.cls.reset_results = function() {
+sole.course.reset_results = function() {
     $('#results').find('div').remove();
 };
 
-sole.cls.hide_results = function() {
+sole.course.hide_results = function() {
     $('#results').hide();
 };
 
-sole.cls.show_results = function() {
+sole.course.show_results = function() {
     $('#results').show();
 };
 
-sole.cls.add_result = function(t, r) {
+sole.course.add_result = function(t, r) {
     // render results row from template
     var output = Mustache.render(t, r);
     $('<div/>', {
@@ -111,9 +113,9 @@ sole.cls.add_result = function(t, r) {
     }
 };
 
-sole.cls.animate_up = function() {
-    $('#cls').find('h1').fadeOut(150);
-    $('#cls').find('h2').fadeOut(150);
+sole.course.animate_up = function() {
+    $('#course').find('h1').fadeOut(150);
+    $('#course').find('h2').fadeOut(150);
     $('#sidebar').animate({ top: "10%" }, 200); 
     setTimeout(function() {
         $('#results').fadeIn(150);
@@ -121,8 +123,8 @@ sole.cls.animate_up = function() {
     }, 150);
 };
 
-sole.cls.get_class_id = function() {
-    return $('#cls_input').val();
+sole.course.get_id = function() {
+    return $('#course_input').val();
 }
 
 // get a list of courses from the server
@@ -131,11 +133,12 @@ sole.cls.get_class_id = function() {
 sole.course.get_courses = function() {
     $.get('/course', function(data) {
         sole.course.list = $.parseJSON(data);
-        $('#cls_input').select2({
+        $('#course_input').select2({
             width: "600px",
             placeholder: "What class are you taking?",
             data: sole.course.list
         });
+        $('#course_input').select2("focus");
         sole.course.dict = sole.course.format(sole.course.list);
     });
 };
@@ -151,13 +154,101 @@ sole.course.format = function(c) {
     return dict;
 };
 
+sole.create.update_with_lat_lon = function(lat, lon) {
+    $('#create_find_location').hide();
+    $('#create_enter_location').val(lat + ", " + lon);
+};
+
+sole.create.setup_form = function() {
+    $('#create_day').select2({
+        width: '250px',
+        allowClear: true,
+        placeholder: "What day are you available?",
+        data: sole.create.days(),
+        initSelection: function() {}
+    });
+    $('#create_time').select2({
+        width: '150px',
+        allowClear: true,
+        placeholder: "At what time?",
+        data: sole.data.hours,
+        initSelection: function() {}
+    });
+};
+
+// validate inputs and submit form to create a new sole
+sole.create.submit = function(e) {
+    if (!sole.create.validate()) {
+        console.log("validation failed");
+        return false;
+    }
+
+    var params = {
+        'day': $('#create_day').val(),
+        'time':  $('#create_time').val(),
+        'lat': sole.loc.current[0],
+        'lon': sole.loc.current[1],
+        'course_id': sole.course.get_id()
+    }
+    console.log(params);
+
+    $.ajax({
+        url: '/sole',
+        type: 'POST',
+        data: params,
+        success: sole.create.success,
+        error: sole.create.error
+    });
+};
+
+sole.create.success = function(e) {
+    $('#create_form_message').text("Done!");
+};
+
+sole.create.error = function(e) {
+    $('#create_form_message').text("Sorry, there was error.");
+};
+
+sole.create.validate = function(e) {
+    var create_error_class = "create_form_error";
+    var error = false;
+
+    // get day
+    if ($('#create_day').val() === "") {
+        $('#s2id_create_day').addClass(create_error_class);
+        error = true;
+    }
+
+    // get time
+    if ($('#create_time').val() === "") {
+        $('#s2id_create_time').addClass(create_error_class);
+        error = true;
+    }
+
+    var l = sole.loc.current;
+    // get location
+    if (typeof(l) === "undefined") {
+        var success = sole.loc.find_entered_location();
+        if (!success) {
+            $('#create_enter_location').addClass(create_error_class);
+            error = true;
+        }
+    }
+    if (error) {
+        $('#create_form_message').text('Oops, there was an error');
+        return false;
+    }
+    return true;
+}
+
 sole.create.show = function() {
     $('#create').show();
     $('#create_cancel').show();
     $('#create_submit').show();
     $('#create_start').hide();
     $('#create_call_to_action').hide();
-    sole.cls.hide_results();
+    sole.create.visible = true;
+    sole.course.hide_results();
 };
 
 sole.create.hide = function() {
@@ -166,7 +257,24 @@ sole.create.hide = function() {
     $('#create_submit').hide();
     $('#create_start').show();
     $('#create_call_to_action').show();
-    sole.cls.show_results();
+    $('#create_form').each(function() { this.reset();} );
+    sole.create.visible = false;
+    $('#create_day').select2('val', '');
+    $('#create_time').select2('val', '');
+    $('#create_enter_location').val('');
+    $('#create_find_location').show();
+    sole.course.show_results();
+};
+
+// return a list of the days of the coming 2 weeks,
+// to be used by the create form dropdown
+sole.create.days = function() {
+    var days = [];
+    for (var i=0; i<14; i++) {
+        var m = moment().add('days', i);
+        days.push({'id':m.format(), 'text': m.format('dddd, Do MMMM')})
+    }
+    return days
 };
 
 // Start the app
