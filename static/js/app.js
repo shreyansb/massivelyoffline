@@ -91,7 +91,7 @@ sole.course.add_result = function(t, r) {
         html: output,
         display: "none"
     }).appendTo('#results').fadeIn(150);
-    el.on('click', sole.course.confirm_join_sole);
+    el.find('.join_sole').on('click', sole.course.confirm_join_sole);
 
     // add marker to map
     if (sole.show_map) {
@@ -161,9 +161,9 @@ sole.course.join_sole = function(id) {
 };
 
 sole.course.confirm_join_sole = function(e) {
-    e.preventDefault();
+    console.log("got a click");
     // add overlay to the result
-    var id = $(this).attr('id');
+    var id = $(this).parent().parent().attr('id');
 
     var d = {'id': id};
     var t = $('template#result_overlay').html();
@@ -174,21 +174,21 @@ sole.course.confirm_join_sole = function(e) {
         html: output
     }).appendTo('#'+id);
 
+
     var yes_id = "#yes_" + id;
     var no_id = "#no_" + id;
 
     $(yes_id).on('click', function(e) {
-        e.preventDefault();
         $(this).parent().parent().remove();
         sole.course.join_sole(id);
         return false;
     });
 
     $(no_id).on('click', function(e) {
-        e.preventDefault();
         $(this).parent().parent().remove();
         return false;
     });
+    return false;
 };
 
 // Start the app

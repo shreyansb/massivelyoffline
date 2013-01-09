@@ -14,8 +14,32 @@
         <script type="text/javascript" src="../static/js/data.js"></script> 
         <script type="text/javascript" src="../static/js/create.js"></script> 
         <script type="text/javascript" src="../static/js/loc.js"></script> 
+        <script type="text/javascript" src="../static/js/fb.js"></script> 
     </head>
     <body>
+        <div id="fb-root"></div>
+        <script>
+          // Additional JS functions here
+          window.fbAsyncInit = function() {
+            FB.init({
+              appId      : '128848390614241', // App ID
+              channelUrl : 'http://127.0.0.1:5000/static/channel.html', // Channel File
+              status     : true, // check login status
+              cookie     : true, // enable cookies to allow the server to access the session
+              xfbml      : true  // parse XFBML
+            });
+          };
+
+          // Load the SDK Asynchronously
+          (function(d){
+             var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
+             if (d.getElementById(id)) {return;}
+             js = d.createElement('script'); js.id = id; js.async = true;
+             js.src = "//connect.facebook.net/en_US/all.js";
+             ref.parentNode.insertBefore(js, ref);
+           }(document));
+        </script>
+
         <div id="map"></div>
         <div id="sidebar">
             <div id="course">
@@ -52,14 +76,15 @@
                 <span id="create_cancel">
                     cancel
                 </span>
-                <button id="create_submit" class="create_button">
+                <button id="create_submit" class="button-link button_yes">
                     submit
                 </button>
-                <div id="create_call_to_action">
+
+                <span id="create_call_to_action">
                     Don't see one that works?
-                </div>
-                <button id="create_start" class="create_button">
-                    create one
+                </span>
+                <button id="create_start" class="button-link button_yes">
+                    start one
                 </button>
             </div>
         </div>
@@ -75,14 +100,15 @@
                     {{#students}}
                         <img data-src="{{{img}}}">
                     {{/students}}
-                    <div class="join_sole" id="join_{{id}}"></div>
+                    <!--div class="join_sole" id="join_{{id}}"><p>+</p></div-->
+                    <button class="button-link button_yes button_square join_sole" id="join_{{id}}">+</button>
                 </div>
             </template>
             <template id="result_overlay">
                 <div class="result_overlay_inside">
-                    are you sure?
-                    <a class="button-link button_no" id="no_{{id}}">no</a>
+                    Join this study group?
                     <a class="button-link button_yes" id="yes_{{id}}">yes</a>
+                    <a class="button-link button_no" id="no_{{id}}">no</a>
                 </div>
             </template>
         {% endraw %}
