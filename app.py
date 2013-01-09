@@ -12,6 +12,9 @@ from pymongo import MongoClient
 app = Flask(__name__)
 db = MongoClient()
 
+# TODO users and authentication
+# TODO validate inputs
+
 @app.route("/", methods=["GET"])
 def get_home():
     return render_template("home.html")
@@ -84,11 +87,13 @@ def get_sole_by_id(sole_id):
     """Returns details of a specific sole"""
     return []
 
-@app.route("/sole/<sole_id>", methods=["PUT"])
-def update_sole_by_id(sole_id):
-    """Update the details of a sole.
-    Usually used to add or remove a student"""
-    return []
+@app.route("/sole/<sole_id>/join", methods=["PUT"])
+def join_sole_by_id(sole_id):
+    app.logger.info(request.form)
+    # TODO validate inputs
+    user_id = random.choice(sample_data.users.keys())
+    sole.join_sole_by_id(db, sole_id, user_id)
+    return json.dumps({'user_id': user_id})
 
 if __name__ == "__main__":
     app.run(debug=True)
