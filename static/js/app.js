@@ -63,8 +63,8 @@ sole.course.submit = function(event) {
 
 sole.course.no_results = function() {
     $('<div/>', {
-        "class": "result",
-        text: "no results",
+        "class": "result no_result",
+        html: "<p>Nothing yet.</p>",
         display: "none"
     }).appendTo('#results').fadeIn(150);
 };

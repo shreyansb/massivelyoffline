@@ -64,7 +64,8 @@ sole.create.submit = function(e) {
         console.log("invalid lat lon");
         return false;
     }
-    console.log(loc);
+
+    // check whether the user is logged in
 
     var params = {
         'day': $('#create_day').val(),
@@ -73,7 +74,6 @@ sole.create.submit = function(e) {
         'lon': loc[1],
         'course_id': sole.course.get_id()
     }
-    console.log(params);
 
     $.ajax({
         url: '/sole',
@@ -142,10 +142,14 @@ sole.create.hide = function() {
     $('#create_call_to_action').show();
     $('#create_form').each(function() { this.reset();} );
     sole.create.visible = false;
+
+    // reset the form
     $('#create_day').select2('val', '');
     $('#create_time').select2('val', '');
     $('#create_enter_location').val('');
     $('#create_find_location').show();
+
+    // show the results again
     sole.course.show_results();
 };
 

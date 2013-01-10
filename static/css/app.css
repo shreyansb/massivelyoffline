@@ -151,6 +151,10 @@ form input:focus {
     min-height: 50px;
 }
 
+.no_result {
+    background-image: url('../images/gray_jean.png');
+}
+
 .result:hover div.join_sole{
     background-color: lightgreen;
 }
@@ -162,6 +166,10 @@ form input:focus {
 .result:last-child, #create_form:last-child {
     border-radius: 0 0 3 3;
     border-bottom: 0px;
+}
+
+.result:only-child {
+    border-radius: 3px;
 }
 
 /*
