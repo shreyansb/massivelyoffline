@@ -3,6 +3,7 @@ import ujson as json
 
 import sole
 import course
+import geo
 import sample_data
 
 from flask import Flask, render_template, request
@@ -17,7 +18,12 @@ db = MongoClient()
 
 @app.route("/", methods=["GET"])
 def get_home():
-    return render_template("home.html")
+    loc = geo.loc_from_ip(request.remote_addr)
+    app.logger.info(request.remote_addr)
+    app.logger.info(loc)
+    app.logger.info(json.dumps(loc))
+
+    return render_template("home.html", loc=json.dumps(loc))
 
 @app.route("/zip/<zipcode>", methods=["GET"])
 def get_zip(zipcode):
@@ -58,7 +64,9 @@ def get_course_by_id(course_id):
 
 @app.route("/sole", methods=["GET"])
 def get_soles():
-    """Get a bunch of recent soles"""
+    """Get a bunch of recent soles
+    filter by location
+    """
     r = sole.get(db, limit=10)
     return json.dumps(r)
 

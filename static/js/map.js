@@ -1,14 +1,15 @@
 sole.map = sole.map || {};
-sole.map.default_lat = 40.73413893902268;
-sole.map.default_lon = -73.92942245483398;
+sole.map.default_lat = window.sole_ip_loc.latitude;
+sole.map.default_lon = window.sole_ip_loc.longitude;
 sole.map.base_map_id = 'shreyansb.map-d6wn3q7b';
 sole.map.streets_map_id = 'shreyansb.map-1btgpwx1';
 
 sole.map.init = function() {
     mapbox.load(sole.map.base_map_id, function(o) {
         var map = mapbox.map('map');
-        map.centerzoom({lat: sole.map.default_lat, lon: sole.map.default_lon}, 13);
+        map.centerzoom({lat: sole.map.default_lat, lon: sole.map.default_lon}, 12);
         map.addLayer(o.layer);
+        map.panBy(-1*(window.innerWidth/4), 0)
         sole.map.map = map;
         setTimeout(sole.map.load_recent, 1000);
     });
@@ -19,7 +20,7 @@ sole.map.load_recent = function() {
         var soles = $.parseJSON(data);
         for (var i=0; i<soles.length; i++) {
             var s = soles[i];
-            sole.map.add_marker(s.loc[0], s.loc[1], s.desc, s.course, false);
+            sole.map.add_marker(s.lat, s.lon, "", "", false);
         }
     });
 };
@@ -66,6 +67,7 @@ sole.map.add_marker = function(lat, lon, title, description, center) {
             'description': description
         }
     });
+
     if (center) {
         sole.map.map.center({ lat: lat, lon: lon });
     }

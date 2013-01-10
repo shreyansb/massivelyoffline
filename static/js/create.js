@@ -41,6 +41,17 @@ sole.create.setup_form = function() {
     });
 };
 
+sole.create.get_lat_lon_from_field = function() {
+    var e_loc = $('#create_enter_location').val();
+    if (e_loc === "") {
+        return undefined;
+    }
+    var l_loc = e_loc.split(",");
+    var lat = l_loc[0].replace(" ", ""), lon = l_loc[1].replace(" ", "");
+    return [lat, lon];
+
+};
+
 // validate inputs and submit form to create a new sole
 sole.create.submit = function(e) {
     if (!sole.create.validate()) {
@@ -48,11 +59,18 @@ sole.create.submit = function(e) {
         return false;
     }
 
+    var loc = sole.create.get_lat_lon_from_field();
+    if (typeof(loc) === "undefined") {
+        console.log("invalid lat lon");
+        return false;
+    }
+    console.log(loc);
+
     var params = {
         'day': $('#create_day').val(),
         'time':  $('#create_time').val(),
-        'lat': sole.loc.current[0],
-        'lon': sole.loc.current[1],
+        'lat': loc[0],
+        'lon': loc[1],
         'course_id': sole.course.get_id()
     }
     console.log(params);

@@ -4,7 +4,7 @@ sole.course = sole.course || {};
 
 sole.course.once = false;
 sole.course.list = [];
-sole.show_map = false;
+sole.show_map = true;
 
 sole.init = function() {
     if (sole.show_map) {
@@ -95,7 +95,7 @@ sole.course.add_result = function(t, r) {
 
     // add marker to map
     if (sole.show_map) {
-        sole.map.add_marker(r.loc.lat, r.loc.lon, "result", i, false);
+        sole.map.add_marker(r.lat, r.lon, "", "", false);
     }
 };
 
