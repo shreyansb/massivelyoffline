@@ -4,7 +4,7 @@ sole.course = sole.course || {};
 
 sole.course.once = false;
 sole.course.list = [];
-sole.show_map = true;
+sole.show_map = false;
 
 sole.init = function() {
     if (sole.show_map) {
@@ -173,7 +173,6 @@ sole.course.confirm_join_sole = function(e) {
         "class": "result_overlay",
         html: output
     }).appendTo('#'+id);
-
 
     var yes_id = "#yes_" + id;
     var no_id = "#no_" + id;

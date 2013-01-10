@@ -175,7 +175,7 @@ form input:focus {
 .join_sole {
     vertical-align: top;
     display: inline-block;
-    min-height: 46px;
+    height: 44px;
     min-width: 46px;
     border: 2px dashed green;
     background-color: white;
@@ -184,6 +184,11 @@ form input:focus {
     padding: 14px 17px !important;
     vertical-align: top;
     */
+}
+
+.join_sole p {
+    margin-top: 10px;
+    margin-bottom: 10px
 }
 
 .sole_timing {
