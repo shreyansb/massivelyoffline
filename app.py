@@ -1,6 +1,7 @@
 import random
 import ujson as json
 
+import facebook
 import sole
 import course
 import geo
@@ -19,10 +20,8 @@ db = MongoClient()
 @app.route("/", methods=["GET"])
 def get_home():
     loc = geo.loc_from_ip(request.remote_addr)
-    app.logger.info(request.remote_addr)
-    app.logger.info(loc)
-    app.logger.info(json.dumps(loc))
-
+    app.logger.info(request.cookies)
+    app.logger.info(facebook.get_facebook_data(request))
     return render_template("home.html", loc=json.dumps(loc))
 
 @app.route("/zip/<zipcode>", methods=["GET"])
@@ -97,11 +96,10 @@ def get_sole_by_id(sole_id):
 
 @app.route("/sole/<sole_id>/join", methods=["PUT"])
 def join_sole_by_id(sole_id):
-    app.logger.info(request.form)
     # TODO validate inputs
     user_id = random.choice(sample_data.users.keys())
     sole.join_sole_by_id(db, sole_id, user_id)
-    return json.dumps({'user_id': user_id})
+    return json.dumps({'user_id': user_id, 'id': sole_id})
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -141,11 +141,24 @@ sole.course.format = function(c) {
 };
 
 sole.course.join_success = function(data) {
+    console.log("join success");
+    console.log(data);
+    var j = $.parseJSON(data);
+    var id = j.id;
+    var result = $('#'+id);
 
+    // add the student's picture to the row
+    var el = $('<img/>', {
+        'src': sole.user.user.img
+    });
+    result.find('.sole_people').append(el);
+
+    // remove join button
+    result.find('.join_sole').remove();
 };
 
 sole.course.join_error = function(data) {
-
+    console.log("join error");
 };
 
 sole.course.join_sole = function(id) {
