@@ -57,11 +57,11 @@
             <div id="results" class="gray_outline"></div>
 
             <div id="create" class="gray_outline">
-                <form id="create_form">
-                    <div id="create_form_heading">Start a study session.
-                        <span id="create_form_message"></span>
-                    </div>
+                <div id="create_form_heading">Start a study session.
+                    <span id="create_form_message"></span>
+                </div>
 
+                <form id="create_form">
                     <div class="create_form_row"> 
                         <input id="create_day" type="hidden" />
                         <input id="create_time" type="hidden" />
@@ -69,8 +69,10 @@
 
                     <div class="create_form_row">  
                         Near <input id="create_enter_location" type="text"
-                        placeholder="postal code, country">    
-                        <button id="create_find_location">or find me</button>
+                        placeholder="latitude, longitude">    
+                        <a id="create_find_location" class="button-link button_info">
+                            or find me
+                        </a>
                     </div>
                 </form>
             </div>
@@ -104,7 +106,6 @@
                         <img data-src="{{{img}}}">
                     {{/students}}
                     <div class="join_sole" id="join_{{id}}"><p>+</p></div>
-                    <!--button class="button-link button_yes button_square join_sole" id="join_{{id}}">+</button-->
                 </div>
             </template>
             <template id="result_overlay">

@@ -19,9 +19,17 @@ sole.create.events = function() {
     $('#create_find_location').on('click', sole.loc.request);
 };
 
-sole.create.update_with_lat_lon = function(lat, lon) {
+sole.create.update_ui_with_loc = function(lat, lon) {
     $('#create_find_location').hide();
-    $('#create_enter_location').val(lat + ", " + lon);
+    $('#create_enter_location').val(lat.toFixed(4) + ", " + lon.toFixed(4));
+    sole.loc.data_for_lat_lon(lat, lon, sole.create.show_geocoded_name);
+};
+
+sole.create.show_geocoded_name = function() {
+    var el = $('<span/>', {
+        'text': ((sole.loc.geocoded)[2]).formatted_address
+    });
+    $('#create_enter_location').after(el);
 };
 
 sole.create.setup_form = function() {
