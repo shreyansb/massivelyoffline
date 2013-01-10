@@ -1,6 +1,7 @@
 import random
 import ujson as json
 
+import auth
 import geo
 import sample_data
 from models import Course
@@ -59,37 +60,47 @@ def get_soles():
     r = Sole.get(db, limit=10)
     return json.dumps(r)
 
+@app.route("/sole/<sole_id>", methods=["GET"])
+def get_sole_by_id(sole_id):
+    """Returns details of a specific sole"""
+    return []
+
 @app.route("/sole", methods=["POST"])
 def post_sole():
     """Create a new sole.
     Expects a course_id, location, date, and time
     """
+    user = auth.get_user(db, request)
+    if not user:
+        return error("User not found")
+    user_id = str(user.get('_id'))
+
+    # TODO validation
     s = {
         'day': request.form.get('day'),
         'time': request.form.get('time'),
         'lon': request.form.get('lon'),
         'lat': request.form.get('lat'),
         'course_id': request.form.get('course_id'),
-        'user_id': random.choice(sample_data.users.keys())
+        'user_id': user_id
     }
     for k, v in s.iteritems():
         if not v:
-            return json.dumps({'error':'missing attribute'}), 400
+            return error("missing attribute")
     
     r = Sole.create_new_sole(db, s)
     return json.dumps({'id': str(r)})
 
-@app.route("/sole/<sole_id>", methods=["GET"])
-def get_sole_by_id(sole_id):
-    """Returns details of a specific sole"""
-    return []
-
 @app.route("/sole/<sole_id>/join", methods=["PUT"])
 def join_sole_by_id(sole_id):
-    # TODO validate inputs
+    # TODO authenticate
+    # TODO validation
     user_id = random.choice(sample_data.users.keys())
     Sole.join_sole_by_id(db, sole_id, user_id)
     return json.dumps({'user_id': user_id, 'id': sole_id})
+
+def error(msg):
+    return json.dumps({'error': msg}), 400
 
 if __name__ == "__main__":
     app.run(debug=True)

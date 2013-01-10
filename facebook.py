@@ -3,7 +3,7 @@ import settings
 import signed_request
 import urlparse
 
-def get_facebook_data_from_cookie(request):
+def get_data_from_cookie(request):
     """looks for a facebook cookie containing a signed_request,
     validates the signed_request, and returns the contents.
     Returns None in case of error
