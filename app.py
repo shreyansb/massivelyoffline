@@ -1,11 +1,13 @@
 import random
 import ujson as json
+import pprint
 
 import auth
 import geo
 import sample_data
 from models import Course
 from models import Sole
+from models import User
 
 from flask import Flask, render_template, request
 from pymongo import MongoClient
@@ -36,11 +38,12 @@ def get_soles_for_course(course_id):
     nr = []
     for i in r:
         i['students'] = []
-        sids = i.get('student_ids', [i.get('user_id')])
-        for sid in sids:
-            # TODO real users
-            i['students'].append(sample_data.users.get(sid))
+        user_ids = i.get('student_ids', [i.get('user_id')])
+        for user_id in user_ids:
+            user = User.find_by_id(db, user_id)
+            i['students'].append(user)
         nr.append(i)
+    app.logger.info(pprint.pprint(nr))
     return json.dumps(nr)
 
 @app.route("/course/<course_id>", methods=["GET"])
@@ -71,9 +74,12 @@ def post_sole():
     Expects a course_id, location, date, and time
     """
     user = auth.get_user(db, request)
+    app.logger.info(pprint.pprint(user))
+
     if not user:
         return error("User not found")
-    user_id = str(user.get('_id'))
+
+    user_id = str(user.get('id'))
 
     # TODO validation
     s = {
@@ -89,6 +95,7 @@ def post_sole():
             return error("missing attribute")
     
     r = Sole.create_new_sole(db, s)
+    app.logger.info(r)
     return json.dumps({'id': str(r)})
 
 @app.route("/sole/<sole_id>/join", methods=["PUT"])

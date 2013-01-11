@@ -62,25 +62,30 @@ sole.create.get_lat_lon_from_field = function() {
 
 // validate inputs and submit form to create a new sole
 sole.create.submit = function(e) {
+    console.log("sole.create.submit");
     if (!sole.create.validate()) {
         console.log("validation failed");
         return false;
     }
 
-    var loc = sole.create.get_lat_lon_from_field();
-    if (typeof(loc) === "undefined") {
-        console.log("invalid lat lon");
-        return false;
-    }
-
     // check whether the user is logged in
+    sole.fb.login_status(sole.create.submit_logged_in, sole.create.login_error);
+};
+
+sole.create.login_error = function() {
+    console.log("NOT LOGGED IN");
+};
+
+sole.create.submit_logged_in = function() {
+    var loc = sole.create.get_lat_lon_from_field();
 
     var params = {
         'day': $('#create_day').val(),
         'time':  $('#create_time').val(),
         'lat': loc[0],
         'lon': loc[1],
-        'course_id': sole.course.get_id()
+        'course_id': sole.course.get_id(),
+        'facebook_access_token': sole.fb.resp.authResponse.accessToken
     }
 
     $.ajax({
@@ -124,7 +129,15 @@ sole.create.validate = function(e) {
             $('#create_enter_location').addClass(create_error_class);
             error = true;
         }
+
+        var loc = sole.create.get_lat_lon_from_field();
+        if (typeof(loc) === "undefined") {
+            console.log("invalid lat lon");
+            $('#create_enter_location').addClass(create_error_class);
+            error = true;
+        }
     }
+
     if (error) {
         $('#create_form_message').text('Oops, there was an error');
         return false;
