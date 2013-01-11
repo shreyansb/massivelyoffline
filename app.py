@@ -113,6 +113,22 @@ def join_sole_by_id(sole_id):
         'facebook_id': user.get('facebook_id')
     })
 
+@app.route("/sole/<sole_id>/leave", methods=["PUT"])
+def leave_sole_by_id(sole_id):
+    user = auth.get_user(db, request)
+    if not user:
+        return error("User not found")
+    user_id = str(user.get('id'))
+
+    resp = Sole.leave_sole_by_id(db, sole_id, user_id)
+    if not resp:
+        return error("Couldn't leave sole. Check sole id")
+
+    return json.dumps({
+        'user_id': user_id, 
+        'id': sole_id,
+    })
+
 def error(msg):
     return json.dumps({'error': msg}), 400
 
