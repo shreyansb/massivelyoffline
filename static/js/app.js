@@ -21,7 +21,7 @@ sole.load_deferred_images = function() {
     var imgs = $('img[data-src]');
     $.each(imgs, function(i, v) {
         var e = $(v);
-        if ((e.attr('data-src')).indexOf("{{{") != 0) {
+        if ((e.attr('data-src')).indexOf("{{") == -1) {
             e.attr('src', e.attr('data-src'));  
         }
     });

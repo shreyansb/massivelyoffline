@@ -35,3 +35,9 @@ sole.fb.get_user = function() {
         sole.fb.user = resp;
     });
 }
+
+sole.fb.image_url_from_id = function(facebook_id) {
+    var url = "http://graph.facebook.com/" + facebook_id + "/picture?width=50&height=50";
+    console.log(url);
+    return url;
+};
