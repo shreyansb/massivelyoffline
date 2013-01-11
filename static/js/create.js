@@ -73,7 +73,7 @@ sole.create.submit = function(e) {
 };
 
 sole.create.login_error = function() {
-    console.log("NOT LOGGED IN");
+    console.log("CREATE: NOT LOGGED IN");
 };
 
 sole.create.submit_logged_in = function() {

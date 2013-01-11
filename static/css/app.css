@@ -168,7 +168,7 @@ form input:focus {
     background-image: url('../images/gray_jean.png');
 }
 
-.result:hover div.join_sole{
+div.join_sole:hover {
     background-color: lightgreen;
 }
 
@@ -208,7 +208,7 @@ form input:focus {
 }
 
 .join_sole p {
-    margin-top: 10px;
+    margin-top: 12px;
     margin-bottom: 10px
 }
 

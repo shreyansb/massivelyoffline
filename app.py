@@ -1,10 +1,8 @@
-import random
 import ujson as json
 import pprint
 
 import auth
 import geo
-import sample_data
 from models import Course
 from models import Sole
 from models import User
@@ -100,11 +98,20 @@ def post_sole():
 
 @app.route("/sole/<sole_id>/join", methods=["PUT"])
 def join_sole_by_id(sole_id):
-    # TODO authenticate
-    # TODO validation
-    user_id = random.choice(sample_data.users.keys())
-    Sole.join_sole_by_id(db, sole_id, user_id)
-    return json.dumps({'user_id': user_id, 'id': sole_id})
+    user = auth.get_user(db, request)
+    if not user:
+        return error("User not found")
+    user_id = str(user.get('id'))
+
+    resp = Sole.join_sole_by_id(db, sole_id, user_id)
+    if not resp:
+        return error("Couldn't join sole. Check sole id")
+
+    return json.dumps({
+        'user_id': user_id, 
+        'id': sole_id,
+        'facebook_id': user.get('facebook_id')
+    })
 
 def error(msg):
     return json.dumps({'error': msg}), 400

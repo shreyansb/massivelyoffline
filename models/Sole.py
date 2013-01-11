@@ -24,4 +24,7 @@ def create_new_sole(db, doc):
 def join_sole_by_id(db, sole_id, user_id):
     spec = { '_id': ObjectId(sole_id) }
     doc = {'$addToSet': {'student_ids': user_id}}
-    return db.sole.sole.update(spec, doc, upsert=True, safe=True)
+    resp = db.sole.sole.update(spec, doc, upsert=False, safe=True)
+    if resp.get(''):
+        return False
+    return True

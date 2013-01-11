@@ -146,10 +146,11 @@ sole.course.join_success = function(data) {
     var j = $.parseJSON(data);
     var id = j.id;
     var result = $('#'+id);
+    var facebook_id = j.facebook_id;
 
     // add the student's picture to the row
     var el = $('<img/>', {
-        'src': sole.user.user.img
+        'src': sole.fb.image_url_from_id(facebook_id)
     });
     result.find('.sole_people').append(el);
 
@@ -158,11 +159,16 @@ sole.course.join_success = function(data) {
 };
 
 sole.course.join_error = function(data) {
-    console.log("join error");
+    console.log("course: join_error");
+};
+
+sole.course.login_error = function(id) {
+    console.log("course: login_error");
 };
 
 sole.course.join_sole = function(id) {
-    console.log("joining sole");
+    console.log("course: join_sole");
+    console.log(id);
     var params = {'id': id};
     $.ajax({
         'url': '/sole/'+id+'/join',
@@ -171,10 +177,12 @@ sole.course.join_sole = function(id) {
         'success': sole.course.join_success,
         'error': sole.course.join_error
     });
+    $('#'+id).find('div.result_overlay').remove();
 };
 
 sole.course.confirm_join_sole = function(e) {
-    console.log("got a click");
+    console.log("course: confirm_join_sole");
+
     // add overlay to the result
     var id = $(this).parent().parent().attr('id');
 
@@ -191,12 +199,13 @@ sole.course.confirm_join_sole = function(e) {
     var no_id = "#no_" + id;
 
     $(yes_id).on('click', function(e) {
-        $(this).parent().parent().remove();
-        sole.course.join_sole(id);
+        console.log("course: confirm_join_sole: yes");
+        sole.fb.login_status(sole.course.join_sole, sole.course.login_error, id);
         return false;
     });
 
     $(no_id).on('click', function(e) {
+        console.log("course: confirm_join_sole: no");
         $(this).parent().parent().remove();
         return false;
     });
