@@ -84,7 +84,7 @@ sole.create.submit_logged_in = function() {
         'time':  $('#create_time').val(),
         'lat': loc[0],
         'lon': loc[1],
-        'course_id': sole.course.get_id(),
+        'course_id': sole.sole.get_id(),
         'facebook_access_token': sole.fb.resp.authResponse.accessToken
     }
 
@@ -152,7 +152,7 @@ sole.create.show = function() {
     $('#create_start').hide();
     $('#create_call_to_action').hide();
     sole.create.visible = true;
-    sole.course.hide_results();
+    sole.sole.hide_results();
 };
 
 sole.create.hide = function() {
@@ -171,7 +171,7 @@ sole.create.hide = function() {
     $('#create_find_location').show();
 
     // show the results again
-    sole.course.show_results();
+    sole.sole.show_results();
 };
 
 // return a list of the days of the coming 2 weeks,

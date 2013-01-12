@@ -13,13 +13,13 @@ def get_data_from_cookie(request):
     c_name = "fbsr_%s" % settings.FACEBOOK_APP_ID
     c = request.cookies.get(c_name)
     if not c:
-        return None
+        return {}, "no facebook cookie in request"
 
     d, err = validate_signed_request(c)
     if err:
-        return None
+        return {}, "invalid facebook signed_request"
     else:
-        return d
+        return d, None
 
 def validate_signed_request(req):
     return signed_request.validate_signed_request(settings.FACEBOOK_APP_SECRET, req)

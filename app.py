@@ -2,6 +2,7 @@ import ujson as json
 import pprint
 
 import auth
+import facebook
 import geo
 from models import Course
 from models import Sole
@@ -13,13 +14,15 @@ from pymongo import MongoClient
 app = Flask(__name__)
 db = MongoClient()
 
-# TODO users and authentication
-# TODO validate inputs
-
 @app.route("/", methods=["GET"])
 def get_home():
     loc = geo.loc_from_ip(request.remote_addr)
-    return render_template("home.html", loc=json.dumps(loc))
+    params = {
+        'loc': json.dumps(loc)
+    }
+    fb_d, err = facebook.get_data_from_cookie(request)
+    params['facebook_id'] = fb_d.get('user_id', '')
+    return render_template("home.html", **params)
 
 ###
 ### Course routes
@@ -41,7 +44,6 @@ def get_soles_for_course(course_id):
             user = User.find_by_id(db, user_id)
             i['students'].append(user)
         nr.append(i)
-    app.logger.info(pprint.pprint(nr))
     return json.dumps(nr)
 
 @app.route("/course/<course_id>", methods=["GET"])
@@ -72,10 +74,9 @@ def post_sole():
     Expects a course_id, location, date, and time
     """
     user = auth.get_user(db, request)
-    app.logger.info(pprint.pprint(user))
 
     if not user:
-        return error("User not found")
+        return json_error("User not found")
 
     user_id = str(user.get('id'))
 
@@ -90,22 +91,21 @@ def post_sole():
     }
     for k, v in s.iteritems():
         if not v:
-            return error("missing attribute")
+            return json_error("missing attribute")
     
     r = Sole.create_new_sole(db, s)
-    app.logger.info(r)
     return json.dumps({'id': str(r)})
 
 @app.route("/sole/<sole_id>/join", methods=["PUT"])
 def join_sole_by_id(sole_id):
-    user = auth.get_user(db, request)
+    user, err = auth.get_user(db, request)
     if not user:
-        return error("User not found")
+        return json_error("User not found")
     user_id = str(user.get('id'))
 
     resp = Sole.join_sole_by_id(db, sole_id, user_id)
     if not resp:
-        return error("Couldn't join sole. Check sole id")
+        return json_error("Couldn't join sole. Check sole id")
 
     return json.dumps({
         'user_id': user_id, 
@@ -117,19 +117,19 @@ def join_sole_by_id(sole_id):
 def leave_sole_by_id(sole_id):
     user = auth.get_user(db, request)
     if not user:
-        return error("User not found")
+        return json_error("User not found")
     user_id = str(user.get('id'))
 
     resp = Sole.leave_sole_by_id(db, sole_id, user_id)
     if not resp:
-        return error("Couldn't leave sole. Check sole id")
+        return json_error("Couldn't leave sole. Check sole id")
 
     return json.dumps({
         'user_id': user_id, 
         'id': sole_id,
     })
 
-def error(msg):
+def json_error(msg):
     return json.dumps({'error': msg}), 400
 
 if __name__ == "__main__":

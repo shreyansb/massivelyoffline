@@ -1,5 +1,5 @@
 sole.fb = sole.fb || {};
-sole.fb.user = undefined;
+sole.fb.id = undefined;
 sole.fb.resp = undefined;
 
 sole.fb.login = function(success, error, params) {
@@ -7,6 +7,7 @@ sole.fb.login = function(success, error, params) {
     FB.login(function(resp) {
         if (resp.authResponse) {
             sole.fb.resp = resp;
+            sole.fb.get_user();
             success(params);
         } else {
             sole.fb.resp = undefined;
@@ -33,10 +34,14 @@ sole.fb.login_status = function(success, error, params) {
 };
 
 sole.fb.get_user = function() {
+    console.log("fb: get_user");
     FB.api('/me', function(resp) {
-        sole.fb.user = resp;
+        window.facebook_user = resp;
+        if (resp.id) {
+            window.facebook_id = resp.id;
+        }
     });
-}
+};
 
 sole.fb.image_url_from_id = function(facebook_id) {
     return "http://graph.facebook.com/" + facebook_id + "/picture?width=50&height=50";

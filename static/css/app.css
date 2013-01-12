@@ -172,6 +172,11 @@ div.join_sole:hover {
     background-color: lightgreen;
 }
 
+div.skip_sole:hover {
+    background-color: red;
+    color: white;
+}
+
 .result:first-child, #create_form:first_child {
     border-radius: 3 3 0 0;
 }
@@ -193,21 +198,29 @@ div.join_sole:hover {
     float: right;
 }
 
+.sole_people img {
+    height: 50px; 
+    width: 50px;
+}
+
 .join_sole {
+    border: 2px dashed green;
+}
+
+.skip_sole {
+    border: 2px dashed red;
+}
+
+.join_skip_sole {
     vertical-align: top;
     display: inline-block;
     height: 44px;
     min-width: 46px;
-    border: 2px dashed green;
     background-color: white;
     text-align: center;
-    /*
-    padding: 14px 17px !important;
-    vertical-align: top;
-    */
 }
 
-.join_sole p {
+.join_skip_sole p {
     margin-top: 12px;
     margin-bottom: 10px
 }
