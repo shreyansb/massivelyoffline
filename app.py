@@ -73,7 +73,7 @@ def post_sole():
     """Create a new sole.
     Expects a course_id, location, date, and time
     """
-    user = auth.get_user(db, request)
+    user, err = auth.get_user(db, request)
 
     if not user:
         return json_error("User not found")

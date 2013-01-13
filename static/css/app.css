@@ -11,9 +11,12 @@ template {
 
 h1 {
     color: white;
+    /*
     -webkit-text-fill-color: lightgreen;
     -webkit-text-stroke-width: 1px;
     -webkit-text-stroke-color: green;
+    */
+    text-shadow: 0 0 15px black, 0 -1px 1px black;
     font-size: 48px;
     line-height: 1.2;
     margin: 0 0 00 0;
@@ -22,9 +25,12 @@ h1 {
 
 h2 {
     color: white;
+    /*
     -webkit-text-fill-color: lightgreen;
     -webkit-text-stroke-width: 1px;
     -webkit-text-stroke-color: green;
+    */
+    text-shadow: 0 0 15px black, 0 -1px 1px black;
     font-size: 28px;
     line-height: 1.2;
     margin: 0 0 0 0;
@@ -169,7 +175,8 @@ form input:focus {
 }
 
 div.join_sole:hover {
-    background-color: lightgreen;
+    background-color: green;
+    color: white;
 }
 
 div.skip_sole:hover {
