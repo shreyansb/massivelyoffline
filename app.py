@@ -1,5 +1,4 @@
 import ujson as json
-import pprint
 
 import auth
 import facebook
@@ -99,8 +98,8 @@ def post_sole():
 @app.route("/sole/<sole_id>/join", methods=["PUT"])
 def join_sole_by_id(sole_id):
     user, err = auth.get_user(db, request)
-    if not user:
-        return json_error("User not found")
+    if err:
+        return json_error(err)
     user_id = str(user.get('id'))
 
     resp = Sole.join_sole_by_id(db, sole_id, user_id)
