@@ -106,7 +106,10 @@
 
                 <div class="sole_people">
                     {{#students}}
-                    <img data-src="http://graph.facebook.com/{{facebook_id}}/picture?width=50&height=50" alt="{{name}}" facebook_id="{{facebook_id}}">
+                    <a href="https://www.facebook.com/profile.php?id={{facebook_id}}" target="_blank">
+                        <img data-src="http://graph.facebook.com/{{facebook_id}}/picture?width=50&height=50" 
+                        alt="{{name}}" facebook_id="{{facebook_id}}">
+                    </a>
                     {{/students}}
 
                     <div class="join_leave_sole leave_sole" id="leave_{{id}}">

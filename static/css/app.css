@@ -205,6 +205,10 @@ div.leave_sole:hover {
     float: right;
 }
 
+.sole_people a {
+    text-decoration: none;
+}
+
 .sole_people img {
     height: 50px; 
     width: 50px;
