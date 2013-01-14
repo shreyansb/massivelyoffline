@@ -149,12 +149,13 @@ sole.sole.join_success = function(data) {
     $('#join_' + id).hide();
 
     // add picture
-    var el = $('<img/>', {
-        'src': sole.fb.image_url_from_id(facebook_id)
-    });
-    el.css('margin-right', '4px');
+    if (result.find('img[facebook_id=' + facebook_id + ']').length == 0) {
+        var el = $('<img/>', {
+            'src': sole.fb.image_url_from_id(facebook_id)
+        });
+        el.css('margin-right', '4px');
+    }
     $('#leave_' + id).before(el);
-    //result.find('.sole_people').append(el);
 };
 
 sole.sole.join_error = function(data) {

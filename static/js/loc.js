@@ -38,7 +38,6 @@ sole.loc.find_entered_location = function() {
 
 sole.loc.data_for_lat_lon = function(lat, lon, callback) {
     var url = "http://maps.googleapis.com/maps/api/geocode/json?"+"latlng="+lat+","+lon+"&sensor=true";
-    console.log(url);
     $.get(url, function(d) { 
         sole.loc.geocoded = d.results;
         callback();
