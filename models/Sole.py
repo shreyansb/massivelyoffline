@@ -17,6 +17,10 @@ def get_by_course_id(db, course_id):
         r.append(s)
     return r
 
+def get_by_id(db, sole_id):
+    spec = { '_id': ObjectId(sole_id) }
+    return db.sole.sole.find_one(spec)
+
 def create_new_sole(db, doc):
     doc['student_ids'] = [doc.get('user_id')]
     return db.sole.sole.insert(doc)

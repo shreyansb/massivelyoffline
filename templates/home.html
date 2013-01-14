@@ -106,21 +106,20 @@
 
                 <div class="sole_people">
                     {{#students}}
-                    <img data-src="http://graph.facebook.com/{{facebook_id}}/picture?width=50&height=50" alt="{{name}}">
+                    <img data-src="http://graph.facebook.com/{{facebook_id}}/picture?width=50&height=50" alt="{{name}}" facebook_id="{{facebook_id}}">
                     {{/students}}
-                    {{#user_is_student}}
-                    <div class="join_skip_sole skip_sole" id="skip_{{id}}">
-                        <p>skip</p></div>
-                    {{/user_is_student}}
-                    {{^user_is_student}}
-                    <div class="join_skip_sole join_sole" id="join_{{id}}">
-                        <p>join</p></div>
-                    {{/user_is_student}}
+
+                    <div class="join_leave_sole leave_sole" id="leave_{{id}}">
+                        <p>leave</p>
+                    </div>
+                    <div class="join_leave_sole join_sole" id="join_{{id}}">
+                        <p>join</p>
+                    </div>
                 </div>
             </template>
             <template id="result_overlay">
                 <div class="result_overlay_inside">
-                    Join this study group?
+                    Are you sure?
                     <a class="button-link button_yes" id="yes_{{id}}">yes</a>
                     <a class="button-link button_no" id="no_{{id}}">no</a>
                 </div>

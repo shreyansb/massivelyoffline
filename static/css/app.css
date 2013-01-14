@@ -179,7 +179,7 @@ div.join_sole:hover {
     color: white;
 }
 
-div.skip_sole:hover {
+div.leave_sole:hover {
     background-color: red;
     color: white;
 }
@@ -212,13 +212,15 @@ div.skip_sole:hover {
 
 .join_sole {
     border: 2px dashed green;
+    display: none;
 }
 
-.skip_sole {
+.leave_sole {
     border: 2px dashed red;
+    display: none;
 }
 
-.join_skip_sole {
+.join_leave_sole {
     vertical-align: top;
     display: inline-block;
     height: 44px;
@@ -227,7 +229,7 @@ div.skip_sole:hover {
     text-align: center;
 }
 
-.join_skip_sole p {
+.join_leave_sole p {
     margin-top: 12px;
     margin-bottom: 10px
 }

@@ -76,7 +76,16 @@ sole.sole.add_result = function(t, r) {
         html: output,
         display: "none"
     }).appendTo('#results').fadeIn(150);
-    el.find('.join_sole').on('click', sole.sole.confirm_join_sole);
+
+    // doing this here instead of in the templates because I had trouble
+    // adding an inline style depending on a mustache variable.
+    if (r.user_is_student) {
+        $('#join_' + r.id).hide();
+    } else {
+        $('#leave_' + r.id).hide();
+    }
+
+    el.find('.join_leave_sole').on('click', sole.sole.confirm_join_leave_sole);
 
     // add marker to map
     if (sole.show_map) {
@@ -126,49 +135,84 @@ sole.sole.format = function(c) {
 };
 
 sole.sole.join_success = function(data) {
-    console.log("join success");
+    console.log("sole: join_success");
     console.log(data);
     var j = $.parseJSON(data);
     var id = j.id;
     var result = $('#'+id);
     var facebook_id = j.facebook_id;
 
-    // add the student's picture to the row
+    // show appropriate action button
+    $('#leave_' + id).show();
+    $('#join_' + id).hide();
+
+    // add picture
     var el = $('<img/>', {
         'src': sole.fb.image_url_from_id(facebook_id)
     });
-    result.find('.sole_people').append(el);
-
-    // remove join button
-    result.find('.join_sole').remove();
+    el.css('margin-right', '4px');
+    $('#leave_' + id).before(el);
+    //result.find('.sole_people').append(el);
 };
 
 sole.sole.join_error = function(data) {
     console.log("course: join_error");
 };
 
+sole.sole.leave_success = function(data) {
+    console.log("sole: leave_success");
+    console.log(data);
+    var j = $.parseJSON(data);
+    var id = j.id;
+    var result = $('#'+id);
+    var facebook_id = j.facebook_id;
+    
+    if (j.remove) {
+        $('#' + id).remove();
+    } else {
+        $('#' + id).find('img[facebook_id=' + facebook_id + ']').remove();
+        $('#leave_' + id).hide();
+        $('#join_' + id).show();
+    }
+};
+
+sole.sole.leave_error = function(data) {
+    console.log("sole: leave_error");
+};
+
 sole.sole.login_error = function(id) {
     console.log("course: login_error");
 };
 
-sole.sole.join_sole = function(id) {
-    console.log("course: join_sole");
+sole.sole.join_leave_sole = function(params) {
+    console.log("course: join_leave_sole");
+    var id = params['id'];
+    var action = params['action'];
     var params = {
         'id': id,
         'facebook_access_token': sole.fb.resp.authResponse.accessToken
     };
+    var url = '/sole/' + id + '/' + action,
+        s_callback, e_callback;
+    if (action == 'join') {
+        s_callback = sole.sole.join_success;
+        e_callback = sole.sole.join_error;
+    } else {
+        s_callback = sole.sole.leave_success;
+        e_callback = sole.sole.leave_error;
+    }
     $.ajax({
-        'url': '/sole/'+id+'/join',
+        'url': url,
         'type': 'PUT',
         'data': params,
-        'success': sole.sole.join_success,
-        'error': sole.sole.join_error
+        'success': s_callback,
+        'error': e_callback
     });
     $('#'+id).find('div.result_overlay').remove();
 };
 
-sole.sole.confirm_join_sole = function(e) {
-    console.log("course: confirm_join_sole");
+sole.sole.confirm_join_leave_sole = function(e) {
+    console.log("course: confirm_join_leave_sole");
 
     // add overlay to the result
     var id = $(this).parent().parent().attr('id');
@@ -186,13 +230,25 @@ sole.sole.confirm_join_sole = function(e) {
     var no_id = "#no_" + id;
 
     $(yes_id).on('click', function(e) {
-        console.log("course: confirm_join_sole: yes");
-        sole.fb.login_status(sole.sole.join_sole, sole.sole.login_error, id);
+        console.log("course: confirm_join_leave_sole: yes");
+        var s = $('#' + id);
+        var action;
+        if (s.find('.join_sole').css('display') != "none") {
+            action = 'join';
+        } else {
+            action = 'leave';
+        }
+        var params = {
+            'id': id,
+            'action': action
+        }
+        console.log(params);
+        sole.fb.login_status(sole.sole.join_leave_sole, sole.sole.login_error, params);
         return false;
     });
 
     $(no_id).on('click', function(e) {
-        console.log("course: confirm_join_sole: no");
+        console.log("course: confirm_join_leave_sole: no");
         $(this).parent().parent().remove();
         return false;
     });
