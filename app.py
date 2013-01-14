@@ -130,7 +130,7 @@ def leave_sole_by_id(sole_id):
         'facebook_id': user.get('facebook_id')
     }
 
-    if not s.get('student_ids'):
+    if not s.get(Sole.A_STUDENT_IDS):
         resp['remove'] = 1
 
     return json.dumps(resp)

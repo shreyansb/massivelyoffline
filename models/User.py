@@ -1,12 +1,14 @@
 from bson.objectid import ObjectId
 
+A_FACEBOOK_ID = 'facebook_id'
+
 ###
 ### create
 ###
 
 def create_by_facebook_id(db, facebook_id, doc):
     doc.pop('id')
-    doc['facebook_id'] = facebook_id
+    doc[A_FACEBOOK_ID] = facebook_id
     return db.users.users.insert(doc)
 
 ###
@@ -14,7 +16,7 @@ def create_by_facebook_id(db, facebook_id, doc):
 ###
 
 def find_by_facebook_id(db, facebook_id):
-    spec = {'facebook_id': facebook_id}
+    spec = {A_FACEBOOK_ID: facebook_id}
     return find(db, spec)
 
 def find_by_id(db, user_id):
