@@ -35,14 +35,7 @@ def get_courses():
 @app.route("/course/<course_id>/sole", methods=["GET"])
 def get_soles_for_course(course_id):
     r = Sole.get_by_course_id(db, course_id)
-    nr = []
-    for i in r:
-        i['students'] = []
-        user_ids = i.get('student_ids', [i.get('user_id')])
-        for user_id in user_ids:
-            user = User.find_by_id(db, user_id)
-            i['students'].append(user)
-        nr.append(i)
+    nr = User.update_soles_with_students(db, r)
     return json.dumps(nr)
 
 @app.route("/course/<course_id>", methods=["GET"])
@@ -92,8 +85,12 @@ def post_sole():
         if not v:
             return json_error("missing attribute")
     
-    r = Sole.create_new_sole(db, s)
-    return json.dumps({'id': str(r)})
+    sole_id = Sole.create_new_sole(db, s)
+
+    s = Sole.get_by_id(db, sole_id)
+    ss = User.update_sole_with_students(db, s)
+
+    return json.dumps(ss)
 
 @app.route("/sole/<sole_id>/join", methods=["PUT"])
 def join_sole_by_id(sole_id):

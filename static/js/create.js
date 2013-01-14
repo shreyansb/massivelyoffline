@@ -97,7 +97,14 @@ sole.create.submit_logged_in = function() {
     });
 };
 
-sole.create.success = function(e) {
+sole.create.success = function(d) {
+    var j = $.parseJSON(d);
+    var template = $('template#results_row').html();
+    var r = sole.sole.format_result_for_template(j);
+
+    sole.sole.add_result(template, r);
+    sole.sole.remove_no_results();
+    sole.load_deferred_images();
     sole.create.hide();
 };
 

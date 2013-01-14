@@ -21,20 +21,19 @@ sole.sole.submit = function(event) {
             sole.sole.show_results();
             var template = $('template#results_row').html();
             for (var i=0; i<results.length; i++) {
-                var r = sole.sole.format_result_for_template(results[i], i);
+                var r = sole.sole.format_result_for_template(results[i]);
                 sole.sole.add_result(template, r);
             }
             sole.load_deferred_images();
         } else {
-            sole.sole.no_results();
+            sole.sole.show_no_results();
         }
     });
 
     return false;
 };
 
-sole.sole.format_result_for_template = function(r, i) {
-    r['counter'] = i+1;
+sole.sole.format_result_for_template = function(r) {
     if (window.sole_facebook_id) {
         for (var j=0; j<r['students'].length; j++) {
             if (r['students'][j]['facebook_id'] == window.sole_facebook_id) {
@@ -42,16 +41,19 @@ sole.sole.format_result_for_template = function(r, i) {
             }
         }
     }
-    console.log(r);
     return r;
 };
 
-sole.sole.no_results = function() {
+sole.sole.show_no_results = function() {
     $('<div/>', {
         "class": "result no_result",
         html: "<p>Nothing yet.</p>",
         display: "none"
     }).appendTo('#results').fadeIn(150);
+};
+
+sole.sole.remove_no_results = function() {
+    $('.no_result').remove();
 };
 
 sole.sole.reset_results = function() {
@@ -164,14 +166,18 @@ sole.sole.leave_success = function(data) {
     console.log(data);
     var j = $.parseJSON(data);
     var id = j.id;
-    var result = $('#'+id);
+    var el_id = '#' + id;
+    var result = $(el_id);
     var facebook_id = j.facebook_id;
     
     if (j.remove) {
-        $('#' + id).remove();
-        sole.sole.no_results();
+        $(el_id).animate({'opacity': 0}, 200);
+        $(el_id).remove();
+        if ($('#results').children().length == 0) {
+            sole.sole.show_no_results();
+        }
     } else {
-        $('#' + id).find('img[facebook_id=' + facebook_id + ']').remove();
+        $(el_id).find('img[facebook_id=' + facebook_id + ']').remove();
         $('#leave_' + id).hide();
         $('#join_' + id).show();
     }

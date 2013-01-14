@@ -26,3 +26,21 @@ def find(db, spec):
     if user:
         user['id'] = str(user.pop('_id'))
     return user
+
+###
+### insert users into other things
+###
+
+def update_soles_with_students(db, soles):
+    nr = []
+    for i in soles:
+        nr.append(update_sole_with_students(db, i))
+    return nr
+
+def update_sole_with_students(db, s):
+    s['students'] = []
+    user_ids = s.get('student_ids', [s.get('user_id')])
+    for user_id in user_ids:
+        user = find_by_id(db, user_id)
+        s['students'].append(user)
+    return s
