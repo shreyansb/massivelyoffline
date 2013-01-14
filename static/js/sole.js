@@ -169,6 +169,7 @@ sole.sole.leave_success = function(data) {
     
     if (j.remove) {
         $('#' + id).remove();
+        sole.sole.no_results();
     } else {
         $('#' + id).find('img[facebook_id=' + facebook_id + ']').remove();
         $('#leave_' + id).hide();

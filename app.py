@@ -125,7 +125,7 @@ def leave_sole_by_id(sole_id):
 
     s = Sole.get_by_id(db, sole_id)
     if not s:
-        return json_error("hmmm...the sole has disappeared")
+        return json_error("Sole not found")
 
     resp = {
         'user_id': user_id, 
