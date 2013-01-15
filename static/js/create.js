@@ -33,7 +33,7 @@ sole.create.geocode_success = function(r) {
     console.log("create: geocode success");
     console.log(r);
     var a = r[0].formatted_address;
-    var l = [r[0].geometry.location.lon, r[0].geometry.location.lng];
+    var l = [r[0].geometry.location.lat, r[0].geometry.location.lng];
     sole.loc.current = l;
     $('#create_address').val(a);
 };
