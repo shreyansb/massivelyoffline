@@ -166,6 +166,7 @@ sole.sole.join_success = function(data) {
         var el = $('<img/>', {
             'src': sole.fb.image_url_from_id(facebook_id)
         });
+        el.attr('facebook_id', facebook_id);
         el.css('margin-right', '4px');
     }
     $('#leave_' + id).before(el);
