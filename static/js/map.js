@@ -20,7 +20,7 @@ sole.map.load_recent = function() {
         var soles = $.parseJSON(data);
         for (var i=0; i<soles.length; i++) {
             var s = soles[i];
-            sole.map.add_marker(s.lat, s.lon, "", "", false);
+            sole.sole.add_to_map(s);
         }
     });
 };

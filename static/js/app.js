@@ -1,6 +1,6 @@
 var sole = sole || {};
 
-sole.show_map = false;
+sole.show_map = true;
 
 sole.init = function() {
     if (sole.show_map) {

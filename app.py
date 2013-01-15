@@ -80,6 +80,7 @@ def post_sole():
         'time': request.form.get('time'),
         'lon': request.form.get('lon'),
         'lat': request.form.get('lat'),
+        'address': request.form.get('address'),
         'course_id': request.form.get('course_id'),
         'user_id': user_id
     }

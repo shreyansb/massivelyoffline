@@ -76,7 +76,8 @@ sole.sole.show_results = function() {
 
 sole.sole.add_result = function(t, r) {
     // render results row from template
-    r['day'] = moment(r['day']).format('dddd, Do MMMM');
+    var day = moment(r['day']).format('dddd, Do MMMM');
+    r['day'] = day;
     var output = Mustache.render(t, r);
     var el = $('<div/>', {
         id: r.id,
@@ -96,8 +97,14 @@ sole.sole.add_result = function(t, r) {
     el.find('.join_leave_sole').on('click', sole.sole.confirm_join_leave_sole);
 
     // add marker to map
+    sole.sole.add_to_map(r);
+};
+
+sole.sole.add_to_map = function(r) {
+    var title = r['day'] + " at " + r['time'];
+    var description = "near " + r['address'];
     if (sole.show_map) {
-        sole.map.add_marker(r.lat, r.lon, "", "", false);
+        sole.map.add_marker(r.lat, r.lon, title, description, false);
     }
 };
 

@@ -1,4 +1,5 @@
 sole.loc = sole.loc || {};
+sole.loc.address = undefined;
 sole.loc.current = undefined;
 sole.loc.denied = undefined;
 sole.loc.geocoded = undefined;

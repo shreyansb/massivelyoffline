@@ -35,6 +35,7 @@ sole.create.geocode_success = function(r) {
     var a = r[0].formatted_address;
     var l = [r[0].geometry.location.lat, r[0].geometry.location.lng];
     sole.loc.current = l;
+    sole.loc.address = a;
     $('#create_address').val(a);
 };
 
@@ -87,6 +88,7 @@ sole.create.submit_logged_in = function() {
         'time':  $('#create_time').val(),
         'lat': sole.loc.current[0],
         'lon': sole.loc.current[1],
+        'address': sole.loc.address,
         'course_id': sole.sole.get_id(),
         'facebook_access_token': sole.fb.resp.authResponse.accessToken
     }
@@ -130,6 +132,10 @@ sole.create.validate = function(e) {
     }
 
     if (typeof(sole.loc.current) === "undefined") {
+        error = true;
+    }
+
+    if (typeof(sole.loc.address) === "undefined") {
         error = true;
     }
 
