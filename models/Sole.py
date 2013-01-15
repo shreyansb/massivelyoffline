@@ -18,8 +18,13 @@ def ensure_index(db):
     r.append(db.sole.sole.ensure_index([("loc", GEO2D)]))
     return r
 
-def get(db, limit=20):
-    r = db.sole.sole.find().limit(limit)
+def get(db, lat=None, lon=None, limit=20):
+    spec = {
+        A_NUM_STUDENTS: {'$gt': 0}
+    }
+    if lat and lon:
+        spec[A_LOC] = generate_within_query(lat, lon)
+    r = db.sole.sole.find(spec).limit(limit)
     return format_cursor_as_list(r)
 
 def get_by_course_id(db, course_id, lat=None, lon=None):

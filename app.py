@@ -54,7 +54,9 @@ def get_soles():
     """Get a bunch of recent soles
     filter by location
     """
-    r = Sole.get(db, limit=10)
+    lat = request.args.get('lat')
+    lon = request.args.get('lon')
+    r = Sole.get(db, lat, lon, limit=10)
     return json.dumps(r)
 
 @app.route("/sole/<sole_id>", methods=["GET"])
