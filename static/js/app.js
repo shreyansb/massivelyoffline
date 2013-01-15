@@ -11,6 +11,7 @@ sole.init = function() {
     $('#course_input').on('change', sole.sole.submit);
     sole.create.setup_form();
     sole.load_deferred_images();
+    sole.fb.update_user_info();
 };
 
 sole.load_deferred_images = function() {

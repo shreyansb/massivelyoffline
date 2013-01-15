@@ -137,6 +137,21 @@ form input:focus {
 }
 
 /*
+ * user profile
+ */
+
+#user {
+    display: inline-block;
+    float: left;
+}
+
+#user_img {
+    height: 25px;
+    width: 25px;
+}
+
+
+/*
  * the results container
  */
 

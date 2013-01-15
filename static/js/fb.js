@@ -38,11 +38,25 @@ sole.fb.get_user = function() {
     FB.api('/me', function(resp) {
         window.facebook_user = resp;
         if (resp.id) {
-            window.facebook_id = resp.id;
+            sole.fb.set_global_facebook_id(resp.id);
         }
     });
 };
 
-sole.fb.image_url_from_id = function(facebook_id) {
-    return "http://graph.facebook.com/" + facebook_id + "/picture?width=50&height=50";
+sole.fb.image_url_from_id = function(facebook_id, width, height) {
+    width = (typeof(width) === "undefined") ? 50 : width; 
+    height = (typeof(height) === "undefined") ? 50 : height; 
+    return "http://graph.facebook.com/" + facebook_id + "/picture?width=" + width + "&height=" + height;
+};
+
+sole.fb.set_global_facebook_id = function(facebook_id) {
+    window.sole_facebook_id = facebook_id;
+    sole.fb.update_user_info();
+};
+
+sole.fb.update_user_info = function() {
+    return false;
+    if (window.sole_facebook_id) {
+        $('#user_img').attr('src', sole.fb.image_url_from_id(window.sole_facebook_id)); 
+    }
 };
