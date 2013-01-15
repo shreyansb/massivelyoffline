@@ -17,19 +17,35 @@ sole.create.events = function() {
     });
 
     $('#create_find_location').on('click', sole.loc.request);
+    $('#create_find_address').on('click', sole.create.geocode_address);
+};
+
+sole.create.geocode_address = function(e) {
+    var a = $('#create_address').val();
+    if (a === "") {
+        console.log("create: geocode_address, no address");
+    } else {
+        sole.loc.geocode_address(a, sole.create.geocode_success, sole.create.geocode_error);
+    }
+};
+
+sole.create.geocode_success = function(r) {
+    console.log("create: geocode success");
+    console.log(r);
+    var a = r[0].formatted_address;
+    var l = [r[0].geometry.location.lon, r[0].geometry.location.lng];
+    sole.loc.current = l;
+    $('#create_address').val(a);
+};
+
+sole.create.geocode_error = function(r) {
+    console.log("create: geocode error");
+    console.log(r);
 };
 
 sole.create.update_ui_with_loc = function(lat, lon) {
-    $('#create_find_location').hide();
-    $('#create_enter_location').val(lat.toFixed(4) + ", " + lon.toFixed(4));
-    sole.loc.data_for_lat_lon(lat, lon, sole.create.show_geocoded_name);
-};
-
-sole.create.show_geocoded_name = function() {
-    var el = $('<span/>', {
-        'text': ((sole.loc.geocoded)[2]).formatted_address
-    });
-    $('#create_enter_location').after(el);
+    $('#create_address').val(lat.toFixed(4) + ", " + lon.toFixed(4));
+    sole.loc.geocode_lat_lon(lat, lon, sole.create.show_geocoded_name);
 };
 
 sole.create.setup_form = function() {
@@ -49,17 +65,6 @@ sole.create.setup_form = function() {
     });
 };
 
-sole.create.get_lat_lon_from_field = function() {
-    var e_loc = $('#create_enter_location').val();
-    if (e_loc === "") {
-        return undefined;
-    }
-    var l_loc = e_loc.split(",");
-    var lat = l_loc[0].replace(" ", ""), lon = l_loc[1].replace(" ", "");
-    return [lat, lon];
-
-};
-
 // validate inputs and submit form to create a new sole
 sole.create.submit = function(e) {
     console.log("sole.create.submit");
@@ -77,13 +82,11 @@ sole.create.login_error = function() {
 };
 
 sole.create.submit_logged_in = function() {
-    var loc = sole.create.get_lat_lon_from_field();
-
     var params = {
         'day': $('#create_day').val(),
         'time':  $('#create_time').val(),
-        'lat': loc[0],
-        'lon': loc[1],
+        'lat': sole.loc.current[0],
+        'lon': sole.loc.current[1],
         'course_id': sole.sole.get_id(),
         'facebook_access_token': sole.fb.resp.authResponse.accessToken
     }
@@ -116,33 +119,18 @@ sole.create.validate = function(e) {
     var create_error_class = "create_form_error";
     var error = false;
 
-    // get day
     if ($('#create_day').val() === "") {
         $('#s2id_create_day').addClass(create_error_class);
         error = true;
     }
 
-    // get time
     if ($('#create_time').val() === "") {
         $('#s2id_create_time').addClass(create_error_class);
         error = true;
     }
 
-    var l = sole.loc.current;
-    // get location
-    if (typeof(l) === "undefined") {
-        var success = sole.loc.find_entered_location();
-        if (!success) {
-            $('#create_enter_location').addClass(create_error_class);
-            error = true;
-        }
-
-        var loc = sole.create.get_lat_lon_from_field();
-        if (typeof(loc) === "undefined") {
-            console.log("invalid lat lon");
-            $('#create_enter_location').addClass(create_error_class);
-            error = true;
-        }
+    if (typeof(sole.loc.current) === "undefined") {
+        error = true;
     }
 
     if (error) {
@@ -174,7 +162,7 @@ sole.create.hide = function() {
     // reset the form
     $('#create_day').select2('val', '');
     $('#create_time').select2('val', '');
-    $('#create_enter_location').val('');
+    $('#create_address').val('');
     $('#create_find_location').show();
 
     // show the results again

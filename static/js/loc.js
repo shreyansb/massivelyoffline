@@ -36,13 +36,41 @@ sole.loc.find_entered_location = function() {
     if (i === "") return false;
 };
 
-sole.loc.data_for_lat_lon = function(lat, lon, callback) {
-    var url = "http://maps.googleapis.com/maps/api/geocode/json?"+"latlng="+lat+","+lon+"&sensor=true";
+sole.loc.geocode_lat_lon = function(lat, lon, success_callback, error_callback) {
+    var params = {
+        'latlng': lat+","+lon,
+    };
+    return sole.loc.geocode(params, success_callback, error_callback);
+}
+
+sole.loc.geocode_address = function(address, success_callback, error_callback) {
+    var params = {
+        'address': address
+    };
+    return sole.loc.geocode(params, success_callback, error_callback);
+};
+
+sole.loc.geocode = function(params, success_callback, error_callback) {
+    var url = "https://maps.googleapis.com/maps/api/geocode/json";
+    params['sensor'] = true;
     console.log(url);
-    $.get(url, function(d) { 
-        var loc_data = d.results;
-        sole.loc.geocoded = loc_data;
-        callback(loc_data);
-        return false;
-    });
+    console.log(params);
+    $.get(url, params, function(data) {
+        if (data.status === "OK") {
+            if (success_callback) {
+                var r = data.results;
+                sole.loc.geocoded = r;
+                success_callback(r);
+            } else {
+                console.log(data);
+            }
+        } else {
+            if (error_callback) {
+                error_callback(data); 
+            } else {
+                console.log("error: ", data);
+            }
+        }
+        var r = data.results;
+    }, 'json');
 }
