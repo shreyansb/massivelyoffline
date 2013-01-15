@@ -15,7 +15,13 @@ sole.sole.submit = function(event) {
     }
 
     // on every submit, get new results
-    $.get('/course/' + sole.sole.get_id() + '/sole', function(data) {
+    var params = {};
+    if (window.sole_ip_loc) {
+        params['lon'] = window.sole_ip_loc.longitude;
+        params['lat'] = window.sole_ip_loc.latitude;
+        console.log(params);
+    }
+    $.get('/course/' + sole.sole.get_id() + '/sole', params, function(data) {
         var results = $.parseJSON(data);
         if (results.length > 0) {
             sole.sole.show_results();

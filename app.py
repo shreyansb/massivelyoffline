@@ -34,7 +34,9 @@ def get_courses():
 
 @app.route("/course/<course_id>/sole", methods=["GET"])
 def get_soles_for_course(course_id):
-    r = Sole.get_by_course_id(db, course_id)
+    lat = request.args.get('lat')
+    lon = request.args.get('lon')
+    r = Sole.get_by_course_id(db, course_id, lat, lon)
     nr = User.update_soles_with_students(db, r)
     return json.dumps(nr)
 
