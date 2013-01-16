@@ -3,23 +3,45 @@ app.views = app.views || {};
 
 app.views.SoleListView = Backbone.View.extend({
     el: '#results',
-    events: {
-        'click #create_button': create
-    },
+
     initialize: function() {
-        console.log("SoleListView:initialize");
-        _.bindAll(this, "create", "loadSoles");
-        this.create = this.$('create_button');
+        console.log("SoleListView:initialize", this.options.course_id);
+        _.bindAll(this, "createSole", "noSoles", "render", "renderOne");
         this.course_id = this.options.course_id;
-        console.log("SoleListView:initialize", this.course_id);
-        this.$el.show();
+        this.$el.empty();
+
+        // initialize the collection for this view
+        app.collections.soles = new app.collections.SoleCollection([], {
+            course_id: this.course_id
+        });
+        app.collections.soles.fetch({
+            'success': this.render,
+            'error': this.noSoles
+        });
     },
     
-    create: function() {
-        console.log("SoleListView:create");
+    createSole: function() {
+        console.log("SoleListView:createSole");
     }, 
 
-    loadSoles: function() {
-        console.log("SoleListView:loadSoles");
-    }
+    render: function() {
+        console.log("SoleListView:render");
+        if (app.collections.soles.length > 0) {
+            app.collections.soles.each(this.renderOne, this);
+        } else {
+            // show the 'no result' template
+            var t = $('script#no_results');
+            this.$el.html(t.html()); 
+        }
+        this.$el.show();
+    },
+
+    renderOne: function(m) {
+        var v = new app.views.SoleView({model: m});
+        this.$el.append(v.render().el);
+    },
+
+    noSoles: function() {
+        console.log("SoleListView:noSoles");
+    },
 });

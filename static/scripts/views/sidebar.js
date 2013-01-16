@@ -21,8 +21,6 @@ app.views.SidebarView = Backbone.View.extend({
             'success': this.setupCourses, 
             'error': this.noCourses
         });
-
-        return this;
     },
 
     setupCourses: function() {
@@ -62,7 +60,7 @@ app.views.SidebarView = Backbone.View.extend({
             this.course_id = e;
         }
 
-        // create a new soleList view
+        // reset and render the list of soles
         app.views.solelist = new app.views.SoleListView({course_id: this.course_id});
     },
 

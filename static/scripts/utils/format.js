@@ -11,3 +11,7 @@ app.utils.format_courses_as_dict = function(c) {
     }
     return dict;
 };
+
+app.utils.format_date = function(d) {
+    return moment(d).format('dddd, Do MMMM');
+}

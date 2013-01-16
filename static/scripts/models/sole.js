@@ -17,21 +17,20 @@ app.models.Sole = Backbone.Model.extend({
     },
     initialize: function() {
         this.on('change:student_ids', function() {
-            console.log('Sole: change triggered');
+            console.log('Sole: student_ids changed');
         });
-    },
-    validate: function(attr) {
-        if (attr.num_students < 0) {
-            console.log("num_students < 0, how did this happen?");
-        }
     }
 });
 
 app.collections.SoleCollection = Backbone.Collection.extend({
     model: app.models.Sole,
-    initialize: function() {
-        this.on("add", function() {
-            console.log("SoleCollection: add triggered");
-        });
+    url: function() {
+        return '/course/' + this.course_id + '/sole';
+    },
+    initialize: function(models, options) {
+        if (!options.course_id) {
+            console.log("SoleCollection:initialize course_id missing");
+        }
+        this.course_id = options.course_id;
     },
 });
