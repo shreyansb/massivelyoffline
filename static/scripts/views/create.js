@@ -12,7 +12,9 @@ app.views.CreateView = Backbone.View.extend({
 
     initialize: function() {
         console.log("CreateView:initialize", this.options.course_id);
-        _.bindAll(this, "cancel", "submit", "render");
+        _.bindAll(this, "cancel", "submit", "render", "validate", "findAddress",
+            "geocodeSuccess", "geocodeError", "show", "hide", "datesForDropdown",
+            "timesForDropdown", "select2");
 
         this.course_id = this.options.course_id;
         this.select2();
@@ -23,14 +25,14 @@ app.views.CreateView = Backbone.View.extend({
             width: '250px',
             allowClear: true,
             placeholder: "What day are you available?",
-            data: this.datesForDropdown,
+            data: this.datesForDropdown(),
             initSelection: function() {}
         });
         $('#create_time').select2({
             width: '150px',
             allowClear: true,
             placeholder: "At what time?",
-            data: this.timesForDropdown,
+            data: this.timesForDropdown(),
             initSelection: function() {}
         });
     },
@@ -43,6 +45,7 @@ app.views.CreateView = Backbone.View.extend({
     submit: function() {
         console.log("CreateView:submit");
         var errors = this.validate();
+        console.log(errors);
         if (errors.length == 0) {
             // submit
         } else {
@@ -53,9 +56,9 @@ app.views.CreateView = Backbone.View.extend({
 
     validate: function() {
         var errors = [];
-        if ($('#create_day').val() === "")
+        if (this.$('#create_day').val() === "")
             errors.push("day");
-        if ($('#create_time').val() === "")
+        if (this.$('#create_time').val() === "")
             errors.push("time");
         if (typeof(this.address) === "undefined")
             errors.push("address");
@@ -65,7 +68,24 @@ app.views.CreateView = Backbone.View.extend({
     },
 
     findAddress: function() {
+        var a = $('#create_address').val();
+        if (a === "") {
+            this.geocodeError();
+        } else {
+            app.geo.geocodeAddress(a, this.geocodeSuccess, this.geocodeError);
+        }
+    },
 
+    geocodeSuccess: function(data) {
+        var a = data[0].formatted_address;
+        var l = [data[0].geometry.location.lat, data[0].geometry.location.lng];
+        this.loc = l;
+        this.address = a;
+        $('#create_address').val(a);
+    },
+
+    geocodeError: function(data) {
+        console.log("CreateView:geocodeError ", data);
     },
 
     render: function() {
