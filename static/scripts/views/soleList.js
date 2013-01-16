@@ -2,13 +2,18 @@ var app = app || {};
 app.views = app.views || {};
 
 app.views.SoleListView = Backbone.View.extend({
-    el: '#results',
+    el: '#results_container',
+
+    events: {
+        'click #create_start': 'createSole'
+    },
 
     initialize: function() {
         console.log("SoleListView:initialize", this.options.course_id);
         _.bindAll(this, "createSole", "noSoles", "render", "renderOne");
+
         this.course_id = this.options.course_id;
-        this.$el.empty();
+        this.$('#results').empty();
 
         // initialize the collection for this view
         app.collections.soles = new app.collections.SoleCollection([], {
@@ -22,6 +27,7 @@ app.views.SoleListView = Backbone.View.extend({
     
     createSole: function() {
         console.log("SoleListView:createSole");
+        this.trigger("showCreateView");
     }, 
 
     render: function() {
@@ -31,14 +37,15 @@ app.views.SoleListView = Backbone.View.extend({
         } else {
             // show the 'no result' template
             var t = $('script#no_results');
-            this.$el.html(t.html()); 
+            this.$('#results').html(t.html()); 
         }
+
         this.$el.show();
     },
 
     renderOne: function(m) {
         var v = new app.views.SoleView({model: m});
-        this.$el.append(v.render().el);
+        this.$('#results').append(v.render().el);
     },
 
     noSoles: function() {

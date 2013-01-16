@@ -87,7 +87,7 @@ form input:focus {
  * create a new sole
  */
 
-#create {
+#create_container {
     display: none;
 }
 
@@ -120,20 +120,11 @@ form input:focus {
 }
 
 #create_actions {
-    display: none;
     text-align: right;
 }
 
 #create_actions span {
     color: white;
-}
-
-#create_cancel {
-    display: none;
-}
-
-#create_submit {
-    display: none;
 }
 
 /*
@@ -155,7 +146,7 @@ form input:focus {
  * the results container
  */
 
-#results {
+#results_container {
     display: none;
 }
 
