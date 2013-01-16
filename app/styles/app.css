@@ -1,0 +1,325 @@
+body {
+    background-image: url('../images/gray_jean.png');
+    padding: 0px;
+    margin: 0px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+
+template {
+    display: none;
+}
+
+h1 {
+    color: white;
+    /*
+    -webkit-text-fill-color: lightgreen;
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: green;
+    */
+    text-shadow: 0 0 15px black, 0 -1px 1px black;
+    font-size: 48px;
+    line-height: 1.2;
+    margin: 0 0 00 0;
+    text-shadow: 10 10 35 white;
+}
+
+h2 {
+    color: white;
+    /*
+    -webkit-text-fill-color: lightgreen;
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: green;
+    */
+    text-shadow: 0 0 15px black, 0 -1px 1px black;
+    font-size: 28px;
+    line-height: 1.2;
+    margin: 0 0 0 0;
+}
+
+form input {
+    font-size: 16px;
+    padding: 8px; 12px;
+    -webkit-box-shadow: inset 1px 1px 5px rgba(0, 0, 0, 0.4);
+    box-shadow: inset 1px 1px 5px rgba(0, 0, 0, 0.4);
+    border: 1px solid black;
+    border-radius: 3px;
+}
+
+form input:focus {
+    border: 1px solid #00B7EB;
+    outline: 0;
+}
+
+.gray_outline {
+    margin-top: 1em;
+    padding: 4px;
+    background: rgba(57, 60, 61, 0.8);
+    border: 1px solid rgba(0, 0, 0, 0.8);
+    border-radius: 3px;
+    -webkit-box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    line-height: 1.2;
+}
+
+#sidebar h1, #sidebar h2 {
+    padding-left: 5px;
+}
+
+#map {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    z-index: 0;
+}
+
+#sidebar {
+    position: absolute;
+    right: 7%;
+    top: 25%;
+}
+
+#course form input {
+    width: 100%;
+}
+
+/*
+ * create a new sole
+ */
+
+#create {
+    display: none;
+}
+
+#create_form {
+    margin-left: 5px;
+}
+
+.create_form_row {
+    color: white;
+    font-size: 16px;
+    margin-left: 5px;
+    margin-top: 5px;
+}
+
+.create_form_error {
+    box-shadow: 0px 0px 5px red;
+    font-size: 15px;
+    padding: 7px;
+}
+
+#create_address {
+    width: 366px;
+}
+
+#create_form_heading {
+    font-size: 24px;
+    color: white;
+    margin: 5px;
+    padding-bottom: 10px;
+}
+
+#create_actions {
+    display: none;
+    text-align: right;
+}
+
+#create_actions span {
+    color: white;
+}
+
+#create_cancel {
+    display: none;
+}
+
+#create_submit {
+    display: none;
+}
+
+/*
+ * user profile
+ */
+
+#user {
+    display: inline-block;
+    float: left;
+}
+
+#user_img {
+    height: 25px;
+    width: 25px;
+}
+
+
+/*
+ * the results container
+ */
+
+#results {
+    display: none;
+}
+
+.result_overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background-color: white;
+    background-image: url('../images/gray_jean.png');
+    z-index: 5;
+}
+
+.result_overlay_inside {
+    margin-top: 9px;
+    margin-left: 30px;
+    float: right;
+    padding: 15px;
+}
+
+.result {
+    position: relative;
+    background-color: white; 
+    padding: 8px 12px;
+    border-bottom: 1px solid gray;
+    min-height: 50px;
+}
+
+.no_result {
+    background-image: url('../images/gray_jean.png');
+}
+
+div.join_sole:hover {
+    background-color: green;
+    color: white;
+}
+
+div.leave_sole:hover {
+    background-color: red;
+    color: white;
+}
+
+.result:first-child, #create_form:first_child {
+    border-radius: 3 3 0 0;
+}
+
+.result:last-child, #create_form:last-child {
+    border-radius: 0 0 3 3;
+    border-bottom: 0px;
+}
+
+.result:only-child {
+    border-radius: 3px;
+}
+
+/*
+ * individual sole rows
+ */
+
+.sole_people {
+    float: right;
+}
+
+.sole_people a {
+    text-decoration: none;
+}
+
+.sole_people img {
+    height: 50px; 
+    width: 50px;
+}
+
+.join_sole {
+    border: 2px dashed green;
+    display: none;
+}
+
+.leave_sole {
+    border: 2px dashed red;
+    display: none;
+}
+
+.join_leave_sole {
+    vertical-align: top;
+    display: inline-block;
+    height: 44px;
+    min-width: 46px;
+    background-color: white;
+    text-align: center;
+}
+
+.join_leave_sole p {
+    margin-top: 12px;
+    margin-bottom: 10px
+}
+
+.sole_timing {
+    display: inline-block;
+    font-size: 20px;
+}
+
+/*
+ * button
+ */
+
+.button-link {
+    /* http://www.usabilitypost.com/2012/01/10/pressed-button-state-with-css3 */
+    font-size: 16px;
+    padding: 8px 15px;
+    color: #FFF;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.4);
+    -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 1px 1px rgba(0, 0, 0, 0.2);
+    -moz-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 1px 1px rgba(0, 0, 0, 0.2);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 1px 1px rgba(0, 0, 0, 0.2);
+    -webkit-transition-duration: 0.1s;
+    -moz-transition-duration: 0.1s;
+    transition-duration: 0.1s;
+    -webkit-user-select:none;
+    -moz-user-select:none;
+    -ms-user-select:none;
+    user-select:none;
+}
+
+.button_yes {
+    background: green;
+    border: solid 1px green;
+}
+
+.button_no {
+    background: red;
+    border: solid 1px red;
+}
+
+.button_info {
+    background: #a9a9a9;
+    /*border: solid 1px #a9a9a9;*/
+    color: white;
+}
+
+.button-link:hover {
+    text-decoration: none;
+}
+
+.button-link.button_yes:hover {
+    background: #004D00;
+    border: solid 1px #004D00;
+}
+
+.button-link.button_no:hover {
+    background: #C90000;
+    border: solid 1px #C90000;
+}
+
+.button-list.button_info:hover {
+    background: #878787;
+    border: solid 1px #878787;
+}
+
+.button-link:active {
+    -webkit-box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.6);
+    -moz-box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.6);
+    box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.6);
+}
