@@ -91,6 +91,11 @@ form input:focus {
     display: none;
 }
 
+#create {
+    padding-bottom: 15px;
+    padding-left: 8px;
+}
+
 #create_form {
     margin-left: 5px;
 }

@@ -32,6 +32,7 @@ app.views.SoleListView = Backbone.View.extend({
 
     render: function() {
         console.log("SoleListView:render");
+        this.$('#results').empty();
         if (app.collections.soles.length > 0) {
             app.collections.soles.each(this.renderOne, this);
         } else {
@@ -40,7 +41,7 @@ app.views.SoleListView = Backbone.View.extend({
             this.$('#results').html(t.html()); 
         }
 
-        this.$el.show();
+        this.show();
     },
 
     renderOne: function(m) {
@@ -51,4 +52,12 @@ app.views.SoleListView = Backbone.View.extend({
     noSoles: function() {
         console.log("SoleListView:noSoles");
     },
+
+    show: function() {
+        this.$el.show();
+    },
+
+    hide: function() {
+        this.$el.hide();
+    }
 });

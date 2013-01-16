@@ -10,13 +10,13 @@ app.views.SidebarView = Backbone.View.extend({
 
     initialize: function() {
         console.log("SidebarView:initialize");
-        _.bindAll(this, 'setupCourses', 'noCourses', 'changeCourse', 'moveInputUp', 'showCreateView');
+        _.bindAll(this, 'setupCourses', 'noCourses', 
+            'changeCourse', 'moveInputUp', 'showCreateView');
         this.bind('animateUp', this.moveInputUp);
         this.bind('changeCourse', this.changeCourse);
 
         this.$input = this.$('#course_input');
 
-        // get the list of courses from the server and setup the input box when ready
         app.collections.courses.fetch({
             'success': this.setupCourses, 
             'error': this.noCourses
@@ -25,6 +25,19 @@ app.views.SidebarView = Backbone.View.extend({
 
     showCreateView: function() {
         console.log("SidebarView:showCreateView");
+        app.views.create = new app.views.CreateView({course_id: this.course_id});
+        app.views.create.on('cancelCreate', this.showSoleListView);
+        app.views.solelist.hide();
+        app.views.create.show();
+    },
+
+    showSoleListView: function() {
+        console.log("SidebarView:showResultsView");
+        if (!app.views.solelist)
+            app.views.solelist = new app.views.SoleListView({course_id: this.course_id});
+        app.views.solelist.on('showCreateView', this.showCreateView);
+        app.views.create.hide();
+        app.views.solelist.show();
     },
 
     setupCourses: function() {
@@ -64,7 +77,8 @@ app.views.SidebarView = Backbone.View.extend({
             this.course_id = e;
         }
 
-        // reset and render the list of soles
+        if (app.views.create)
+            app.views.create.hide();
         app.views.solelist = new app.views.SoleListView({course_id: this.course_id});
         app.views.solelist.on('showCreateView', this.showCreateView);
         app.router.navigate("course/" + this.course_id);
