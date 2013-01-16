@@ -1,9 +1,9 @@
 import requests
 import logging
 import settings
-import signed_request
 import urlparse
 import ujson as json
+from utils import signed_request
 
 def get_data_from_cookie(request):
     """looks for a facebook cookie containing a signed_request,

@@ -1,11 +1,7 @@
 import ujson as json
 
-import auth
-import facebook
-import geo
-from models import Course
-from models import Sole
-from models import User
+from utils import auth, facebook, geo
+from models import Course, Sole, User
 
 from flask import Flask, render_template, request
 from pymongo import MongoClient
@@ -21,7 +17,7 @@ def get_home():
     }
     fb_d, err = facebook.get_data_from_cookie(request)
     params['facebook_id'] = fb_d.get('user_id', '')
-    return render_template("home.html", **params)
+    return render_template("index.html", **params)
 
 ###
 ### Course routes
