@@ -34,14 +34,4 @@ app.collections.SoleCollection = Backbone.Collection.extend({
             console.log("SoleCollection: add triggered");
         });
     },
-    localStorage: new Backbone.LocalStorage('sole-backbone'),
-    nextOrder: function() {
-        if (!this.length) {
-            return 1;
-        }
-        return this.last().get('order') + 1;
-    },
-    order: function(sole) {
-        return sole.get('order');
-    }
 });

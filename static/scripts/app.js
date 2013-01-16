@@ -9,12 +9,12 @@ var Workspace = Backbone.Router.extend({
     },
     home: function() {
         console.log("router: home")
-        app.views.sidebar = new app.views.SidebarView({position: 'down'});
+        app.views.sidebar = new app.views.SidebarView();
         this.navigate("/");
     },
     course: function(id) {
         console.log("router: course")
-        app.views.sidebar = new app.views.SidebarView({position: 'up', id: id});
+        app.views.sidebar = new app.views.SidebarView({course_id: id});
         this.navigate("course/" + id);
     },
     initialize: function() {

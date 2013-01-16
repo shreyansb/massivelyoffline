@@ -5,12 +5,14 @@ app.views.SidebarView = Backbone.View.extend({
     el: '#sidebar',
 
     events: {
-        'change #course_input': 'courseChange',
+        'change #course_input': 'changeCourse',
     },
 
     initialize: function() {
-        console.log("SidebarView: initialize");
-        _.bindAll(this, 'setupCourses', 'noCourses', 'courseChange', 'moveInputUp');
+        console.log("SidebarView:initialize");
+        _.bindAll(this, 'setupCourses', 'noCourses', 'changeCourse', 'moveInputUp');
+        this.bind('animateUp', this.moveInputUp);
+        this.bind('changeCourse', this.changeCourse);
 
         this.$input = this.$('#course_input');
 
@@ -20,44 +22,51 @@ app.views.SidebarView = Backbone.View.extend({
             'error': this.noCourses
         });
 
-        // deal with the position of the input bar
-        this.bind('animateUp', this.moveInputUp);
-        this.position = 'down';
-        if (this.options.position == 'up') {
-            console.log("SidebarView:initialize trying to animate up");
-            this.trigger('animateUp');
-        }
-
         return this;
     },
 
     setupCourses: function() {
-        console.log("SidebarView: setupCourses");
+        console.log("SidebarView:setupCourses");
         this.$input.select2({
             width: "600px",
             placeholder: "What class are you taking?",
-            data: app.collections.courses.toJSON()
+            data: app.collections.courses.toJSON(),
+            initSelection: function() {}
         });
         this.$input.select2("focus");
         app.collections.courses.toDict();
-    },
 
-    noCourses: function() {
-        console.log("SidebarView: couldn't get courses for the dropdown");
-    },
-
-    courseChange: function(e) {
-        console.log("SidebarView: courseChange");
-        this.current = e.val;
-        //console.log(app.collections.courses.asDict[this.current]);
-        if (this.position == 'down') {
-            console.log("SidebarView:courseChange trying to animate up");
-            this.trigger('animateUp');
+        this.position = 'down';
+        if (this.options.course_id) {
+            this.course_id = this.options.course_id;
+            console.log("SidebarView:setupCourses changing to", this.course_id);
+            this.$input.select2("val", this.course_id);
+            this.trigger('changeCourse', this.course_id);
         }
     },
 
+    noCourses: function(e) {
+        console.log("SidebarView:noCourses error!");
+        console.log(e);
+    },
+
+    changeCourse: function(e) {
+        console.log("SidebarView:changeCourse");
+        if (this.position == 'down') {
+            this.trigger('animateUp');
+        }
+
+        if (typeof(e) == "object") {
+            this.course_id = e.val;
+        } else if (typeof(e) == "string") {
+            this.course_id = e;
+        }
+
+        // create a new soleList view
+        app.views.solelist = new app.views.SoleListView({course_id: this.course_id});
+    },
+
     moveInputUp: function() {
-        console.log("SidebarView:moveInputUp");
         $('#course').find('h1').fadeOut(150);
         $('#course').find('h2').fadeOut(150);
         $('#sidebar').animate({ top: "10%" }, 200); 
