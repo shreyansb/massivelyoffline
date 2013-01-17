@@ -29,6 +29,7 @@ def get_courses():
     return json.dumps(r)
 
 @app.route("/course/<course_id>/sole", methods=["GET"])
+@app.route("/course/<course_id>/sole/", methods=["GET"])
 def get_soles_for_course(course_id):
     lat = request.args.get('lat')
     lon = request.args.get('lon')
@@ -60,11 +61,16 @@ def get_sole_by_id(sole_id):
     """Returns details of a specific sole"""
     return []
 
-@app.route("/sole", methods=["POST"])
-def post_sole():
+@app.route("/course/<course_id>/sole", methods=["PUT"])
+@app.route("/course/<course_id>/sole/", methods=["PUT"])
+def put_sole(course_id):
     """Create a new sole.
     Expects a course_id, location, date, and time
     """
+    app.logger.info(request.form)
+    app.logger.info(request.args)
+    app.logger.info(request)
+
     user, err = auth.get_user(db, request)
 
     if not user:
@@ -82,6 +88,7 @@ def post_sole():
         'course_id': request.form.get('course_id'),
         'user_id': user_id
     }
+    app.logger.info(s)
     for k, v in s.iteritems():
         if not v:
             return json_error("missing attribute")
