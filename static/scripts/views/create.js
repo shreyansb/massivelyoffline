@@ -140,15 +140,16 @@ app.views.CreateView = Backbone.View.extend({
         this.$el.off("click", "#create_submit");
         this.$el.off("click", "#create_cancel");
         this.$el.off("click", "#create_find_address");
+        this.$el.off();
     },
 
     datesForDropdown: function() {
         var days = [];
         for (var i=0; i<14; i++) {
             var m = moment().add('days', i);
-            days.push({'id':m.format(), 'text': m.format('dddd, Do MMMM')})
+            days.push({'id':m.format(), 'text': m.format('dddd, Do MMMM')});
         }
-        return days
+        return days;
     },
 
     timesForDropdown: function() {

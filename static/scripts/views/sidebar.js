@@ -12,7 +12,7 @@ app.views.SidebarView = Backbone.View.extend({
         console.log("SidebarView:initialize");
         _.bindAll(this, 'setupCourses', 'noCourses', 
             'changeCourse', 'moveInputUp', 'showCreateView',
-            'showSoleListView');
+            'showSoleListView', 'hideCreateView', 'hideSoleListView');
         this.bind('animateUp', this.moveInputUp);
         this.bind('changeCourse', this.changeCourse);
 
@@ -34,6 +34,7 @@ app.views.SidebarView = Backbone.View.extend({
     },
 
     hideCreateView: function() {
+        app.views.create.clearEvents();
         app.views.create.hide();
         app.views.create.off();
         app.views.create = undefined;
