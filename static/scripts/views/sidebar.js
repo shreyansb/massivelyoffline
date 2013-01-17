@@ -12,7 +12,7 @@ app.views.SidebarView = Backbone.View.extend({
         console.log("SidebarView:initialize");
         _.bindAll(this, 'setupCourses', 'noCourses', 
             'changeCourse', 'moveInputUp', 'showCreateView',
-            'showSoleListView', 'renderSoleListView');
+            'showSoleListView');
         this.bind('animateUp', this.moveInputUp);
         this.bind('changeCourse', this.changeCourse);
 
@@ -29,23 +29,29 @@ app.views.SidebarView = Backbone.View.extend({
         app.views.create = new app.views.CreateView({course_id: this.course_id});
         app.views.create.on('cancelCreate', this.showSoleListView);
         app.views.create.on('doneCreate', this.showSoleListView);
-        app.views.solelist.hide();
+        this.hideSoleListView();
         app.views.create.show();
     },
 
-    renderSoleListView: function() {
-        this.showSoleListView();
-        app.views.solelist.render();
-        console.log("SidebarView:showResultsView");
+    hideCreateView: function() {
+        app.views.create.hide();
+        app.views.create.off();
+        app.views.create = undefined;
     },
 
     showSoleListView: function() {
-        console.log("SidebarView:showResultsView");
+        console.log("SidebarView:showSoleListView");
         if (!app.views.solelist)
             app.views.solelist = new app.views.SoleListView({course_id: this.course_id});
         app.views.solelist.on('showCreateView', this.showCreateView);
-        app.views.create.hide();
+        this.hideCreateView();
+        app.views.solelist.render();
         app.views.solelist.show();
+    },
+
+    hideSoleListView: function() {
+        app.views.solelist.hide();
+        app.views.solelist.off();
     },
 
     setupCourses: function() {
@@ -85,8 +91,9 @@ app.views.SidebarView = Backbone.View.extend({
             this.course_id = e;
         }
 
-        if (app.views.create)
-            app.views.create.hide();
+        if (app.views.create) {
+            this.hideCreateView();
+        }
         app.views.solelist = new app.views.SoleListView({course_id: this.course_id});
         app.views.solelist.on('showCreateView', this.showCreateView);
         app.router.navigate("course/" + this.course_id);

@@ -19,7 +19,6 @@ app.views.SoleListView = Backbone.View.extend({
         app.collections.soles = new app.collections.SoleCollection([], {
             course_id: this.course_id
         });
-        app.collections.soles.on("add", this.render());
         app.collections.soles.fetch({
             'success': this.render,
             'error': this.noSoles

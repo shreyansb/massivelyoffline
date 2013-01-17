@@ -3,6 +3,7 @@ app.models = app.models || {};
 app.collections = app.collections || {};
 
 app.models.Sole = Backbone.Model.extend({
+        /*
     defaults: {
         "id" : "",
         "user_id" : "",
@@ -14,12 +15,8 @@ app.models.Sole = Backbone.Model.extend({
         "lon" : "",
         "time" : "",
         "day" : ""
-    },
-    initialize: function() {
-        this.on('change:student_ids', function() {
-            console.log('Sole: student_ids changed');
-        });
     }
+    */
 });
 
 app.collections.SoleCollection = Backbone.Collection.extend({
@@ -28,6 +25,7 @@ app.collections.SoleCollection = Backbone.Collection.extend({
         return '/course/' + this.course_id + '/sole';
     },
     initialize: function(models, options) {
+        _.bindAll(this, "url");
         if (!options.course_id) {
             console.log("SoleCollection:initialize course_id missing");
         }

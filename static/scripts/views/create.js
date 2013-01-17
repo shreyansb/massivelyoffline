@@ -1,5 +1,6 @@
 var app = app || {};
 app.views = app.views || {};
+app.collections = app.collections || {};
 
 app.views.CreateView = Backbone.View.extend({
     el: '#create_container',
@@ -14,7 +15,8 @@ app.views.CreateView = Backbone.View.extend({
         console.log("CreateView:initialize", this.options.course_id);
         _.bindAll(this, "cancel", "submit", "render", "validate", "findAddress",
             "geocodeSuccess", "geocodeError", "show", "hide", "datesForDropdown",
-            "timesForDropdown", "select2", "loginSuccess", "loginError", "create");
+            "timesForDropdown", "select2", "loginSuccess", "loginError", "create",
+            "triggerDone", "clearEvents");
 
         this.course_id = this.options.course_id;
         this.select2();
@@ -39,18 +41,20 @@ app.views.CreateView = Backbone.View.extend({
     
     cancel: function() {
         console.log("CreateView:cancel");
+        this.clearEvents();
         this.trigger("cancelCreate");
     }, 
 
-    submit: function() {
+    submit: function(e) {
+        this.clearEvents();
         console.log("CreateView:submit");
         var errors = this.validate();
-        console.log(errors);
         if (errors.length == 0) {
-            app.fb.loginStatus(this.loginSuccess, this.loginError);
+            var that = this;
+            app.fb.loginStatus(that.loginSuccess, that.loginError);
         } else {
-
             // deal with errors
+            console.log(errors);
             $('create_form_message').html(errors);
         }
     },
@@ -75,14 +79,12 @@ app.views.CreateView = Backbone.View.extend({
             'course_id': this.course_id,
             'facebook_access_token': app.fb.resp.authResponse.accessToken
         };
-        console.log(params);
-        if (!app.collections.soles) {
-            app.collections.soles = new app.collections.SoleCollection([], { 
-                'course_id': this.course_id 
-            });
-        }
-        app.collections.soles.create(params, {wait: true});
+        var that = this;
+        app.collections.soles.create(params, {success: that.triggerDone});
+    },
 
+    triggerDone: function() {
+        console.log("CreateView:triggerDone");
         this.trigger("doneCreate");
     },
 
@@ -100,6 +102,7 @@ app.views.CreateView = Backbone.View.extend({
     },
 
     findAddress: function() {
+        console.log("CreateView:findAddress");
         var a = $('#create_address').val();
         if (a === "") {
             this.geocodeError();
@@ -122,6 +125,7 @@ app.views.CreateView = Backbone.View.extend({
 
     render: function() {
         console.log("SoleListView:render");
+        return this;
     },
 
     show: function() {
@@ -130,6 +134,12 @@ app.views.CreateView = Backbone.View.extend({
 
     hide: function() {
         this.$el.hide();
+    },
+
+    clearEvents: function() {
+        this.$el.off("click", "#create_submit");
+        this.$el.off("click", "#create_cancel");
+        this.$el.off("click", "#create_find_address");
     },
 
     datesForDropdown: function() {
