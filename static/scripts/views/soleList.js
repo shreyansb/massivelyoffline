@@ -13,7 +13,7 @@ app.views.SoleListView = Backbone.View.extend({
         _.bindAll(this, "createSole", "render", "renderOne", "show", "hide", "removeSubviews");
 
         this.course_id = this.options.course_id;
-        this.$('#results').empty();
+        this.subviews = [];
     },
     
     createSole: function() {
@@ -27,13 +27,13 @@ app.views.SoleListView = Backbone.View.extend({
         var r = $('script#results_template');
         this.$el.html(r.html())
 
-        this.$el.find('#results').empty();
+        this.$('#results').empty();
         if (app.collections.soles.length > 0) {
             app.collections.soles.each(this.renderOne, this);
         } else {
             // show the 'no result' template
             var t = $('script#no_results');
-            this.$el.find('#results').html(t.html()); 
+            this.$('#results').html(t.html()); 
         }
 
         return this;
@@ -42,6 +42,7 @@ app.views.SoleListView = Backbone.View.extend({
     renderOne: function(m) {
         var v = new app.views.SoleView({model: m});
         this.$('#results').append(v.render().el);
+        this.subviews.push(v);
     },
 
     show: function() {
@@ -54,5 +55,10 @@ app.views.SoleListView = Backbone.View.extend({
 
     removeSubviews: function() {
         console.log("SoleListView:removeSubviews");
+        _.each(this.subviews, function(sv) {
+            sv.off();
+            sv.remove();
+        });
+        this.subviews = [];
     },
 });
