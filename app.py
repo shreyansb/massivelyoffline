@@ -1,6 +1,6 @@
 import ujson as json
 
-from utils import auth, facebook, geo
+from utils import auth, geo
 from models import Course, Sole, User
 
 from flask import Flask, render_template, request
@@ -12,11 +12,12 @@ db = MongoClient()
 @app.route("/", methods=["GET"])
 def get_home():
     loc = geo.loc_from_ip(request.remote_addr)
+    user, err = auth.get_user(db, request)
     params = {
-        'loc': json.dumps(loc)
+        'loc': json.dumps(loc),
+        'facebook_id': user.get('facebook_id', ''),
+        'user_id': user.get('id', '')
     }
-    fb_d, err = facebook.get_data_from_cookie(request)
-    params['facebook_id'] = fb_d.get('user_id', '')
     return render_template("index.html", **params)
 
 ###
@@ -59,6 +60,39 @@ def get_soles():
 def get_sole_by_id(sole_id):
     """Returns details of a specific sole"""
     return []
+
+@app.route("/course/<course_id>/sole/<sole_id>", methods=["PATCH"])
+def patch_sole(course_id, sole_id):
+    user, err = auth.get_user(db, request)
+
+    if not user:
+        return json_error("User not found")
+
+    sole = Sole.get_by_id(db, sole_id)
+    if not sole:
+        return json_error("that study group doesn't exist")
+
+    data = json.loads(request.data)
+
+    # if the new set of student ids makes sense, use them
+    current_sids = sole.get(Sole.A_STUDENT_IDS)
+    new_sids = data.get(Sole.A_STUDENT_IDS)
+    user_id = user.get('id')
+    resp = None
+    if (set(current_sids) - set(new_sids)) == set([user_id]):
+        resp = Sole.leave_sole_by_id(db, sole_id, user_id)
+    elif (set(new_sids) - set(current_sids)) == set([user_id]):
+        resp = Sole.join_sole_by_id(db, sole_id, user_id)
+    else:
+        return json_error("Invalid new student_ids")
+
+    # return the new model
+    if resp:
+        s = Sole.get_by_id(db, sole_id)
+        ns = User.update_sole_with_students(db, s)
+        return json.dumps(ns)
+    else:
+        return json_error("Some other error")
 
 @app.route("/course/<course_id>/sole", methods=["POST"])
 def post_sole(course_id):

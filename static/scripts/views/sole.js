@@ -13,7 +13,9 @@ app.views.SoleView = Backbone.View.extend({
 
     initialize: function() {
         console.log("SoleView:initialize");
-        _.bindAll(this, "render", "confirm", "act", "cancel", "format");
+        _.bindAll(this, "render", "confirm", "act", "cancel", "format",
+            "actSuccess", "actError");
+        this.action = undefined;
     },
 
     render: function() {
@@ -49,11 +51,43 @@ app.views.SoleView = Backbone.View.extend({
 
     confirm: function(e) {
         var t = $('script#results_overlay').html();
+        if ($(e.currentTarget).hasClass('join_sole')) {
+            this.action = 'join';
+        } else {
+            this.action = 'leave';
+        }
         this.$el.append(t);
     },
 
     act: function(e) {
-        console.log("SoleView: act", e);
+        console.log("SoleView:act", e);
+        // TODO clean up user stuff. user model?
+        if (window.sole_user_id != "" && this.action) {
+            var sids = this.model.get('student_ids');
+            if (this.action == 'join') {
+                sids.push(window.sole_user_id);
+            } else if (this.action == 'leave') {
+                sids = _.without(sids, window.sole_user_id);
+            }
+            var that = this;
+            this.model.save({'student_ids': sids}, {
+                patch: true,
+                success: that.actSuccess,
+                error: that.actError
+            });
+        }
+    },
+
+    actSuccess: function(m, r, o) {
+        console.log("SoleView:actSuccess");
+        this.$('.result_overlay').remove();
+        this.action = undefined;
+        this.render();
+    },
+
+    actError: function(m, x, o) {
+        console.log("SoleView:actError");
+        this.$('.result_overlay').remove();
     },
 
     cancel: function(e) {

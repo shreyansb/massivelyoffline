@@ -7,6 +7,10 @@ var Workspace = Backbone.Router.extend({
         'course/:id': 'course',
         '*other': 'home'
     },
+    initialize: function() {
+        console.log("router: initialize");
+        app.collections.courses = new app.collections.CourseCollection();
+    },
     home: function() {
         console.log("router: home")
         app.views.sidebar = new app.views.SidebarView();
@@ -16,10 +20,6 @@ var Workspace = Backbone.Router.extend({
         console.log("router: course")
         app.views.sidebar = new app.views.SidebarView({course_id: id});
         this.navigate("course/" + id);
-    },
-    initialize: function() {
-        console.log("router: initialize");
-        app.collections.courses = new app.collections.CourseCollection();
     }
 });
 
