@@ -48,7 +48,8 @@ app.views.SoleView = Backbone.View.extend({
     },
 
     confirm: function(e) {
-        console.log("SoleView: confirm", e);
+        var t = $('script#results_overlay').html();
+        this.$el.append(t);
     },
 
     act: function(e) {
@@ -56,6 +57,6 @@ app.views.SoleView = Backbone.View.extend({
     },
 
     cancel: function(e) {
-        console.log("SoleView: cancel", e);
+        this.$('.result_overlay').remove();
     }
 });
