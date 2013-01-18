@@ -10,6 +10,7 @@ var Workspace = Backbone.Router.extend({
     initialize: function() {
         console.log("router: initialize");
         app.collections.courses = new app.collections.CourseCollection();
+        app.views.map = new app.views.MapView();
     },
     home: function() {
         console.log("router: home")
