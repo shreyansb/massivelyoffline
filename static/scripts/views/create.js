@@ -16,7 +16,7 @@ app.views.CreateView = Backbone.View.extend({
         _.bindAll(this, "cancel", "submit", "render", "validate", "findAddress",
             "geocodeSuccess", "geocodeError", "show", "hide", "datesForDropdown",
             "timesForDropdown", "select2", "loginSuccess", "loginError", "create",
-            "triggerDone", "clearEvents");
+            "triggerDone");
 
         this.course_id = this.options.course_id;
     },
@@ -41,12 +41,10 @@ app.views.CreateView = Backbone.View.extend({
     
     cancel: function() {
         console.log("CreateView:cancel");
-        this.clearEvents();
         this.trigger("cancelCreate");
     }, 
 
     submit: function(e) {
-        this.clearEvents();
         console.log("CreateView:submit");
         var errors = this.validate();
         if (errors.length == 0) {
@@ -139,13 +137,6 @@ app.views.CreateView = Backbone.View.extend({
 
     hide: function() {
         this.$el.hide();
-    },
-
-    clearEvents: function() {
-        this.$el.off("click", "#create_submit");
-        this.$el.off("click", "#create_cancel");
-        this.$el.off("click", "#create_find_address");
-        this.$el.off();
     },
 
     datesForDropdown: function() {

@@ -11,8 +11,8 @@ app.views.SidebarView = Backbone.View.extend({
     initialize: function() {
         console.log("SidebarView:initialize");
         _.bindAll(this, 'setupCourses', 'noCourses', 'changeCourse', 'moveInputUp', 
-            'deleteCreateView', 'deleteSoleListView', 'createCreateView', 'createSoleListView',
-            'swapToCreateView', 'swapToCreateView');
+            'destroyCreateView', 'destroySoleListView', 'createCreateView', 'createSoleListView',
+            'swapToCreateView', 'swapToSoleListView');
         this.bind('animateUp', this.moveInputUp);
         this.bind('changeCourse', this.changeCourse);
 
@@ -61,10 +61,10 @@ app.views.SidebarView = Backbone.View.extend({
         }
 
         if (app.views.create) {
-            this.deleteCreateView();
+            this.destroyCreateView();
         }
         if (app.views.solelist) {
-            this.deleteSoleListView();
+            this.destroySoleListView();
         }
 
         // initialize the collection for this view
@@ -77,15 +77,15 @@ app.views.SidebarView = Backbone.View.extend({
         });
     },
     
-    deleteCreateView: function() {
-        console.log("SidebarView:deleteCreateView");
+    destroyCreateView: function() {
+        console.log("SidebarView:destroyCreateView");
         app.views.create.off();
         app.views.create.remove();
         app.views.create = undefined;
     },
 
-    deleteSoleListView: function() {
-        console.log("SidebarView:deleteCreateView");
+    destroySoleListView: function() {
+        console.log("SidebarView:destroyCreateView");
         app.views.solelist.off();
         app.views.solelist.removeSubviews();
         app.views.solelist.remove();
@@ -103,20 +103,20 @@ app.views.SidebarView = Backbone.View.extend({
     createCreateView: function() {
         console.log("SidebarView:createCreateView");
         app.views.create = new app.views.CreateView({course_id: this.course_id});
-        app.views.create.on('cancelCreate', this.swapToSoleListViewo);
-        app.views.create.on('doneCreate', this.swapToSoleListViewo);
+        app.views.create.on('cancelCreate', this.swapToSoleListView);
+        app.views.create.on('doneCreate', this.swapToSoleListView);
         $('#create_container').append(app.views.create.render().el);
     },
 
     swapToCreateView: function() {
         console.log("SidebarView:swapToCreateView");
-        this.deleteSoleListView();
+        this.destroySoleListView();
         this.createCreateView();
     },
 
     swapToSoleListView: function() {
         console.log("SidebarView:swapToSoleListView");
-        this.deleteCreateView();
+        this.destroyCreateView();
         this.createSoleListView();
     },
 

@@ -27,13 +27,13 @@ app.views.SoleListView = Backbone.View.extend({
         var r = $('script#results_template');
         this.$el.html(r.html())
 
-        this.$('#results').empty();
+        this.$el.find('#results').empty();
         if (app.collections.soles.length > 0) {
             app.collections.soles.each(this.renderOne, this);
         } else {
             // show the 'no result' template
             var t = $('script#no_results');
-            this.$el.$('#results').html(t.html()); 
+            this.$el.find('#results').html(t.html()); 
         }
 
         return this;
