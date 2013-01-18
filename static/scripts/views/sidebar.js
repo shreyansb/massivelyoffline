@@ -10,9 +10,9 @@ app.views.SidebarView = Backbone.View.extend({
 
     initialize: function() {
         console.log("SidebarView:initialize");
-        _.bindAll(this, 'setupCourses', 'noCourses', 
-            'changeCourse', 'moveInputUp', 'showCreateView',
-            'showSoleListView', 'hideCreateView', 'hideSoleListView');
+        _.bindAll(this, 'setupCourses', 'noCourses', 'changeCourse', 'moveInputUp', 
+            'deleteCreateView', 'deleteSoleListView', 'createCreateView', 'createSoleListView',
+            'swapToCreateView', 'swapToCreateView');
         this.bind('animateUp', this.moveInputUp);
         this.bind('changeCourse', this.changeCourse);
 
@@ -22,37 +22,6 @@ app.views.SidebarView = Backbone.View.extend({
             'success': this.setupCourses, 
             'error': this.noCourses
         });
-    },
-
-    showCreateView: function() {
-        console.log("SidebarView:showCreateView");
-        app.views.create = new app.views.CreateView({course_id: this.course_id});
-        app.views.create.on('cancelCreate', this.showSoleListView);
-        app.views.create.on('doneCreate', this.showSoleListView);
-        this.hideSoleListView();
-        app.views.create.show();
-    },
-
-    hideCreateView: function() {
-        app.views.create.clearEvents();
-        app.views.create.hide();
-        app.views.create.off();
-        app.views.create = undefined;
-    },
-
-    showSoleListView: function() {
-        console.log("SidebarView:showSoleListView");
-        if (!app.views.solelist)
-            app.views.solelist = new app.views.SoleListView({course_id: this.course_id});
-        app.views.solelist.on('showCreateView', this.showCreateView);
-        this.hideCreateView();
-        app.views.solelist.render();
-        app.views.solelist.show();
-    },
-
-    hideSoleListView: function() {
-        app.views.solelist.hide();
-        app.views.solelist.off();
     },
 
     setupCourses: function() {
@@ -69,7 +38,6 @@ app.views.SidebarView = Backbone.View.extend({
         this.position = 'down';
         if (this.options.course_id) {
             this.course_id = this.options.course_id;
-            console.log("SidebarView:setupCourses changing to", this.course_id);
             this.$input.select2("val", this.course_id);
             this.trigger('changeCourse', this.course_id);
         }
@@ -93,11 +61,63 @@ app.views.SidebarView = Backbone.View.extend({
         }
 
         if (app.views.create) {
-            this.hideCreateView();
+            this.deleteCreateView();
         }
+        if (app.views.solelist) {
+            this.deleteSoleListView();
+        }
+
+        // initialize the collection for this view
+        app.collections.soles = new app.collections.SoleCollection([], {
+            course_id: this.course_id
+        });
+        app.collections.soles.fetch({
+            'success': this.createSoleListView,
+            'error': this.createSoleListView
+        });
+    },
+    
+    deleteCreateView: function() {
+        console.log("SidebarView:deleteCreateView");
+        app.views.create.off();
+        app.views.create.remove();
+        app.views.create = undefined;
+    },
+
+    deleteSoleListView: function() {
+        console.log("SidebarView:deleteCreateView");
+        app.views.solelist.off();
+        app.views.solelist.removeSubviews();
+        app.views.solelist.remove();
+        app.views.solelist = undefined;
+    },
+
+    createSoleListView: function() {
+        console.log("SidebarView:createSoleListView");
         app.views.solelist = new app.views.SoleListView({course_id: this.course_id});
-        app.views.solelist.on('showCreateView', this.showCreateView);
+        app.views.solelist.on('showCreateView', this.swapToCreateView);
+        $('#results_container').append(app.views.solelist.render().el);
         app.router.navigate("course/" + this.course_id);
+    },
+
+    createCreateView: function() {
+        console.log("SidebarView:createCreateView");
+        app.views.create = new app.views.CreateView({course_id: this.course_id});
+        app.views.create.on('cancelCreate', this.swapToSoleListViewo);
+        app.views.create.on('doneCreate', this.swapToSoleListViewo);
+        $('#create_container').append(app.views.create.render().el);
+    },
+
+    swapToCreateView: function() {
+        console.log("SidebarView:swapToCreateView");
+        this.deleteSoleListView();
+        this.createCreateView();
+    },
+
+    swapToSoleListView: function() {
+        console.log("SidebarView:swapToSoleListView");
+        this.deleteCreateView();
+        this.createSoleListView();
     },
 
     moveInputUp: function() {

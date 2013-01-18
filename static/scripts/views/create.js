@@ -3,7 +3,7 @@ app.views = app.views || {};
 app.collections = app.collections || {};
 
 app.views.CreateView = Backbone.View.extend({
-    el: '#create_container',
+    tagName: 'div',
 
     events: {
         'click #create_cancel': 'cancel',
@@ -19,18 +19,18 @@ app.views.CreateView = Backbone.View.extend({
             "triggerDone", "clearEvents");
 
         this.course_id = this.options.course_id;
-        this.select2();
     },
 
     select2: function() {
-        $('#create_day').select2({
+        console.log("CreateView:select2");
+        this.$el.find('#create_day').select2({
             width: '250px',
             allowClear: true,
             placeholder: "What day are you available?",
             data: this.datesForDropdown(),
             initSelection: function() {}
         });
-        $('#create_time').select2({
+        this.$el.find('#create_time').select2({
             width: '150px',
             allowClear: true,
             placeholder: "At what time?",
@@ -125,6 +125,11 @@ app.views.CreateView = Backbone.View.extend({
 
     render: function() {
         console.log("SoleListView:render");
+
+        var t = $('script#create_template');
+        this.$el.html(t.html())
+        this.select2();
+
         return this;
     },
 

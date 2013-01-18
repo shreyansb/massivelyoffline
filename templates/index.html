@@ -45,54 +45,56 @@
             </form>
         </div>
 
-        <div id="results_container">
-            <div id="results" class="gray_outline">
-            </div>
-            <div id="create_actions" class="gray_outline">
-                <span id="create_call_to_action">
-                    Don't see one that works?
-                </span>
-                <button id="create_start" class="button-link button_yes">
-                    start one
-                </button>
-            </div>
-        </div>
-
-        <div id="create_container">
-            <div id="create" class="gray_outline">
-                <div id="create_form_heading">Get together.
-                    <span id="create_form_message"></span>
-                </div>
-
-                <form id="create_form">
-                    <div class="create_form_row"> 
-                        <input id="create_day" type="hidden" />
-                        <input id="create_time" type="hidden" />
-                    </div>
-
-                    <div class="create_form_row">  
-                        <input id="create_address" type="text"
-                        placeholder="near address">
-                        <a id="create_find_address" class="button-link button_info">
-                            find address
-                        </a>
-                    </div>
-                </form>
-            </div>
-            <div id="create_actions" class="gray_outline">
-                <span id="create_cancel">
-                    cancel
-                </span>
-                <button id="create_submit" class="button-link button_yes">
-                    submit
-                </button>
-            </div>
-        </div>
-
+        <div id="results_container"></div>
+        <div id="create_container"></div>
 
     </div>
-
     {% raw %}
+
+    <script id="results_template" type="text/template">
+        <div id="results" class="gray_outline">
+        </div>
+        <div id="create_actions" class="gray_outline">
+            <span id="create_call_to_action">
+                Don't see one that works?
+            </span>
+            <button id="create_start" class="button-link button_yes">
+                start one
+            </button>
+        </div>
+    </script>
+
+    <script id="create_template" type="text/template">
+        <div id="create" class="gray_outline">
+            <div id="create_form_heading">Get together.
+                <span id="create_form_message"></span>
+            </div>
+
+            <form id="create_form">
+                <div class="create_form_row"> 
+                    <input id="create_day" type="hidden" />
+                    <input id="create_time" type="hidden" />
+                </div>
+
+                <div class="create_form_row">  
+                    <input id="create_address" type="text"
+                    placeholder="near address">
+                    <a id="create_find_address" class="button-link button_info">
+                        find address
+                    </a>
+                </div>
+            </form>
+        </div>
+        <div id="create_actions" class="gray_outline">
+            <span id="create_cancel">
+                cancel
+            </span>
+            <button id="create_submit" class="button-link button_yes">
+                submit
+            </button>
+        </div>
+    </script>
+
     <script id="results_row" type="text/template">
         <div class="sole_timing">
             {{day}}<br/>
