@@ -9,18 +9,30 @@ var Workspace = Backbone.Router.extend({
     },
     initialize: function() {
         console.log("router: initialize");
+        _.bindAll(this, "home", "course", "createSidebar");
         app.collections.courses = new app.collections.CourseCollection();
         app.views.map = new app.views.MapView();
     },
     home: function() {
         console.log("router: home")
-        app.views.sidebar = new app.views.SidebarView();
+        this.createSidebar();
         this.navigate("/");
     },
-    course: function(id) {
+    course: function(course_id) {
         console.log("router: course")
-        app.views.sidebar = new app.views.SidebarView({course_id: id});
-        this.navigate("course/" + id);
+        this.createSidebar(course_id);
+        this.navigate("course/" + course_id);
+    },
+    createSidebar: function(course_id) {
+        if (typeof(course_id) === "undefined") {
+            app.views.sidebar = new app.views.SidebarView();
+        } else {
+            app.views.sidebar = new app.views.SidebarView({course_id: course_id});
+        }
+        app.views.sidebar.on("updateMarkers", function() {
+            console.log("Workspace:createSidebar:updateMarkers");
+            app.views.map.dfd.done(app.views.map.resetAndAddCollectionMarkers);
+        });
     }
 });
 
