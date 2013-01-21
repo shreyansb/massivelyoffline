@@ -31,7 +31,7 @@ var Workspace = Backbone.Router.extend({
         }
         app.views.sidebar.on("updateMarkers", function() {
             console.log("Workspace:createSidebar:updateMarkers");
-            app.views.map.dfd.done(app.views.map.resetAndAddCollectionMarkers);
+            app.views.map.trigger("updateMarkers");
         });
     }
 });

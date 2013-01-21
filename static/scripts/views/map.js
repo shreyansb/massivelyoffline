@@ -14,6 +14,10 @@ app.views.MapView = Backbone.View.extend({
         this.baseMapId = 'shreyansb.map-d6wn3q7b';
         this.streetsMapId = 'shreyansb.map-1btgpwx1';
         this.load();
+        this.on("updateMarkers", function() {
+            console.log("MapView:updateMarkers");
+            this.dfd.done(this.resetAndAddCollectionMarkers);
+        });
     },
 
     load: function() {
@@ -57,8 +61,8 @@ app.views.MapView = Backbone.View.extend({
     },
 
     addCollectionMarkers: function() {
-        console.log("MapView:addCollectionMarkers");
         // add all the soles in the current collection to the map
+        console.log("MapView:addCollectionMarkers");
         if (app.collections.soles) {
             var that = this;
             _.each(app.collections.soles.toJSON(), function(s) {
