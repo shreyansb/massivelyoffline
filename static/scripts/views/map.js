@@ -7,6 +7,7 @@ app.views.MapView = Backbone.View.extend({
     initialize: function() {
         _.bindAll(this, "load", "setupMarkerLayer", "reset",
             "addCollectionMarkers", "addMarker", "resetAndAddCollectionMarkers");
+        this.dfd = new $.Deferred();  // to be used with mapbox.load
         this.map = undefined;
         this.markers = undefined;
         this.defaultLat = window.sole_ip_loc.latitude;
@@ -15,7 +16,6 @@ app.views.MapView = Backbone.View.extend({
         this.streetsMapId = 'shreyansb.map-1btgpwx1';
         this.load();
         this.on("updateMarkers", function() {
-            console.log("MapView:updateMarkers");
             this.dfd.done(this.resetAndAddCollectionMarkers);
         });
     },
@@ -23,7 +23,6 @@ app.views.MapView = Backbone.View.extend({
     load: function() {
         console.log("MapView:load");
 
-        this.dfd = new $.Deferred();
         var that = this;
         mapbox.load(that.baseMapId, function(o) {
             console.log("MapView:mapbox.load");
@@ -32,18 +31,17 @@ app.views.MapView = Backbone.View.extend({
             map.addLayer(o.layer);
             map.panBy(-1*(window.innerWidth/4), 0)
             that.map = map;
-            console.log("resolving map");
             that.dfd.resolve("map");
         });
         
-        this.dfd.done(this.setupMarkerLayer);
-        this.dfd.done(this.addCollectionMarkers);
+        this.dfd.done(this.resetAndAddCollectionMarkers);
     },
 
     resetAndAddCollectionMarkers: function() {
+        console.log("MapView:resetAndAddCollectionMarkers");
         this.reset();
-        this.dfd.done(this.setupMarkerLayer);
-        this.dfd.done(this.addCollectionMarkers);
+        this.setupMarkerLayer();
+        this.addCollectionMarkers();
     },
 
     setupMarkerLayer: function() {
@@ -54,10 +52,6 @@ app.views.MapView = Backbone.View.extend({
         var interaction = mapbox.markers.interaction(markerLayer);
         interaction.showOnHover(true);
         this.interaction = interaction;
-        if (this.dfd) {
-            console.log("resolving setupMarkerLayer");
-            this.dfd.resolve("setupMarkerLayer");
-        }
     },
 
     addCollectionMarkers: function() {
@@ -68,10 +62,6 @@ app.views.MapView = Backbone.View.extend({
             _.each(app.collections.soles.toJSON(), function(s) {
                 that.addMarker(s.lat, s.lon, app.utils.format_date(s.day), s.address, false);
             });
-        }
-        if (this.dfd) {
-            console.log("resolving addCollectionMarkers");
-            this.dfd.resolve("addCollectionMarkers");
         }
     },
 
