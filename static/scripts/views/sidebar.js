@@ -98,6 +98,7 @@ app.views.SidebarView = Backbone.View.extend({
         app.views.solelist.on('showCreateView', this.swapToCreateView);
         $('#results_container').append(app.views.solelist.render().el);
         app.router.navigate("course/" + this.course_id);
+        app.views.map.dfd.done(app.views.map.resetAndAddCollectionMarkers);
     },
 
     createCreateView: function() {

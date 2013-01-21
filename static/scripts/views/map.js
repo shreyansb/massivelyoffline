@@ -6,7 +6,7 @@ app.views.MapView = Backbone.View.extend({
 
     initialize: function() {
         _.bindAll(this, "load", "setupMarkerLayer", "reset",
-            "addCollectionMarkers", "addMarker");
+            "addCollectionMarkers", "addMarker", "resetAndAddCollectionMarkers");
         this.map = undefined;
         this.markers = undefined;
         this.defaultLat = window.sole_ip_loc.latitude;
@@ -17,35 +17,57 @@ app.views.MapView = Backbone.View.extend({
     },
 
     load: function() {
+        console.log("MapView:load");
+
+        this.dfd = new $.Deferred();
         var that = this;
         mapbox.load(that.baseMapId, function(o) {
+            console.log("MapView:mapbox.load");
             var map = mapbox.map('map');
             map.centerzoom({lat: that.defaultLat, lon: that.defaultLon}, 12);
             map.addLayer(o.layer);
             map.panBy(-1*(window.innerWidth/4), 0)
             that.map = map;
-            that.setupMarkerLayer();
+            console.log("resolving map");
+            that.dfd.resolve("map");
         });
+        
+        this.dfd.done(this.setupMarkerLayer);
+        this.dfd.done(this.addCollectionMarkers);
+    },
+
+    resetAndAddCollectionMarkers: function() {
+        this.reset();
+        this.dfd.done(this.setupMarkerLayer);
+        this.dfd.done(this.addCollectionMarkers);
     },
 
     setupMarkerLayer: function() {
+        console.log("MapView:setupMarkerLayer");
         var markerLayer = mapbox.markers.layer();
         this.map.addLayer(markerLayer);
         this.markers = markerLayer;
         var interaction = mapbox.markers.interaction(markerLayer);
         interaction.showOnHover(true);
         this.interaction = interaction;
+        if (this.dfd) {
+            console.log("resolving setupMarkerLayer");
+            this.dfd.resolve("setupMarkerLayer");
+        }
     },
 
     addCollectionMarkers: function() {
-        this.reset();
-        this.setupMarkerLayer();
+        console.log("MapView:addCollectionMarkers");
         // add all the soles in the current collection to the map
         if (app.collections.soles) {
             var that = this;
             _.each(app.collections.soles.toJSON(), function(s) {
                 that.addMarker(s.lat, s.lon, app.utils.format_date(s.day), s.address, false);
             });
+        }
+        if (this.dfd) {
+            console.log("resolving addCollectionMarkers");
+            this.dfd.resolve("addCollectionMarkers");
         }
     },
 
