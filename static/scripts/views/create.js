@@ -12,17 +12,11 @@ app.views.CreateView = Backbone.View.extend({
     },
 
     initialize: function() {
-        console.log("CreateView:initialize", this.options.course_id);
-        _.bindAll(this, "cancel", "submit", "render", "validate", "findAddress",
-            "geocodeSuccess", "geocodeError", "show", "hide", "datesForDropdown",
-            "timesForDropdown", "select2", "loginSuccess", "loginError", "create",
-            "triggerDone");
-
+        _.bindAll(this);
         this.course_id = this.options.course_id;
     },
 
     select2: function() {
-        console.log("CreateView:select2");
         this.$el.find('#create_day').select2({
             width: '250px',
             allowClear: true,
@@ -40,12 +34,10 @@ app.views.CreateView = Backbone.View.extend({
     },
     
     cancel: function() {
-        console.log("CreateView:cancel");
         this.trigger("cancelCreate");
     }, 
 
     submit: function(e) {
-        console.log("CreateView:submit");
         var errors = this.validate();
         if (errors.length == 0) {
             var that = this;
@@ -58,7 +50,6 @@ app.views.CreateView = Backbone.View.extend({
     },
 
     loginSuccess: function() {
-        console.log("CreateView:loginSuccess");
         this.create();
     },
 
@@ -67,7 +58,6 @@ app.views.CreateView = Backbone.View.extend({
     },
 
     create: function() {
-        console.log("CreateView:create");
         var params = {
             'day': $('#create_day').val(),
             'time':  $('#create_time').val(),
@@ -82,7 +72,6 @@ app.views.CreateView = Backbone.View.extend({
     },
 
     triggerDone: function() {
-        console.log("CreateView:triggerDone");
         this.trigger("doneCreate");
     },
 
@@ -100,7 +89,6 @@ app.views.CreateView = Backbone.View.extend({
     },
 
     findAddress: function() {
-        console.log("CreateView:findAddress");
         var a = $('#create_address').val();
         if (a === "") {
             this.geocodeError();
@@ -122,8 +110,6 @@ app.views.CreateView = Backbone.View.extend({
     },
 
     render: function() {
-        console.log("SoleListView:render");
-
         var t = $('script#create_template');
         this.$el.html(t.html())
         this.select2();
