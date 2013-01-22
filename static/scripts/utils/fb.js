@@ -3,10 +3,11 @@ app.fb = app.fb || {};
 app.fb.resp = undefined;
 
 app.fb.loginStatus = function(success, error, params) {
+    console.log("fb:loginStatus");
     FB.getLoginStatus(function(resp) {
         if (resp.status === "connected") {
             app.fb.resp = resp;
-            success(params);
+            success(resp, params);
         } else if (resp.status === "not_authorized") {
             app.fb.resp = undefined;
             app.fb.login(success, error, params); 
@@ -18,24 +19,23 @@ app.fb.loginStatus = function(success, error, params) {
 };
 
 app.fb.login = function(success, error, params) {
+    console.log("fb:login");
     FB.login(function(resp) {
         if (resp.authResponse) {
             app.fb.resp = resp;
-            app.fb.get_user();
-            success(params);
+            app.fb.getUser();
+            success(resp, params);
         } else {
             app.fb.resp = undefined;
-            error(params);
+            error(resp, params);
             return false;
         }
-    });
+    }, {scope: 'email'});
 };
 
-app.fb.get_user = function() {
+app.fb.getUser = function() {
+    console.log("fb:getUser");
     FB.api('/me', function(resp) {
-        window.app_facebook_user = resp;
-        if (resp.id) {
-            window.app_facebook_id = resp.id;
-        }
+        app.models.user.setFacebookUser(resp);
     });
 };

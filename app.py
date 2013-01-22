@@ -13,10 +13,10 @@ db = MongoClient()
 def get_home():
     loc = geo.loc_from_ip(request.remote_addr)
     user, err = auth.get_user(db, request)
+    formatted_user = User.filter_user_attrs(user)
     params = {
         'loc': json.dumps(loc),
-        'facebook_id': user.get('facebook_id', ''),
-        'user_id': user.get('id', '')
+        'user': json.dumps(formatted_user)
     }
     return render_template("index.html", **params)
 

@@ -49,7 +49,7 @@ app.views.CreateView = Backbone.View.extend({
         var errors = this.validate();
         if (errors.length == 0) {
             var that = this;
-            app.fb.loginStatus(that.loginSuccess, that.loginError);
+            app.models.user.getUser(that.loginSuccess, that.loginError);
         } else {
             // deal with errors
             console.log(errors);

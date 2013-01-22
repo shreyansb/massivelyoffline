@@ -12,6 +12,7 @@ var Workspace = Backbone.Router.extend({
         _.bindAll(this, "home", "course", "createSidebar");
         app.collections.courses = new app.collections.CourseCollection();
         app.views.map = new app.views.MapView();
+        app.models.user = new app.models.User(app.data.user);
     },
     home: function() {
         console.log("router: home")

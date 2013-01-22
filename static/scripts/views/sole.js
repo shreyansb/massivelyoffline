@@ -7,14 +7,13 @@ app.views.SoleView = Backbone.View.extend({
     events: {
         'click .join_sole': 'confirm',
         'click .leave_sole': 'confirm',
-        'click .button_yes': 'act',
+        'click .button_yes': 'checkLoginAndAct',
         'click .button_no': 'cancel'
     },
 
     initialize: function() {
         console.log("SoleView:initialize");
-        _.bindAll(this, "render", "confirm", "act", "cancel", "format",
-            "actSuccess", "actError");
+        _.bindAll(this);
         this.action = undefined;
     },
 
@@ -37,9 +36,9 @@ app.views.SoleView = Backbone.View.extend({
 
     format: function(d) {
         d['day'] = app.utils.format_date(d['day']);
-        if (window.sole_facebook_id) {
+        if (app.models.user.get('facebook_id')) {
             for (var j=0; j<d['students'].length; j++) {
-                if (d['students'][j]['facebook_id'] == window.sole_facebook_id) {
+                if (d['students'][j]['facebook_id'] == app.models.user.get('facebook_id')) {
                     d['user_is_student'] = true;
                 }
             }
@@ -50,32 +49,47 @@ app.views.SoleView = Backbone.View.extend({
     },
 
     confirm: function(e) {
-        var t = $('script#results_overlay').html();
+        // hack?
         if ($(e.currentTarget).hasClass('join_sole')) {
             this.action = 'join';
         } else {
             this.action = 'leave';
         }
+        var t = $('script#results_overlay').html();
         this.$el.append(t);
     },
 
-    act: function(e) {
+    checkLoginAndAct: function(e) {
         console.log("SoleView:act", e);
-        // TODO clean up user stuff. user model?
-        if (window.sole_user_id != "" && this.action) {
-            var sids = this.model.get('student_ids');
-            if (this.action == 'join') {
-                sids.push(window.sole_user_id);
-            } else if (this.action == 'leave') {
-                sids = _.without(sids, window.sole_user_id);
-            }
-            var that = this;
-            this.model.save({'student_ids': sids}, {
-                patch: true,
-                success: that.actSuccess,
-                error: that.actError
-            });
+        // check to see if the user is logged in
+        var that = this;
+        // is this in the model entirely?
+        app.models.user.getUser(that.act, that.loginError)
+    },
+
+    loginError: function() {
+        console.log("SoleView:loginError");
+    },
+
+    act: function() {
+        console.log("SoleView:act");
+        var sids = this.model.get('student_ids');
+        if (this.action == 'join') {
+            sids.push(app.models.user.get('id'));
+        } else if (this.action == 'leave') {
+            sids = _.without(sids, app.models.user.get('id'));
         }
+        var that = this;
+        console.log("SoleView:act:sids:", sids);
+        this.model.save({'student_ids': sids}, {
+            patch: true,
+            success: that.actSuccess,
+            error: that.actError
+        });
+    },
+
+    fail: function() {
+
     },
 
     actSuccess: function(m, r, o) {

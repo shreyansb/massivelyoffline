@@ -10,8 +10,8 @@ app.views.MapView = Backbone.View.extend({
         this.dfd = new $.Deferred();  // to be used with mapbox.load
         this.map = undefined;
         this.markers = undefined;
-        this.defaultLat = window.sole_ip_loc.latitude;
-        this.defaultLon = window.sole_ip_loc.longitude;
+        this.defaultLat = app.data.loc.latitude;
+        this.defaultLon = app.data.loc.longitude;
         this.baseMapId = 'shreyansb.map-d6wn3q7b';
         this.streetsMapId = 'shreyansb.map-1btgpwx1';
         this.load();

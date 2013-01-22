@@ -11,6 +11,7 @@
     <div id="fb-root"></div>
     <script>
       // Additional JS functions here
+      console.log("window.fbAsyncInit");
       window.fbAsyncInit = function() {
         FB.init({
           appId      : '128848390614241', // App ID
@@ -21,7 +22,7 @@
         });
 
         console.log("facebook loaded");
-      
+        
     };
 
       // Load the SDK Asynchronously
@@ -37,8 +38,8 @@
     <div id="map"></div>
     <div id="sidebar">
         <div id="course">
-            <h1>About this much text here.</h1>
-            <h2>A little more in ths one, maybe this much.</h2>
+            <h1>Learn more together.</h1>
+            <h2>Real world study groups for online classes.</h2>
             <form id="course_form" class="gray_outline">
                 <input id="course_input" type="text" 
                 placeholder="What class are you taking?"></input>
@@ -164,12 +165,14 @@
     <script src="static/scripts/external/mustache.js"></script>
     <script src="static/scripts/external/select2.min.js"></script>
     <script type="text/javascript">
-        window.sole_ip_loc = $.parseJSON('{{loc|safe}}');
-        window.sole_user_id = '{{user_id}}';
-        window.sole_facebook_id = '{{facebook_id}}'; 
+        var app = app || {};
+        app.data = app.data || {};
+        app.data.loc = $.parseJSON('{{loc|safe}}');
+        app.data.user = $.parseJSON('{{user|safe}}');
     </script>
     <script src="static/scripts/models/course.js"></script>
     <script src="static/scripts/models/sole.js"></script>
+    <script src="static/scripts/models/user.js"></script>
     <script src="static/scripts/views/create.js"></script>
     <script src="static/scripts/views/map.js"></script>
     <script src="static/scripts/views/sole.js"></script>

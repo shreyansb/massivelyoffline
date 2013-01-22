@@ -46,3 +46,15 @@ def update_sole_with_students(db, s):
         user = find_by_id(db, user_id)
         s['students'].append(user)
     return s
+
+###
+### filter
+###
+
+def filter_user_attrs(u):
+    attrs_to_keep = ['first_name', 'last_name', 'name', 'id', 'facebook_id']
+    nd = {}
+    for k, v in u.iteritems():
+        if k in attrs_to_keep:
+            nd[k] = v
+    return nd
