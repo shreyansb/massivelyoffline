@@ -10,7 +10,7 @@ def get_user(db, request):
     # check for a facebook valid signed request
     fb_d, err = facebook.get_data_from_cookie(request)
     if err:
-        return None, err
+        return {}, err
     facebook_id = fb_d.get('user_id')
     user = User.find_by_facebook_id(db, facebook_id)
     if user:
@@ -19,11 +19,11 @@ def get_user(db, request):
     # the user isn't already in the database, so we'll add them
     access_token = request.form.get('facebook_access_token')
     if not access_token:
-        return None,  "no access token in request"
+        return {},  "no access token in request"
 
     profile = facebook.get_profile_for_access_token(access_token)
     if not profile:
-        return None, "couldn't get profile for access token"
+        return {}, "couldn't get profile for access token"
 
     new_id = User.create_by_facebook_id(db, facebook_id, profile)
     profile['id'] = new_id

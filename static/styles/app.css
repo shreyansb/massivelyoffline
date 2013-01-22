@@ -5,10 +5,6 @@ body {
     font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
 }
 
-template {
-    display: none;
-}
-
 h1 {
     color: white;
     /*
@@ -87,8 +83,12 @@ form input:focus {
  * create a new sole
  */
 
+#create_container {
+}
+
 #create {
-    display: none;
+    padding-bottom: 15px;
+    padding-left: 8px;
 }
 
 #create_form {
@@ -120,20 +120,11 @@ form input:focus {
 }
 
 #create_actions {
-    display: none;
     text-align: right;
 }
 
 #create_actions span {
     color: white;
-}
-
-#create_cancel {
-    display: none;
-}
-
-#create_submit {
-    display: none;
 }
 
 /*
@@ -155,8 +146,7 @@ form input:focus {
  * the results container
  */
 
-#results {
-    display: none;
+#results_container {
 }
 
 .result_overlay {

@@ -1,11 +1,7 @@
 import ujson as json
 
-import auth
-import facebook
-import geo
-from models import Course
-from models import Sole
-from models import User
+from utils import auth, geo
+from models import Course, Sole, User
 
 from flask import Flask, render_template, request
 from pymongo import MongoClient
@@ -16,12 +12,13 @@ db = MongoClient()
 @app.route("/", methods=["GET"])
 def get_home():
     loc = geo.loc_from_ip(request.remote_addr)
+    user, err = auth.get_user(db, request)
+    formatted_user = User.filter_user_attrs(user)
     params = {
-        'loc': json.dumps(loc)
+        'loc': json.dumps(loc),
+        'user': json.dumps(formatted_user)
     }
-    fb_d, err = facebook.get_data_from_cookie(request)
-    params['facebook_id'] = fb_d.get('user_id', '')
-    return render_template("home.html", **params)
+    return render_template("index.html", **params)
 
 ###
 ### Course routes
@@ -64,8 +61,41 @@ def get_sole_by_id(sole_id):
     """Returns details of a specific sole"""
     return []
 
-@app.route("/sole", methods=["POST"])
-def post_sole():
+@app.route("/course/<course_id>/sole/<sole_id>", methods=["PATCH"])
+def patch_sole(course_id, sole_id):
+    user, err = auth.get_user(db, request)
+
+    if not user:
+        return json_error("User not found")
+
+    sole = Sole.get_by_id(db, sole_id)
+    if not sole:
+        return json_error("that study group doesn't exist")
+
+    data = json.loads(request.data)
+
+    # if the new set of student ids makes sense, use them
+    current_sids = sole.get(Sole.A_STUDENT_IDS)
+    new_sids = data.get(Sole.A_STUDENT_IDS)
+    user_id = user.get('id')
+    resp = None
+    if (set(current_sids) - set(new_sids)) == set([user_id]):
+        resp = Sole.leave_sole_by_id(db, sole_id, user_id)
+    elif (set(new_sids) - set(current_sids)) == set([user_id]):
+        resp = Sole.join_sole_by_id(db, sole_id, user_id)
+    else:
+        return json_error("Invalid new student_ids")
+
+    # return the new model
+    if resp:
+        s = Sole.get_by_id(db, sole_id)
+        ns = User.update_sole_with_students(db, s)
+        return json.dumps(ns)
+    else:
+        return json_error("Some other error")
+
+@app.route("/course/<course_id>/sole", methods=["POST"])
+def post_sole(course_id):
     """Create a new sole.
     Expects a course_id, location, date, and time
     """
@@ -76,16 +106,18 @@ def post_sole():
 
     user_id = str(user.get('id'))
 
-    # TODO validation
+    # TODO validate
+    data = json.loads(request.data)
     s = {
-        'day': request.form.get('day'),
-        'time': request.form.get('time'),
-        'lon': request.form.get('lon'),
-        'lat': request.form.get('lat'),
-        'address': request.form.get('address'),
-        'course_id': request.form.get('course_id'),
+        'day': data.get('day'),
+        'time': data.get('time'),
+        'lon': data.get('lon'),
+        'lat': data.get('lat'),
+        'address': data.get('address'),
+        'course_id': data.get('course_id'),
         'user_id': user_id
     }
+    app.logger.info(s)
     for k, v in s.iteritems():
         if not v:
             return json_error("missing attribute")
