@@ -28,7 +28,13 @@ app.views.SidebarView = Backbone.View.extend({
             width: "600px",
             placeholder: "What class are you taking?",
             data: app.collections.courses.toJSON(),
-            initSelection: function() {}
+            initSelection: function(element, callback) {
+                var course_id = element.val();
+                var course = app.collections.courses.asDict[course_id];
+                if (course) {
+                    callback({'id': course_id, 'text': course['text']});
+                }
+            }
         });
         this.$input.select2("focus");
         app.collections.courses.toDict();
