@@ -81,7 +81,13 @@ app.views.SoleView = Backbone.View.extend({
         }
         var that = this;
         console.log("SoleView:act:sids:", sids);
-        this.model.save({'student_ids': sids}, {
+        var params = {
+            'student_ids': sids
+        };
+        if (app.fb.resp && app.fb.resp.authResponse && app.fb.resp.authResponse.accessToken) {
+            params['facebook_access_token'] = app.fb.resp.authResponse.accessToken;
+        }
+        this.model.save(params, {
             patch: true,
             success: that.actSuccess,
             error: that.actError

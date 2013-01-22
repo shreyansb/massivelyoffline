@@ -67,6 +67,7 @@ app.views.CreateView = Backbone.View.extend({
             'course_id': this.course_id,
             'facebook_access_token': app.fb.resp.authResponse.accessToken
         };
+        console.log(params);
         var that = this;
         app.collections.soles.create(params, {success: that.triggerDone});
     },

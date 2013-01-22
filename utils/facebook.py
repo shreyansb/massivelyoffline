@@ -5,7 +5,7 @@ import urlparse
 import ujson as json
 from utils import signed_request
 
-def get_data_from_cookie(request):
+def get_data_from_request(request):
     """looks for a facebook cookie containing a signed_request,
     validates the signed_request, and returns the contents.
     Returns None in case of error
@@ -14,8 +14,10 @@ def get_data_from_cookie(request):
     c = request.cookies.get(c_name)
     if not c:
         return {}, "no facebook cookie in request"
+    return get_data_from_cookie(c)
 
-    d, err = validate_signed_request(c)
+def get_data_from_cookie(cookie):
+    d, err = validate_signed_request(cookie)
     if err:
         return {}, "invalid facebook signed_request"
     else:

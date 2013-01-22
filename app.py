@@ -63,7 +63,8 @@ def get_sole_by_id(sole_id):
 
 @app.route("/course/<course_id>/sole/<sole_id>", methods=["PATCH"])
 def patch_sole(course_id, sole_id):
-    user, err = auth.get_user(db, request)
+    data = json.loads(request.data)
+    user, err = auth.get_user(db, request, data)
 
     if not user:
         return json_error("User not found")
@@ -72,7 +73,6 @@ def patch_sole(course_id, sole_id):
     if not sole:
         return json_error("that study group doesn't exist")
 
-    data = json.loads(request.data)
 
     # if the new set of student ids makes sense, use them
     current_sids = sole.get(Sole.A_STUDENT_IDS)
@@ -99,7 +99,8 @@ def post_sole(course_id):
     """Create a new sole.
     Expects a course_id, location, date, and time
     """
-    user, err = auth.get_user(db, request)
+    data = json.loads(request.data)
+    user, err = auth.get_user(db, request, data)
 
     if not user:
         return json_error("User not found")
@@ -107,7 +108,6 @@ def post_sole(course_id):
     user_id = str(user.get('id'))
 
     # TODO validate
-    data = json.loads(request.data)
     s = {
         'day': data.get('day'),
         'time': data.get('time'),
