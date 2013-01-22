@@ -94,9 +94,16 @@ app.views.SoleView = Backbone.View.extend({
 
     actSuccess: function(m, r, o) {
         console.log("SoleView:actSuccess");
-        this.$('.result_overlay').remove();
-        this.action = undefined;
-        this.render();
+        if (m.get('num_students') === 0) {
+            // re-render the whole solelist
+            app.collections.soles.remove(m);
+            this.trigger("clearSole");
+        } else {
+            // re-render this specific sole
+            this.$('.result_overlay').remove();
+            this.action = undefined;
+            this.render();
+        }
     },
 
     actError: function(m, x, o) {

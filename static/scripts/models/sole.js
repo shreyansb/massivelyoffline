@@ -3,20 +3,6 @@ app.models = app.models || {};
 app.collections = app.collections || {};
 
 app.models.Sole = Backbone.Model.extend({
-        /*
-    defaults: {
-        "id" : "",
-        "user_id" : "",
-        "course_id" : "",
-        "student_ids" : [],
-        "num_students" : 1,
-        "address" : "",
-        "lat" : "",
-        "lon" : "",
-        "time" : "",
-        "day" : ""
-    }
-    */
 });
 
 app.collections.SoleCollection = Backbone.Collection.extend({

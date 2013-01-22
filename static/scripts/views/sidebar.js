@@ -10,9 +10,7 @@ app.views.SidebarView = Backbone.View.extend({
 
     initialize: function() {
         console.log("SidebarView:initialize");
-        _.bindAll(this, 'setupCourses', 'noCourses', 'changeCourse', 'moveInputUp', 
-            'destroyCreateView', 'destroySoleListView', 'createCreateView', 'createSoleListView',
-            'swapToCreateView', 'swapToSoleListView');
+        _.bindAll(this);
         this.bind('animateUp', this.moveInputUp);
         this.bind('changeCourse', this.changeCourse);
 
@@ -96,9 +94,16 @@ app.views.SidebarView = Backbone.View.extend({
         console.log("SidebarView:createSoleListView");
         app.views.solelist = new app.views.SoleListView({course_id: this.course_id});
         app.views.solelist.on('showCreateView', this.swapToCreateView);
+        app.views.solelist.on('rerenderSoleView', this.rerenderSoleView);
         $('#results_container').append(app.views.solelist.render().el);
         app.router.navigate("course/" + this.course_id);
         this.trigger("updateMarkers");
+    },
+
+    rerenderSoleView: function() {
+        console.log("SidebarView:rerenderSoleView");
+        this.destroySoleListView();
+        this.createSoleListView();
     },
 
     createCreateView: function() {

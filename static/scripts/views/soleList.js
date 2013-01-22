@@ -43,6 +43,11 @@ app.views.SoleListView = Backbone.View.extend({
         var v = new app.views.SoleView({model: m});
         this.$('#results').append(v.render().el);
         this.subviews.push(v);
+        var that = this;
+        v.on("clearSole", function() { 
+            console.log("SoleListView:renderOne:clearSole");
+            that.trigger('rerenderSoleView'); 
+        });
     },
 
     show: function() {
