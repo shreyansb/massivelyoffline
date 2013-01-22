@@ -9,7 +9,7 @@ var Workspace = Backbone.Router.extend({
     },
     initialize: function() {
         console.log("router: initialize");
-        _.bindAll(this, "home", "course", "createSidebar");
+        _.bindAll(this);
         app.collections.courses = new app.collections.CourseCollection();
         app.views.map = new app.views.MapView();
         app.models.user = new app.models.User(app.data.user);
@@ -30,8 +30,11 @@ var Workspace = Backbone.Router.extend({
         } else {
             app.views.sidebar = new app.views.SidebarView({course_id: course_id});
         }
+        // if anything in the sidebar requires markers to be updated, it happens
+        // via this event, passed up to the workspace
+        // unsure of this method vs. directly calling a 'public' method on 
+        // the map
         app.views.sidebar.on("updateMarkers", function() {
-            console.log("Workspace:createSidebar:updateMarkers");
             app.views.map.trigger("updateMarkers");
         });
     }

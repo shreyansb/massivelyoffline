@@ -5,8 +5,7 @@ app.views.MapView = Backbone.View.extend({
     events: {},
 
     initialize: function() {
-        _.bindAll(this, "load", "setupMarkerLayer", "reset",
-            "addCollectionMarkers", "addMarker", "resetAndAddCollectionMarkers");
+        _.bindAll(this);
         this.dfd = new $.Deferred();  // to be used with mapbox.load
         this.map = undefined;
         this.markers = undefined;
@@ -21,11 +20,8 @@ app.views.MapView = Backbone.View.extend({
     },
 
     load: function() {
-        console.log("MapView:load");
-
         var that = this;
         mapbox.load(that.baseMapId, function(o) {
-            console.log("MapView:mapbox.load");
             var map = mapbox.map('map');
             map.centerzoom({lat: that.defaultLat, lon: that.defaultLon}, 12);
             map.addLayer(o.layer);
@@ -38,14 +34,12 @@ app.views.MapView = Backbone.View.extend({
     },
 
     resetAndAddCollectionMarkers: function() {
-        console.log("MapView:resetAndAddCollectionMarkers");
         this.reset();
         this.setupMarkerLayer();
         this.addCollectionMarkers();
     },
 
     setupMarkerLayer: function() {
-        console.log("MapView:setupMarkerLayer");
         var markerLayer = mapbox.markers.layer();
         this.map.addLayer(markerLayer);
         this.markers = markerLayer;
@@ -56,7 +50,6 @@ app.views.MapView = Backbone.View.extend({
 
     addCollectionMarkers: function() {
         // add all the soles in the current collection to the map
-        console.log("MapView:addCollectionMarkers");
         if (app.collections.soles) {
             var that = this;
             _.each(app.collections.soles.toJSON(), function(s) {

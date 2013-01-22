@@ -9,7 +9,6 @@ app.views.SidebarView = Backbone.View.extend({
     },
 
     initialize: function() {
-        console.log("SidebarView:initialize");
         _.bindAll(this);
         this.bind('animateUp', this.moveInputUp);
         this.bind('changeCourse', this.changeCourse);
@@ -23,7 +22,6 @@ app.views.SidebarView = Backbone.View.extend({
     },
 
     setupCourses: function() {
-        console.log("SidebarView:setupCourses");
         this.$input.select2({
             width: "600px",
             placeholder: "What class are you taking?",
@@ -53,7 +51,6 @@ app.views.SidebarView = Backbone.View.extend({
     },
 
     changeCourse: function(e) {
-        console.log("SidebarView:changeCourse");
         if (this.position == 'down') {
             this.trigger('animateUp');
         }
@@ -82,14 +79,12 @@ app.views.SidebarView = Backbone.View.extend({
     },
     
     destroyCreateView: function() {
-        console.log("SidebarView:destroyCreateView");
         app.views.create.off();
         app.views.create.remove();
         app.views.create = undefined;
     },
 
     destroySoleListView: function() {
-        console.log("SidebarView:destroyCreateView");
         app.views.solelist.off();
         app.views.solelist.removeSubviews();
         app.views.solelist.remove();
@@ -97,7 +92,6 @@ app.views.SidebarView = Backbone.View.extend({
     },
 
     createSoleListView: function() {
-        console.log("SidebarView:createSoleListView");
         app.views.solelist = new app.views.SoleListView({course_id: this.course_id});
         app.views.solelist.on('showCreateView', this.swapToCreateView);
         app.views.solelist.on('rerenderSoleView', this.rerenderSoleView);
@@ -107,13 +101,11 @@ app.views.SidebarView = Backbone.View.extend({
     },
 
     rerenderSoleView: function() {
-        console.log("SidebarView:rerenderSoleView");
         this.destroySoleListView();
         this.createSoleListView();
     },
 
     createCreateView: function() {
-        console.log("SidebarView:createCreateView");
         app.views.create = new app.views.CreateView({course_id: this.course_id});
         app.views.create.on('cancelCreate', this.swapToSoleListView);
         app.views.create.on('doneCreate', this.swapToSoleListView);
@@ -121,13 +113,11 @@ app.views.SidebarView = Backbone.View.extend({
     },
 
     swapToCreateView: function() {
-        console.log("SidebarView:swapToCreateView");
         this.destroySoleListView();
         this.createCreateView();
     },
 
     swapToSoleListView: function() {
-        console.log("SidebarView:swapToSoleListView");
         this.destroyCreateView();
         this.createSoleListView();
     },

@@ -9,21 +9,17 @@ app.views.SoleListView = Backbone.View.extend({
     },
 
     initialize: function() {
-        console.log("SoleListView:initialize", this.options.course_id);
-        _.bindAll(this, "createSole", "render", "renderOne", "show", "hide", "removeSubviews");
+        _.bindAll(this);
 
         this.course_id = this.options.course_id;
         this.subviews = [];
     },
     
     createSole: function() {
-        console.log("SoleListView:createSole");
         this.trigger("showCreateView");
     }, 
 
     render: function() {
-        console.log("SoleListView:render");
-
         var r = $('script#results_template');
         this.$el.html(r.html())
 
@@ -31,11 +27,9 @@ app.views.SoleListView = Backbone.View.extend({
         if (app.collections.soles.length > 0) {
             app.collections.soles.each(this.renderOne, this);
         } else {
-            // show the 'no result' template
             var t = $('script#no_results');
             this.$('#results').html(t.html()); 
         }
-
         return this;
     },
 
@@ -45,21 +39,11 @@ app.views.SoleListView = Backbone.View.extend({
         this.subviews.push(v);
         var that = this;
         v.on("clearSole", function() { 
-            console.log("SoleListView:renderOne:clearSole");
             that.trigger('rerenderSoleView'); 
         });
     },
 
-    show: function() {
-        this.$el.show();
-    },
-
-    hide: function() {
-        this.$el.hide();
-    },
-
     removeSubviews: function() {
-        console.log("SoleListView:removeSubviews");
         _.each(this.subviews, function(sv) {
             sv.off();
             sv.remove();
