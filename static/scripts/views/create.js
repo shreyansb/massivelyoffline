@@ -24,6 +24,7 @@ app.views.CreateView = Backbone.View.extend({
             data: this.datesForDropdown(),
             initSelection: function() {}
         });
+        this.$el.find('#create_day').select2("focus");
         this.$el.find('#create_time').select2({
             width: '150px',
             allowClear: true,
