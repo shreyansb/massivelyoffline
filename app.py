@@ -1,6 +1,6 @@
 import ujson as json
 
-from utils import auth, geo
+from utils import auth, facebook, geo
 from models import Course, Sole, User
 
 from flask import Flask, render_template, request
@@ -9,10 +9,14 @@ from pymongo import MongoClient
 app = Flask(__name__)
 db = MongoClient()
 
+###
+### Home
+###
+
 @app.route("/", methods=["GET"])
 def get_home():
     loc = geo.loc_from_ip(request.remote_addr)
-    user, err = auth.get_user(db, request)
+    user, err = auth.get_user_from_request(db, request)
     formatted_user = User.filter_user_attrs(user)
     params = {
         'loc': json.dumps(loc),
@@ -20,8 +24,49 @@ def get_home():
     }
     return render_template("index.html", **params)
 
+### 
+### User
 ###
-### Course routes
+
+@app.route("/user", methods=['POST'])
+def create_user():
+    data = json.loads(request.data)
+    if not (data.get('email') or data.get('facebook_id')):
+        return json_error("missing attribute: email or facebook_id")
+
+    # get the user id from the signed request and compare it to the 
+    # facebook profile information to see if we have access to this user
+    sr = data.get('signed_request')
+    fb_d, err = facebook.get_data_from_signed_request(sr)
+    if err:
+        return json_error(err)
+
+    if fb_d.get('user_id') != data.get('facebook_id'):
+        return json_error("invalid facebook cookie")
+
+    # find the user in the database, return if found
+    facebook_id = data.get('facebook_id')
+    user = User.find_by_facebook_id(db, facebook_id)
+    if user:
+        return json.dumps(user)
+
+    # otherwise create and return the new user
+    user_id = User.create(db, data)
+    if not user_id:
+        return json_error("couldn't create user")
+
+    user = User.find_by_id(db, user_id)
+    app.logger.error(user_id)
+    app.logger.error(user)
+    return json.dumps(user)
+
+@app.route("/user/<user_id>", methods=['PUT'])
+def update_user():
+    data = json.loads(request.data)
+    app.logger.error(data)
+    
+###
+### Course
 ###
 
 @app.route("/course", methods=["GET"])
@@ -29,42 +74,58 @@ def get_courses():
     r = Course.get_courses(db)
     return json.dumps(r)
 
+###
+### Sole
+###
+
 @app.route("/course/<course_id>/sole", methods=["GET"])
 def get_soles_for_course(course_id):
+    """ Get a list of soles for the course,
+    within a certain radius of the provided lat, lon
+    """
     lat = request.args.get('lat')
     lon = request.args.get('lon')
     r = Sole.get_by_course_id(db, course_id, lat, lon)
     nr = User.update_soles_with_students(db, r)
     return json.dumps(nr)
 
-@app.route("/course/<course_id>", methods=["GET"])
-def get_course_by_id(course_id):
-    r = Course.get_course_by_id(course_id)
-    return json.dumps(r)
-
-###
-### Sole routes
-###
-
-@app.route("/sole", methods=["GET"])
-def get_soles():
-    """Get a bunch of recent soles
-    filter by location
+@app.route("/course/<course_id>/sole", methods=["POST"])
+def post_sole(course_id):
+    """Create a new sole.
     """
-    lat = request.args.get('lat')
-    lon = request.args.get('lon')
-    r = Sole.get(db, lat, lon, limit=10)
-    return json.dumps(r)
+    user, err = auth.get_user_from_request(db, request)
+    if err:
+        return json_error(err)
 
-@app.route("/sole/<sole_id>", methods=["GET"])
-def get_sole_by_id(sole_id):
-    """Returns details of a specific sole"""
-    return []
+    user_id = str(user.get('id'))
+
+    # TODO validate
+    data = json.loads(request.data)
+    s = {
+        'day': data.get('day'),
+        'time': data.get('time'),
+        'lon': data.get('lon'),
+        'lat': data.get('lat'),
+        'address': data.get('address'),
+        'course_id': data.get('course_id'),
+        'user_id': user_id
+    }
+    for k, v in s.iteritems():
+        if not v:
+            return json_error("missing attribute")
+    
+    sole_id = Sole.create_new_sole(db, s)
+
+    s = Sole.get_by_id(db, sole_id)
+    ss = User.update_sole_with_students(db, s)
+
+    return json.dumps(ss)
 
 @app.route("/course/<course_id>/sole/<sole_id>", methods=["PATCH"])
 def patch_sole(course_id, sole_id):
-    data = json.loads(request.data)
-    user, err = auth.get_user(db, request, data)
+    """ Join or leave a sole
+    """
+    user, err = auth.get_user_from_request(db, request)
 
     if not user:
         return json_error("User not found")
@@ -73,8 +134,8 @@ def patch_sole(course_id, sole_id):
     if not sole:
         return json_error("that study group doesn't exist")
 
-
     # if the new set of student ids makes sense, use them
+    data = json.loads(request.data)
     current_sids = sole.get(Sole.A_STUDENT_IDS)
     new_sids = data.get(Sole.A_STUDENT_IDS)
     user_id = user.get('id')
@@ -94,86 +155,13 @@ def patch_sole(course_id, sole_id):
     else:
         return json_error("Some other error")
 
-@app.route("/course/<course_id>/sole", methods=["POST"])
-def post_sole(course_id):
-    """Create a new sole.
-    Expects a course_id, location, date, and time
-    """
-    data = json.loads(request.data)
-    user, err = auth.get_user(db, request, data)
-
-    if not user:
-        return json_error("User not found")
-
-    user_id = str(user.get('id'))
-
-    # TODO validate
-    s = {
-        'day': data.get('day'),
-        'time': data.get('time'),
-        'lon': data.get('lon'),
-        'lat': data.get('lat'),
-        'address': data.get('address'),
-        'course_id': data.get('course_id'),
-        'user_id': user_id
-    }
-    app.logger.info(s)
-    for k, v in s.iteritems():
-        if not v:
-            return json_error("missing attribute")
-    
-    sole_id = Sole.create_new_sole(db, s)
-
-    s = Sole.get_by_id(db, sole_id)
-    ss = User.update_sole_with_students(db, s)
-
-    return json.dumps(ss)
-
-@app.route("/sole/<sole_id>/join", methods=["PUT"])
-def join_sole_by_id(sole_id):
-    user, err = auth.get_user(db, request)
-    if err:
-        return json_error(err)
-    user_id = str(user.get('id'))
-
-    resp = Sole.join_sole_by_id(db, sole_id, user_id)
-    if not resp:
-        return json_error("Couldn't join sole. Check sole id")
-
-    return json.dumps({
-        'user_id': user_id, 
-        'id': sole_id,
-        'facebook_id': user.get('facebook_id')
-    })
-
-@app.route("/sole/<sole_id>/leave", methods=["PUT"])
-def leave_sole_by_id(sole_id):
-    user, err = auth.get_user(db, request)
-    if err:
-        return json_error(err)
-    user_id = str(user.get('id'))
-
-    resp = Sole.leave_sole_by_id(db, sole_id, user_id)
-    if not resp:
-        return json_error("Couldn't leave sole. Check sole id")
-
-    s = Sole.get_by_id(db, sole_id)
-    if not s:
-        return json_error("Sole not found")
-
-    resp = {
-        'user_id': user_id, 
-        'id': sole_id,
-        'facebook_id': user.get('facebook_id')
-    }
-
-    if not s.get(Sole.A_STUDENT_IDS):
-        resp['remove'] = 1
-
-    return json.dumps(resp)
+###
+### Request and response helpers
+###
 
 def json_error(msg):
     return json.dumps({'error': msg}), 400
+
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -9,7 +9,10 @@ A_FACEBOOK_ID = 'facebook_id'
 def create_by_facebook_id(db, facebook_id, doc):
     doc.pop('id')
     doc[A_FACEBOOK_ID] = facebook_id
-    return db.users.users.insert(doc)
+    return db.user.user.insert(doc)
+
+def create(db, doc):
+    return db.user.user.insert(doc)
 
 ###
 ### find
@@ -24,8 +27,8 @@ def find_by_id(db, user_id):
     return find(db, spec)
 
 def find(db, spec):
-    user = db.users.users.find_one(spec)
-    if user:
+    user = db.user.user.find_one(spec)
+    if user and user.get('_id'):
         user['id'] = str(user.pop('_id'))
     return user
 

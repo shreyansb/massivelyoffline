@@ -64,10 +64,8 @@ app.views.CreateView = Backbone.View.extend({
             'lat': this.loc[0],
             'lon': this.loc[1],
             'address': this.address,
-            'course_id': this.course_id,
-            'facebook_access_token': app.fb.resp.authResponse.accessToken
+            'course_id': this.course_id
         };
-        console.log(params);
         var that = this;
         app.collections.soles.create(params, {success: that.triggerDone});
     },

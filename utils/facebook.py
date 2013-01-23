@@ -10,14 +10,14 @@ def get_data_from_request(request):
     validates the signed_request, and returns the contents.
     Returns None in case of error
     """
-    c_name = "fbsr_%s" % settings.FACEBOOK_APP_ID
-    c = request.cookies.get(c_name)
-    if not c:
-        return {}, "no facebook cookie in request"
-    return get_data_from_cookie(c)
+    sr_name = "fbsr_%s" % settings.FACEBOOK_APP_ID
+    sr = request.cookies.get(sr_name)
+    if not sr:
+        return {}, "no facebook signed_request in request"
+    return get_data_from_signed_request(sr)
 
-def get_data_from_cookie(cookie):
-    d, err = validate_signed_request(cookie)
+def get_data_from_signed_request(sr):
+    d, err = validate_signed_request(sr)
     if err:
         return {}, "invalid facebook signed_request"
     else:

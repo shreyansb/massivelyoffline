@@ -11,7 +11,6 @@
     <div id="fb-root"></div>
     <script>
       // Additional JS functions here
-      console.log("window.fbAsyncInit");
       window.fbAsyncInit = function() {
         FB.init({
           appId      : '128848390614241', // App ID
@@ -20,7 +19,6 @@
           cookie     : true, // enable cookies to allow the server to access the session
           xfbml      : true  // parse XFBML
         });
-
         console.log("facebook loaded");
         
     };
@@ -177,7 +175,7 @@
     <script src="static/scripts/views/sole.js"></script>
     <script src="static/scripts/views/soleList.js"></script>
     <script src="static/scripts/views/sidebar.js"></script>
-    <script src="static/scripts/utils/fb.js"></script>
+    <script src="static/scripts/utils/facebook.js"></script>
     <script src="static/scripts/utils/format.js"></script>
     <script src="static/scripts/utils/geo.js"></script>
     <script src="static/scripts/app.js"></script>

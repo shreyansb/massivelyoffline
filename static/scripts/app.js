@@ -8,19 +8,16 @@ var Workspace = Backbone.Router.extend({
         '*other': 'home'
     },
     initialize: function() {
-        console.log("router: initialize");
         _.bindAll(this);
         app.collections.courses = new app.collections.CourseCollection();
         app.views.map = new app.views.MapView();
         app.models.user = new app.models.User(app.data.user);
     },
     home: function() {
-        console.log("router: home")
         this.createSidebar();
         this.navigate("/");
     },
     course: function(course_id) {
-        console.log("router: course")
         this.createSidebar(course_id);
         this.navigate("course/" + course_id);
     },

@@ -12,7 +12,6 @@ app.views.SoleView = Backbone.View.extend({
     },
 
     initialize: function() {
-        console.log("SoleView:initialize");
         _.bindAll(this);
         this.action = undefined;
     },
@@ -60,7 +59,6 @@ app.views.SoleView = Backbone.View.extend({
     },
 
     checkLoginAndAct: function(e) {
-        console.log("SoleView:act", e);
         // check to see if the user is logged in
         var that = this;
         // is this in the model entirely?
@@ -72,7 +70,6 @@ app.views.SoleView = Backbone.View.extend({
     },
 
     act: function() {
-        console.log("SoleView:act");
         var sids = this.model.get('student_ids');
         if (this.action == 'join') {
             sids.push(app.models.user.get('id'));
@@ -84,8 +81,8 @@ app.views.SoleView = Backbone.View.extend({
         var params = {
             'student_ids': sids
         };
-        if (app.fb.resp && app.fb.resp.authResponse && app.fb.resp.authResponse.accessToken) {
-            params['facebook_access_token'] = app.fb.resp.authResponse.accessToken;
+        if (app.facebook.resp && app.facebook.resp.authResponse && app.facebook.resp.authResponse.accessToken) {
+            params['facebook_access_token'] = app.facebook.resp.authResponse.accessToken;
         }
         this.model.save(params, {
             patch: true,
@@ -94,12 +91,7 @@ app.views.SoleView = Backbone.View.extend({
         });
     },
 
-    fail: function() {
-
-    },
-
     actSuccess: function(m, r, o) {
-        console.log("SoleView:actSuccess");
         if (m.get('num_students') === 0) {
             // re-render the whole solelist
             app.collections.soles.remove(m);
@@ -113,7 +105,6 @@ app.views.SoleView = Backbone.View.extend({
     },
 
     actError: function(m, x, o) {
-        console.log("SoleView:actError");
         this.$('.result_overlay').remove();
     },
 
