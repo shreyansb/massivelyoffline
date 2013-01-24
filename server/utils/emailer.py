@@ -24,6 +24,10 @@ class EmailCreator():
         sole, course, users = get_sole_course_and_user_information(sole_id)
         if not (sole and course and users):
             return
+
+        params = {
+            
+        }
         
 class EmailGroup():
     queue = resq.Q_EMAIL
@@ -54,7 +58,7 @@ class EmailGroup():
                     member_list.append(v)
         members = ', '.join(m.get('name') for m in member_list)
         params['members'] = members
-        params['num_members'] = len(members)
+        params['num_members'] = len(member_list)
 
         to = 'info+group@massivelyoffline.org'
         cc = [m.get('email') for m in member_list]
@@ -65,11 +69,11 @@ class EmailGroup():
 
 Your group now has %(num_members)s members: %(members)s
 
-Simply reply-all to chat with your fellow students.
+Simply reply-all to chat with your fellow students, or to set up a specific location for the meeting.
 
 A reminder:
 You're meeting on %(day)s at %(time)s
-near %(address)s
+Near %(address)s
 
 Have a good meeting,
 Massively Offline

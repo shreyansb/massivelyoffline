@@ -1,7 +1,9 @@
 .DS_Store
+.env
 *.pyc
 data/db
 data/etc
 _app.py
 settings.py
 server/settings.py
+server/resweb_settings.py
