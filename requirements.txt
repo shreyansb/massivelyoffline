@@ -6,8 +6,12 @@ ipython==0.13.1
 pygeoip==0.2.5
 pymongo==2.4.2
 pyres==1.4.1
+pystache==0.5.3
+python-dateutil==2.1
 redis==2.7.2
 requests==1.1.0
+resweb==0.1.5
 setproctitle==1.1.6
 simplejson==3.0.7
+six==1.2.0
 ujson==1.23

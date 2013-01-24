@@ -5,6 +5,7 @@ import resq
 from dateutil.parser import parse as date_parse
 from pymongo import MongoClient
 from models import Course, Sole, User
+from utils.format import format_date_readable_with_ordinal
 
 def send(to, subject, text, cc=None, bcc=None, reply_to=None, attach=None,
          html=None, pre=False, custom_headers=None):
@@ -16,7 +17,6 @@ def send(to, subject, text, cc=None, bcc=None, reply_to=None, attach=None,
 
 class EmailCreator():
     queue = resq.Q_EMAIL
-
     @staticmethod
     def perform(sole_id):
         """ Email the creator of a sole about its creation
@@ -25,10 +25,8 @@ class EmailCreator():
         if not (sole and course and users):
             return
         
-
 class EmailGroup():
     queue = resq.Q_EMAIL
-
     @staticmethod
     def perform(action, sole_id, user_id):
         """ Email the group about a person joining or leaving the group
@@ -41,7 +39,7 @@ class EmailGroup():
         params = {
             'actor_name': users[user_id].get('name'),
             'course_name': course.get('name'),
-            'day': format_date(date_parse(sole.get(Sole.A_DAY))),
+            'day': format_date_readable_with_ordinal(date_parse(sole.get(Sole.A_DAY))),
             'time': sole.get(Sole.A_TIME),
             'address': sole.get(Sole.A_ADDRESS),
             'action': action
@@ -54,23 +52,28 @@ class EmailGroup():
             for k, v in users.iteritems():
                 if k != user_id:
                     member_list.append(v)
-        params['members'] = ', '.join(m.get('name') for m in member_list)
+        members = ', '.join(m.get('name') for m in member_list)
+        params['members'] = members
+        params['num_members'] = len(members)
 
         to = 'info+group@massivelyoffline.org'
         cc = [m.get('email') for m in member_list]
         subject = "Re: %(course_name)s, on %(day)s at %(time)s" % params
-        text = """Hi, 
+        text = """Hello, 
 
-%(actor_name)s has just %(action)s the group.
-Current members: %(members)s
+%(actor_name)s has just %(action)s this group.
 
-Reply-all to this email to chat with your fellow students.
+Your group now has %(num_members)s members: %(members)s
 
-Meeting time: %(day)s at %(time)s
-Meeting near: %(address)s
+Simply reply-all to chat with your fellow students.
+
+A reminder:
+You're meeting on %(day)s at %(time)s
+near %(address)s
 
 Have a good meeting,
 Massively Offline
+Learning is more fun together
         """
         text = text % params
 
@@ -102,12 +105,3 @@ def get_sole_course_and_user_information(sole_id, user_id=None):
         user_ids.add(user_id)
     users = User.find_by_ids(db, user_ids, as_dict=True)
     return sole, course, users
-
-def format_date(dt):
-    day = dt.day
-    if 4 <= day <= 20 or 24 <= day <= 30:
-        suffix = "th"
-    else:
-        suffix = ["st", "nd", "rd"][day % 10 - 1]
-
-    return "%s the %s%s" % (dt.strftime("%A"), day, suffix)
