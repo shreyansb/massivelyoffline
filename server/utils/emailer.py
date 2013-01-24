@@ -90,13 +90,11 @@ class EmailGroup():
         if len(member_list) == 0:
             return
 
-        to = 'info+group@massivelyoffline.org'
-        cc = [m.get('email') for m in member_list]
+        to = [m.get('email') for m in member_list]
         subject = "Re: %(course_name)s, on %(day)s at %(time)s" % params
         text = """Hello, 
 
 %(actor_name)s has just %(action)s this group.
-
 Your group now has %(num_members)s members: %(members)s
 
 Simply reply-all to chat with your fellow students, or to set up a specific location for the meeting.
@@ -111,8 +109,8 @@ Learning is more fun together
         """
         text = text % params
 
-        send(to, subject, text, cc=cc)
-        logging.info("sent update email to %s" % cc)
+        send(to, subject, text)
+        logging.info("sent update email to %s" % to)
 
 
 def get_sole_course_and_user_information(sole_id, user_id=None):

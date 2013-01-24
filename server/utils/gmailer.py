@@ -18,10 +18,13 @@ def mail(to, subject, text, cc=None,
     msg = MIMEMultipart()
 
     msg['From'] = gmail_from
-    msg['To'] = to
     msg['Subject'] = subject
 
-    to = [to]
+    if isinstance(to, list):
+        msg['To'] = ', '.join(to)
+    else:
+        msg['To'] = to
+        to = [to]
 
     if cc:
         # cc gets added to the text header as well as list of recipients
