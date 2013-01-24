@@ -12,6 +12,7 @@ A_LAT = 'lat'
 A_LON = 'lon'
 A_TIME = 'time'
 A_DAY = 'day'
+A_ADDRESS = 'address'
 
 def ensure_index(db):
     r = []
@@ -37,7 +38,7 @@ def get_by_course_id(db, course_id, lat=None, lon=None):
     r = db.sole.sole.find(spec).sort(A_DAY, ASCENDING)
     return format_cursor_as_list(r)
 
-def get_by_id(db, sole_id):
+def find_by_id(db, sole_id):
     spec = { _ID: ObjectId(sole_id) }
     s = db.sole.sole.find_one(spec)
     s[A_ID] = str(s.pop(_ID))

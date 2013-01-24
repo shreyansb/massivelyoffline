@@ -1,7 +1,9 @@
 import ujson as json
 
-from utils import auth, facebook, geo
 from models import Course, Sole, User
+from resq import resq
+from utils import auth, facebook, geo
+from utils.emailer import EmailGroup
 
 from flask import Flask, render_template, request
 from pymongo import MongoClient
@@ -116,7 +118,7 @@ def post_sole(course_id):
     
     sole_id = Sole.create_new_sole(db, s)
 
-    s = Sole.get_by_id(db, sole_id)
+    s = Sole.find_by_id(db, sole_id)
     ss = User.update_sole_with_students(db, s)
 
     return json.dumps(ss)
@@ -130,7 +132,7 @@ def patch_sole(course_id, sole_id):
     if not user:
         return json_error("User not found")
 
-    sole = Sole.get_by_id(db, sole_id)
+    sole = Sole.find_by_id(db, sole_id)
     if not sole:
         return json_error("that study group doesn't exist")
 
@@ -140,17 +142,21 @@ def patch_sole(course_id, sole_id):
     new_sids = data.get(Sole.A_STUDENT_IDS)
     user_id = user.get('id')
     resp = None
+    action = None
     if (set(current_sids) - set(new_sids)) == set([user_id]):
         resp = Sole.leave_sole_by_id(db, sole_id, user_id)
+        action = 'left'
     elif (set(new_sids) - set(current_sids)) == set([user_id]):
         resp = Sole.join_sole_by_id(db, sole_id, user_id)
+        action = 'joined'
     else:
         return json_error("Invalid new student_ids")
 
     # return the new model
     if resp:
-        s = Sole.get_by_id(db, sole_id)
+        s = Sole.find_by_id(db, sole_id)
         ns = User.update_sole_with_students(db, s)
+        resq.enqueue(EmailGroup, action, sole_id, user_id)
         return json.dumps(ns)
     else:
         return json_error("Some other error")

@@ -20,17 +20,33 @@ def create(db, doc):
 
 def find_by_facebook_id(db, facebook_id):
     spec = {A_FACEBOOK_ID: facebook_id}
-    return find(db, spec)
+    return find_one(db, spec)
 
 def find_by_id(db, user_id):
     spec = { '_id': ObjectId(user_id) }
-    return find(db, spec)
+    return find_one(db, spec)
 
-def find(db, spec):
+def find_one(db, spec):
     user = db.user.user.find_one(spec)
     if user and user.get('_id'):
         user['id'] = str(user.pop('_id'))
     return user
+
+def find_by_ids(db, ids, as_dict=False):
+    mids = map(ObjectId, ids)
+    users = db.user.user.find({'_id': {'$in': mids}})
+    if as_dict:
+        d = {}
+        for u in users:
+            u['id'] = str(u.pop('_id'))
+            d[u['id']] = u
+        return d
+    else:
+        l = []
+        for u in users:
+            u['id'] = str(u.pop('_id'))
+            l.append(u)
+        return l
 
 ###
 ### insert users into other things
