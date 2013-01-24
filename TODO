@@ -1,0 +1,14 @@
+## Product
+- Notify of errors on front end: failed request, invalid form
+- Disable + spinner on buttons
+- Map:
+	- clean up info
+	- refresh on move?
+- Email:
+	- email group each time a person joins or leaves
+	- put them all in a chat room!!
+
+## Backend
+- track timezone
+- task queue to send delayed emails
+-  
