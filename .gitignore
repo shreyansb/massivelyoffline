@@ -4,3 +4,4 @@ data/db
 data/etc
 _app.py
 settings.py
+server/settings.py

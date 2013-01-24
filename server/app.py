@@ -6,7 +6,7 @@ from models import Course, Sole, User
 from flask import Flask, render_template, request
 from pymongo import MongoClient
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder="../static")
 db = MongoClient()
 
 ###
