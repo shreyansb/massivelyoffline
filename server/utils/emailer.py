@@ -25,9 +25,37 @@ class EmailCreator():
         if not (sole and course and users):
             return
 
+        user_id = sole.get(Sole.A_USER_ID)
+        user = users[user_id]
+
         params = {
-            
+            'course_name': course.get('name'),
+            'day': format_date_readable_with_ordinal(date_parse(sole.get(Sole.A_DAY))),
+            'time': sole.get(Sole.A_TIME),
+            'address': sole.get(Sole.A_ADDRESS),
+            'first_name': user.get('first_name')
         }
+
+        to = user.get('email')
+        subject = "%(course_name)s, on %(day)s at %(time)s" % params
+        text = """Hello %(first_name)s, 
+
+We're just writing to confirm that your study group has been set up.
+
+We'll let you know via email when others join this group.
+
+A reminder:
+You're meeting on %(day)s at %(time)s
+Near %(address)s
+
+Have fun,
+Massively Offline
+Learning is more fun together
+        """
+        text = text % params
+
+        send(to, subject, text)
+        logging.info("sent create email to %s" % to)
         
 class EmailGroup():
     queue = resq.Q_EMAIL
@@ -59,6 +87,8 @@ class EmailGroup():
         members = ', '.join(m.get('name') for m in member_list)
         params['members'] = members
         params['num_members'] = len(member_list)
+        if len(member_list) == 0:
+            return
 
         to = 'info+group@massivelyoffline.org'
         cc = [m.get('email') for m in member_list]
@@ -82,7 +112,7 @@ Learning is more fun together
         text = text % params
 
         send(to, subject, text, cc=cc)
-        logging.info("sent email to %s" % cc)
+        logging.info("sent update email to %s" % cc)
 
 
 def get_sole_course_and_user_information(sole_id, user_id=None):

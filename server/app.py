@@ -3,7 +3,7 @@ import ujson as json
 from models import Course, Sole, User
 from resq import resq
 from utils import auth, facebook, geo
-from utils.emailer import EmailGroup
+from utils.emailer import EmailGroup, EmailCreator
 
 from flask import Flask, render_template, request
 from pymongo import MongoClient
@@ -120,6 +120,7 @@ def post_sole(course_id):
 
     s = Sole.find_by_id(db, sole_id)
     ss = User.update_sole_with_students(db, s)
+    resq.enqueue(EmailCreator, str(sole_id))
 
     return json.dumps(ss)
 
