@@ -4,11 +4,9 @@
 - Map:
 	- clean up info
 	- refresh on move?
-- Email:
-	- email group each time a person joins or leaves
+- Communication:
 	- put them all in a chat room!!
 
 ## Backend
 - track timezone
-- task queue to send delayed emails
 -  
