@@ -3,8 +3,14 @@
 - Disable + spinner on buttons
 - Map:
 	- clean up info
-	- refresh on move?
+	- refresh on move
+	- update current location when the map is moved
+- Soles:
+	- show above sole list that shows the current 'center', allow a user to change this
+	- only load those near the current location
+
 - Communication:
+	- send an email reminder a few hours before the meeting
 	- put them all in a chat room!!
 
 ## Backend
