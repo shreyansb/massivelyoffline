@@ -8,4 +8,5 @@ def loc_from_ip(ip):
     if ip == "127.0.0.1":
         ip = "108.27.114.30" # New York, NY
         ip = "208.76.220.220" # Philadelphia, PA
+        #ip = "223.191.0.222" # Mumbai, India
     return geo.record_by_addr(ip)

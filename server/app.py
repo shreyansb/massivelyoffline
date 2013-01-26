@@ -58,8 +58,6 @@ def create_user():
         return json_error("couldn't create user")
 
     user = User.find_by_id(db, user_id)
-    app.logger.error(user_id)
-    app.logger.error(user)
     return json.dumps(user)
 
 @app.route("/user/<user_id>", methods=['PUT'])

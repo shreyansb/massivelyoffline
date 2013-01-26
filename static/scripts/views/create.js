@@ -71,8 +71,8 @@ app.views.CreateView = Backbone.View.extend({
         app.collections.soles.create(params, {success: that.triggerDone});
     },
 
-    triggerDone: function() {
-        this.trigger("doneCreate");
+    triggerDone: function(m) {
+        this.trigger("doneCreate", m);
     },
 
     validate: function() {

@@ -17,6 +17,13 @@ app.views.MapView = Backbone.View.extend({
         this.on("updateMarkers", function() {
             this.dfd.done(this.resetAndAddCollectionMarkers);
         });
+        this.on("centerMap", function(m) {
+            var that = this;
+            console.log("MapView:centerMap", m);
+            this.dfd.done(function() {
+                that.centerAndPan(m);
+            });
+        });
     },
 
     load: function() {
@@ -37,6 +44,7 @@ app.views.MapView = Backbone.View.extend({
         this.reset();
         this.setupMarkerLayer();
         this.addCollectionMarkers();
+        this.dfd.resolve("resetAndAddCollectionMarkers");
     },
 
     setupMarkerLayer: function() {
@@ -58,7 +66,7 @@ app.views.MapView = Backbone.View.extend({
         }
     },
 
-    addMarker: function(lat, lon, title, description, center) {
+    addMarker: function(lat, lon, title, description) {
         this.markers.add_feature({
             'geometry': {
                 'coordinates': [lon, lat]
@@ -70,10 +78,6 @@ app.views.MapView = Backbone.View.extend({
                 'description': description
             }
         });
-
-        if (center) {
-            this.map.center({ lat: lat, lon: lon });
-        }
     },
 
     reset: function() {
@@ -81,5 +85,16 @@ app.views.MapView = Backbone.View.extend({
             this.map.removeLayer(this.markers.name);
             this.markers = undefined;
         }
+    },
+
+    centerAndPan: function(m) {
+        if (m && m.get('lat') && m.get('lon')) {
+            this.map.center({
+                lat: m.get('lat'),
+                lon: m.get('lon')
+            });
+            this.map.panBy(-1*(window.innerWidth/4), 0)
+        }
+        this.dfd.resolve("centerAndPan");
     }
 });

@@ -91,13 +91,18 @@ app.views.SidebarView = Backbone.View.extend({
         app.views.solelist = undefined;
     },
 
-    createSoleListView: function() {
-        app.views.solelist = new app.views.SoleListView({course_id: this.course_id});
+    createSoleListView: function(m) {
+        app.views.solelist = new app.views.SoleListView({
+            course_id: this.course_id
+        });
         app.views.solelist.on('showCreateView', this.swapToCreateView);
         app.views.solelist.on('rerenderSoleView', this.rerenderSoleView);
         $('#results_container').append(app.views.solelist.render().el);
         app.router.navigate("course/" + this.course_id);
         this.trigger("updateMarkers");
+        if (m instanceof Backbone.Model) {
+            this.trigger("centerMap", m);
+        }
     },
 
     rerenderSoleView: function() {
@@ -117,9 +122,9 @@ app.views.SidebarView = Backbone.View.extend({
         this.createCreateView();
     },
 
-    swapToSoleListView: function() {
+    swapToSoleListView: function(m) {
         this.destroyCreateView();
-        this.createSoleListView();
+        this.createSoleListView(m);
     },
 
     moveInputUp: function() {
