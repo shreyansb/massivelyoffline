@@ -61,9 +61,41 @@ app.views.MapView = Backbone.View.extend({
         if (app.collections.soles) {
             var that = this;
             _.each(app.collections.soles.toJSON(), function(s) {
-                that.addMarker(s.lat, s.lon, app.utils.format_date(s.day), s.address, false);
+                var title = that.getMarkerTitle(s);
+                var description = that.getMarkerDescription(s);
+                that.addMarker(s.lat, s.lon, title, description, false);
             });
         }
+    },
+
+    getMarkerTitle: function(s) {
+        var c = app.collections.courses.get(s.course_id);
+
+        var i = $("<img/>", {
+            src: c.get('uni_img'),
+            "class": 'marker_title_uni_image'
+        });
+
+        var t = c.get('name') + " with " + s.num_students;
+        if (s.num_students == 1) {
+            t = t + " other";
+        } else {
+            t = t + " others";
+        }
+        
+        var el = $("<div/>").append(i).append(t);
+        return el.html();
+    },
+
+    getMarkerDescription: function(s) {
+        var day = app.utils.format_date(s.day);
+        var desc = day + " at around " + s.time;
+        var d_el = $("<span/>", {
+            "text": desc,
+            "class": 'marker_description'
+        });
+        var el = $("<div/>").append(d_el);
+        return el.html();
     },
 
     addMarker: function(lat, lon, title, description) {

@@ -79,6 +79,21 @@ form input:focus {
     width: 100%;
 }
 
+/* 
+ * map markers
+ */
+
+.marker_title_uni_image {
+    height: 15px;
+    width: 15px;
+    margin-right: 5px;
+}
+
+.marker_description {
+    font-size: 14px;
+    color: gray;
+}
+
 /*
  * create a new sole
  */
