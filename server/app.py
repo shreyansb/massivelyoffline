@@ -85,6 +85,10 @@ def get_soles_for_course(course_id):
     """
     lat = request.args.get('lat')
     lon = request.args.get('lon')
+    if not (lat and lon):
+        loc = geo.loc_from_ip(request.remote_addr)
+        lat = loc.get('latitude')
+        lon = loc.get('longitude')
     r = Sole.get_by_course_id(db, course_id, lat, lon)
     nr = User.update_soles_with_students(db, r)
     return json.dumps(nr)
