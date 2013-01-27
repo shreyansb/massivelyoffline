@@ -128,9 +128,8 @@ app.views.SidebarView = Backbone.View.extend({
     },
 
     moveInputUp: function() {
-        $('#course').find('h1').fadeOut(150);
         $('#course').find('h2').fadeOut(150);
-        $('#sidebar').animate({ top: "10%" }, 200); 
+        $('#sidebar').animate({ top: "20" }, 200); 
         this.position = "up";
     }
 });
