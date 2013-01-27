@@ -16,6 +16,12 @@ var Workspace = Backbone.Router.extend({
     home: function() {
         this.createSidebar();
         this.navigate("/");
+        app.collections.soles = new app.collections.SoleCollection([]);
+        app.collections.soles.fetch({
+            'success': function() {
+                app.views.map.trigger("updateMarkers");
+            }
+        });
     },
     course: function(course_id) {
         this.createSidebar(course_id);

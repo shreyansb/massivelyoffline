@@ -8,13 +8,18 @@ app.models.Sole = Backbone.Model.extend({
 app.collections.SoleCollection = Backbone.Collection.extend({
     model: app.models.Sole,
     url: function() {
-        return '/course/' + this.course_id + '/sole';
+        if (this.course_id) {
+            return '/course/' + this.course_id + '/sole';
+        } else {
+            return '/sole';
+        }
     },
     initialize: function(models, options) {
         _.bindAll(this, "url");
-        if (!options.course_id) {
-            console.log("SoleCollection:initialize course_id missing");
+        if (options) {
+            this.course_id = options.course_id;
+        } else {
+            this.course_id = undefined;
         }
-        this.course_id = options.course_id;
     },
 });

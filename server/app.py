@@ -78,20 +78,32 @@ def get_courses():
 ### Sole
 ###
 
+@app.route("/sole", methods=["GET"])
+def get_soles_for_home():
+    """ Get all the soles close to the current location
+    """
+    lat, lon = get_lat_lon()
+    r = Sole.get(db, lat, lon)
+    return json.dumps(r)
+
 @app.route("/course/<course_id>/sole", methods=["GET"])
 def get_soles_for_course(course_id):
     """ Get a list of soles for the course,
     within a certain radius of the provided lat, lon
     """
+    lat, lon = get_lat_lon()
+    r = Sole.get_by_course_id(db, course_id, lat, lon)
+    nr = User.update_soles_with_students(db, r)
+    return json.dumps(nr)
+
+def get_lat_lon():
     lat = request.args.get('lat')
     lon = request.args.get('lon')
     if not (lat and lon):
         loc = geo.loc_from_ip(request.remote_addr)
         lat = loc.get('latitude')
         lon = loc.get('longitude')
-    r = Sole.get_by_course_id(db, course_id, lat, lon)
-    nr = User.update_soles_with_students(db, r)
-    return json.dumps(nr)
+    return lat, lon
 
 @app.route("/course/<course_id>/sole", methods=["POST"])
 def post_sole(course_id):
