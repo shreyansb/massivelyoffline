@@ -245,7 +245,12 @@ div.leave_sole:hover {
 
 .sole_timing {
     display: inline-block;
-    font-size: 20px;
+    margin-left: 5px;
+    font-size: 16px;
+}
+
+.pin_image {
+    display: inline-block;
 }
 
 /*
