@@ -5,31 +5,24 @@ body {
     font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
 }
 
-h1 {
+h1, h2 {
     color: white;
-    /*
-    -webkit-text-fill-color: lightgreen;
-    -webkit-text-stroke-width: 1px;
-    -webkit-text-stroke-color: green;
-    */
     text-shadow: 0 0 15px black, 0 -1px 1px black;
-    font-size: 48px;
     line-height: 1.2;
-    margin: 0 0 00 0;
-    text-shadow: 10 10 35 white;
+    margin: 0 0 0 0;
+}
+
+h1 {
+    font-size: 48px;
 }
 
 h2 {
-    color: white;
-    /*
-    -webkit-text-fill-color: lightgreen;
-    -webkit-text-stroke-width: 1px;
-    -webkit-text-stroke-color: green;
-    */
-    text-shadow: 0 0 15px black, 0 -1px 1px black;
     font-size: 28px;
-    line-height: 1.2;
-    margin: 0 0 0 0;
+}
+
+h1 sup{
+    font-size: 14px;
+    margin-left: 5px;
 }
 
 form input {
@@ -71,7 +64,7 @@ form input:focus {
 
 #sidebar {
     position: absolute;
-    right: 7%;
+    right: 4%;
     top: 25%;
 }
 
