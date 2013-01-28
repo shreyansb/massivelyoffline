@@ -129,7 +129,10 @@ app.views.CreateView = Backbone.View.extend({
         var days = [];
         for (var i=0; i<14; i++) {
             var m = moment().add('days', i);
-            days.push({'id':m.format(), 'text': m.format('dddd, Do MMMM')});
+            days.push({
+                'id': m.format('YYYY-MM-DD (ZZ)'), 
+                'text': m.format('dddd, Do MMMM')
+            });
         }
         return days;
     },

@@ -85,7 +85,7 @@ def get_soles_for_home():
     """ Get all the soles close to the current location
     """
     lat, lon = get_lat_lon()
-    r = Sole.get(db, lat, lon)
+    r = Sole.find(db, lat, lon)
     return json.dumps(r)
 
 @app.route("/course/<course_id>/sole", methods=["GET"])
@@ -94,7 +94,7 @@ def get_soles_for_course(course_id):
     within a certain radius of the provided lat, lon
     """
     lat, lon = get_lat_lon()
-    r = Sole.get_by_course_id(db, course_id, lat, lon)
+    r = Sole.find_by_course_id(db, course_id, lat, lon)
     nr = User.update_soles_with_students(db, r)
     return json.dumps(nr)
 
@@ -111,31 +111,27 @@ def get_lat_lon():
 def post_sole(course_id):
     """Create a new sole.
     """
+    # authenticate the user
     user, err = auth.get_user_from_request(db, request)
     if err:
         return json_error(err)
 
+    # validate and format the POST data
     user_id = str(user.get('id'))
-
-    # TODO validate
     data = json.loads(request.data)
-    s = {
-        'day': data.get('day'),
-        'time': data.get('time'),
-        'lon': data.get('lon'),
-        'lat': data.get('lat'),
-        'address': data.get('address'),
-        'course_id': data.get('course_id'),
-        'user_id': user_id
-    }
-    for k, v in s.iteritems():
-        if not v:
-            return json_error("missing attribute")
-    
+    s = Sole.format_params_for_create(user_id, data)
+    err = Sole.validate_params_for_create(s)
+    if err:
+        return json_error(err)
+
+    # create the sole
     sole_id = Sole.create_new_sole(db, s)
 
+    # format response
     s = Sole.find_by_id(db, sole_id)
     ss = User.update_sole_with_students(db, s)
+
+    # enqueue an email to be sent to the creator
     resq.enqueue(EmailCreator, str(sole_id))
 
     return json.dumps(ss)
@@ -155,7 +151,7 @@ def patch_sole(course_id, sole_id):
 
     # if the new set of student ids makes sense, use them
     data = json.loads(request.data)
-    current_sids = sole.get(Sole.A_STUDENT_IDS)
+    current_sids = Sole.find(Sole.A_STUDENT_IDS)
     new_sids = data.get(Sole.A_STUDENT_IDS)
     user_id = user.get('id')
     resp = None
