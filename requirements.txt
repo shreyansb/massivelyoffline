@@ -8,6 +8,7 @@ pymongo==2.4.2
 pyres==1.4.1
 pystache==0.5.3
 python-dateutil==2.1
+pytz==2012j
 redis==2.7.2
 requests==1.1.0
 resweb==0.1.5
