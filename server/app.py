@@ -151,7 +151,7 @@ def patch_sole(course_id, sole_id):
 
     # if the new set of student ids makes sense, use them
     data = json.loads(request.data)
-    current_sids = Sole.find(Sole.A_STUDENT_IDS)
+    current_sids = sole.get(Sole.A_STUDENT_IDS)
     new_sids = data.get(Sole.A_STUDENT_IDS)
     user_id = user.get('id')
     resp = None
