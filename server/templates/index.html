@@ -101,7 +101,7 @@
 
         <div class="sole_timing">
             {{day}}<br/>
-            around {{time}}</br>
+            <span class="sole_time">{{time}}</span>
         </div>
 
         <div class="sole_people">
@@ -170,6 +170,7 @@
         app.data = app.data || {};
         app.data.loc = $.parseJSON('{{loc|safe}}');
         app.data.user = $.parseJSON('{{user|safe}}');
+        app.data.possibleTimes = $.parseJSON('{{times|safe}}');
     </script>
     <script src="static/scripts/models/course.js"></script>
     <script src="static/scripts/models/sole.js"></script>

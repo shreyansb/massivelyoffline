@@ -19,7 +19,6 @@ app.views.MapView = Backbone.View.extend({
         });
         this.on("centerMap", function(m) {
             var that = this;
-            console.log("MapView:centerMap", m);
             this.dfd.done(function() {
                 that.centerAndPan(m);
             });
@@ -88,8 +87,8 @@ app.views.MapView = Backbone.View.extend({
     },
 
     getMarkerDescription: function(s) {
-        var day = app.utils.format_date(s.day);
-        var desc = day + " at around " + s.time;
+        var day = app.utils.formatDate(s.day);
+        var desc = day + ", " + app.utils.formatTime(s.time);
         var d_el = $("<span/>", {
             "text": desc,
             "class": 'marker_description'

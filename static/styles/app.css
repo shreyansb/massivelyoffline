@@ -264,6 +264,11 @@ div.leave_sole:hover {
     font-size: 16px;
 }
 
+.sole_time {
+    font-size: 14px;
+    color: gray;
+}
+
 .pin_image {
     display: inline-block;
 }

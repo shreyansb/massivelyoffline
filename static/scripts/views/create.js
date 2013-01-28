@@ -26,7 +26,7 @@ app.views.CreateView = Backbone.View.extend({
         });
         this.$el.find('#create_day').select2("focus");
         this.$el.find('#create_time').select2({
-            width: '200px',
+            width: '250px',
             allowClear: true,
             placeholder: "Around what time?",
             data: this.timesForDropdown(),
@@ -135,26 +135,14 @@ app.views.CreateView = Backbone.View.extend({
     },
 
     timesForDropdown: function() {
-        return [
-            {'id': '6 am', 'text': 'around 6 am'},
-            {'id': '7 am', 'text': 'around 7 am'},
-            {'id': '8 am', 'text': 'around 8 am'},
-            {'id': '9 am', 'text': 'around 9 am'},
-            {'id': '10 am', 'text': 'around 10 am'},
-            {'id': '11 am', 'text': 'around 11 am'},
-            {'id': '12 pm', 'text': 'around 12 pm'},
-            {'id': '1 pm', 'text': 'around 1 pm'},
-            {'id': '2 pm', 'text': 'around 2 pm'},
-            {'id': '3 pm', 'text': 'around 3 pm'},
-            {'id': '4 pm', 'text': 'around 4 pm'},
-            {'id': '5 pm', 'text': 'around 5 pm'},
-            {'id': '6 pm', 'text': 'around 6 pm'},
-            {'id': '7 pm', 'text': 'around 7 pm'},
-            {'id': '8 pm', 'text': 'around 8 pm'},
-            {'id': '9 pm', 'text': 'around 9 pm'},
-            {'id': '10 pm', 'text': 'around 10 pm'},
-            {'id': '11 pm', 'text': 'around 11 pm'},
-        ];
+        var t = [];
+        _.each(app.data.possibleTimes, function(e, i, l) {
+            t.push({
+                'id': i,
+                'text': e
+            });
+        });
+        return t;
     },
 });
 

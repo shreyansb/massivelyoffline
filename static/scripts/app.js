@@ -41,7 +41,6 @@ var Workspace = Backbone.Router.extend({
             app.views.map.trigger("updateMarkers");
         });
         app.views.sidebar.on("centerMap", function(m) {
-            console.log("createSidebar:centerMap", m);
             app.views.map.trigger("centerMap", m);
         });
     }

@@ -3,6 +3,7 @@ import ujson as json
 from models import Course, Sole, User
 from resq import resq
 from utils import auth, facebook, geo
+from utils.data import possible_sole_times
 from utils.emailer import EmailGroup, EmailCreator
 
 from flask import Flask, render_template, request
@@ -22,7 +23,8 @@ def get_home():
     formatted_user = User.filter_user_attrs(user)
     params = {
         'loc': json.dumps(loc),
-        'user': json.dumps(formatted_user)
+        'user': json.dumps(formatted_user),
+        'times': json.dumps(possible_sole_times)
     }
     return render_template("index.html", **params)
 

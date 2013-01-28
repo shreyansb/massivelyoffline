@@ -5,7 +5,7 @@ import resq
 from dateutil.parser import parse as date_parse
 from pymongo import MongoClient
 from models import Course, Sole, User
-from utils.format import format_date_readable_with_ordinal
+from utils.format import format_date_readable_with_ordinal, format_possible_sole_time
 
 def send(to, subject, text, cc=None, bcc=None, reply_to=None, attach=None,
          html=None, pre=False, custom_headers=None):
@@ -31,21 +31,21 @@ class EmailCreator():
         params = {
             'course_name': course.get('name'),
             'day': format_date_readable_with_ordinal(date_parse(sole.get(Sole.A_DAY))),
-            'time': sole.get(Sole.A_TIME),
+            'time': format_possible_sole_time(sole.get(Sole.A_TIME)),
             'address': sole.get(Sole.A_ADDRESS),
             'first_name': user.get('first_name')
         }
 
         to = user.get('email')
-        subject = "%(course_name)s, on %(day)s at %(time)s" % params
+        subject = "%(course_name)s, on %(day)s %(time)s" % params
         text = """Hello %(first_name)s, 
 
-We're just writing to confirm that your study group has been set up.
+Your study session has been set up.
 
-We'll let you know via email when others join this group.
+We'll let you know via email when others join this session.
 
 A reminder:
-You're meeting on %(day)s at %(time)s
+You're meeting on %(day)s %(time)s
 Near %(address)s
 
 Have fun,
@@ -55,8 +55,8 @@ Learning is more fun together
         text = text % params
 
         send(to, subject, text)
-        logging.info("sent create email to %s" % to)
         
+
 class EmailGroup():
     queue = resq.Q_EMAIL
     @staticmethod
@@ -91,16 +91,16 @@ class EmailGroup():
             return
 
         to = [m.get('email') for m in member_list]
-        subject = "Re: %(course_name)s, on %(day)s at %(time)s" % params
+        subject = "Re: %(course_name)s, on %(day)s %(time)s" % params
         text = """Hello, 
 
-%(actor_name)s has just %(action)s this group.
+%(actor_name)s has just %(action)s this study session.
 Your group now has %(num_members)s members: %(members)s
 
-Simply reply-all to chat with your fellow students, or to set up a specific location for the meeting.
+Teply-all to chat with your fellow students, or to set up a specific time and place to meet.
 
 A reminder:
-You're meeting on %(day)s at %(time)s
+You're meeting on %(day)s %(time)s
 Near %(address)s
 
 Have a good meeting,
@@ -110,7 +110,6 @@ Learning is more fun together
         text = text % params
 
         send(to, subject, text)
-        logging.info("sent update email to %s" % to)
 
 
 def get_sole_course_and_user_information(sole_id, user_id=None):

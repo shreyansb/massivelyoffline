@@ -12,6 +12,10 @@ app.utils.format_courses_as_dict = function(c) {
     return dict;
 };
 
-app.utils.format_date = function(d) {
+app.utils.formatDate = function(d) {
     return moment(d).format('dddd, Do MMMM');
-}
+};
+
+app.utils.formatTime = function(t) {
+    return app.data.possibleTimes[t];
+};

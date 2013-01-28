@@ -34,7 +34,8 @@ app.views.SoleView = Backbone.View.extend({
     },
 
     format: function(d) {
-        d['day'] = app.utils.format_date(d['day']);
+        d['day'] = app.utils.formatDate(d['day']);
+        d['time'] = app.utils.formatTime(d['time']);
         if (app.models.user.get('facebook_id')) {
             for (var j=0; j<d['students'].length; j++) {
                 if (d['students'][j]['facebook_id'] == app.models.user.get('facebook_id')) {
@@ -77,7 +78,6 @@ app.views.SoleView = Backbone.View.extend({
             sids = _.without(sids, app.models.user.get('id'));
         }
         var that = this;
-        console.log("SoleView:act:sids:", sids);
         var params = {
             'student_ids': sids
         };
