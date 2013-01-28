@@ -48,11 +48,17 @@
         <div id="create_container"></div>
 
     </div>
+
+    <div id="feedback">
+        <a href="mailto:info+feedback@massivelyoffline.org" target="_blank">We'd love feedback</a>
+    </div>
+
     {% raw %}
 
     <script id="results_template" type="text/template">
         <div id="results" class="gray_outline">
         </div>
+
         <div id="create_actions" class="gray_outline">
             <span id="create_call_to_action">
                 Don't see one that works?
@@ -84,6 +90,7 @@
                 </div>
             </form>
         </div>
+
         <div id="create_actions" class="gray_outline">
             <span id="create_cancel">
                 cancel
@@ -134,24 +141,6 @@
                 <a class="button-link button_yes" id="yes_{{id}}">yes</a>
                 <a class="button-link button_no" id="no_{{id}}">no</a>
             </div>
-        </div>
-    </script>
-
-    <script id="create" type="text/template">
-        <div id="create_actions" class="gray_outline">
-            <span id="create_cancel">
-                cancel
-            </span>
-            <button id="create_submit" class="button-link button_yes">
-                submit
-            </button>
-
-            <span id="create_call_to_action">
-                Don't see one that works?
-            </span>
-            <button id="create_start" class="button-link button_yes">
-                start one
-            </button>
         </div>
     </script>
 

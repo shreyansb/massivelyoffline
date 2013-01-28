@@ -72,6 +72,21 @@ form input:focus {
     width: 100%;
 }
 
+#feedback {
+    position: absolute;
+    bottom: 0;
+    right: 5%;
+    padding: 5px 8px;
+    background-color: green;
+    color: white;
+    border-radius: 3px 3px 0px 0px;
+}
+
+#feedback a {
+    color: white;
+    text-decoration: none;
+}
+
 /* 
  * map markers
  */
@@ -198,11 +213,11 @@ div.leave_sole:hover {
 }
 
 .result:first-child, #create_form:first_child {
-    border-radius: 3 3 0 0;
+    border-radius: 3px 3px 0px 0px;
 }
 
 .result:last-child, #create_form:last-child {
-    border-radius: 0 0 3 3;
+    border-radius: 0px 0px 3px 3px;
     border-bottom: 0px;
 }
 
