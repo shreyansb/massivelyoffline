@@ -1,8 +1,7 @@
 import pygeoip
-import os
+import settings
 
-geoip_path = os.path.join(os.environ.get('APP_HOME'), 'data/GeoLiteCity.dat')
-geo = pygeoip.GeoIP(geoip_path)
+geo = pygeoip.GeoIP(settings.GEOIP_PATH)
 
 def loc_from_ip(ip):
     if ip == "127.0.0.1":
