@@ -14,7 +14,11 @@
       window.fbAsyncInit = function() {
         FB.init({
           appId      : '128848390614241', // App ID
-          channelUrl : 'http://127.0.0.1:5000/static/channel.html', // Channel File
+          {% if stage == "DEV" %}
+            channelUrl : 'http://massivelyoffline.dev:5000/static/channel.html', // Channel File
+          {% else %}
+            channelUrl : 'http://massivelyoffline.org/static/channel.html', // Channel File
+          {% endif %}
           status     : true, // check login status
           cookie     : true, // enable cookies to allow the server to access the session
           xfbml      : true  // parse XFBML

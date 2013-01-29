@@ -1,4 +1,5 @@
 import ujson as json
+import settings
 
 from models import Course, Sole, User
 from resq import resq
@@ -24,7 +25,8 @@ def get_home():
     params = {
         'loc': json.dumps(loc),
         'user': json.dumps(formatted_user),
-        'times': json.dumps(possible_sole_times)
+        'times': json.dumps(possible_sole_times),
+        'stage': settings.STAGE
     }
     return render_template("index.html", **params)
 
@@ -183,4 +185,7 @@ def json_error(msg):
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    if settings.STAGE == "DEV":
+        app.run(debug=True)
+    elif settings.STAGE == "PROD":
+        app.run(port=80)
