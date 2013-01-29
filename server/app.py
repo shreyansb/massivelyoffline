@@ -19,7 +19,7 @@ db = MongoClient()
 
 @app.route("/", methods=["GET"])
 def get_home():
-    loc = geo.loc_from_ip(request.remote_addr)
+    loc = geo.loc_from_ip(get_ip())
     user, err = auth.get_user_from_request(db, request)
     formatted_user = User.filter_user_attrs(user)
     params = {
@@ -104,7 +104,7 @@ def get_lat_lon():
     lat = request.args.get('lat')
     lon = request.args.get('lon')
     if not (lat and lon):
-        loc = geo.loc_from_ip(request.remote_addr)
+        loc = geo.loc_from_ip(get_ip())
         lat = loc.get('latitude')
         lon = loc.get('longitude')
     return lat, lon
@@ -180,6 +180,9 @@ def patch_sole(course_id, sole_id):
 ### Request and response helpers
 ###
 
+def get_ip():
+    request.headers.get('X-Real-IP') or request.remote_addr
+
 def json_error(msg):
     return json.dumps({'error': msg}), 400
 
@@ -188,4 +191,4 @@ if __name__ == "__main__":
     if settings.STAGE == "DEV":
         app.run(debug=True)
     elif settings.STAGE == "PROD":
-        app.run(port=80)
+        app.run()
