@@ -4,6 +4,7 @@
 
 default_run_options[:pty] = true
 ssh_options[:forward_agent] = true
+set :normalize_asset_timestamps, false
 
 set :application, "massivelyoffline"
 set :repository,  "git@github.com:shreyansb/massivelyoffline.git"
