@@ -181,7 +181,7 @@ def patch_sole(course_id, sole_id):
 ###
 
 def get_ip():
-    request.headers.get('X-Real-IP') or request.remote_addr
+    return request.headers.get('X-Real-IP') or request.remote_addr
 
 def json_error(msg):
     return json.dumps({'error': msg}), 400
